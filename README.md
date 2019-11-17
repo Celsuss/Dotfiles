@@ -3,9 +3,11 @@
 ## i3 software
 Software | Description
 --- | --- 
+i3lock | lock screen
+i3bar | bar
+compton | compositor
+rofi | program launcher
+feh | desktop wallpaper image viewer
 pavucontrol | sound manager
 playerctl | sound command line controller
-rofi | program launcher
-i3lock | lock screen
-feh | desktop wallpaper image viewer
-i3bar | bar
+nm-applet | network manager
