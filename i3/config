@@ -235,6 +235,7 @@ bindsym XF86AudioPrev exec playerctl previous
 
 # Lock screen
 bindsym $mod+ctrl+l exec i3lock -i $wallpaper -t
+# bindsym $mod+ctrl+l exec ~/.config/i3/i3lock-screen.sh
 
 # Mouse settings
 # xmodmap -e "pointer = 1 2 3 "
@@ -258,7 +259,7 @@ exec_always feh --bg-scale $wallpaper
 
 # assign [class="Google-chrome"] $workspace_2
 assign [class="Slack"] $workspace_9
-assign [class="Spotify Premium"] $workspace_10
+assign [class="Spotify"] $workspace_10
 
 # assign vlc
 
@@ -266,8 +267,10 @@ assign [class="Spotify Premium"] $workspace_10
 # Autostart #
 #############
 
-exec Slack
+exec slack
 exec compton
+exec nm-applet
+#exec NetworkManager or nmtui
 
 ############
 # Monitors #
