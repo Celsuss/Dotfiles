@@ -12,3 +12,5 @@ rofi_setup.sh
 
 install_yosmeite_san_fransisco_font.sh
 lxappearance.sh
+
+./polybar/polybar_install.sh
