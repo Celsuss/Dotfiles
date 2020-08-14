@@ -161,7 +161,7 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 # Custom Bindings #
 ###################
 
-set $wallpaper ~/Pictures/Wallpapers/neon_city_2.jpg
+set $wallpaper ~/Pictures/Wallpapers/amime.jpg
 
 ##########
 # Colors #
@@ -243,7 +243,9 @@ bindsym $mod+ctrl+l exec i3lock -i $wallpaper
 exec_always xmodmap -e "pointer = 3 2 1 "
 
 # Monitors
-exec --no-startup-id xrandr --output HDMI-2 --right-of eDP-1
+exec_always --no-startup-id xrandr --output HDMI-1-1 --right-of HDMI-1-2 --output HDMI-1-2 --primary --right-of eDP-1-1
+# exec_always --no-startup-id xrandr --output HDMI-1 --right-of HDMI-2 --output HDMI-2 --primary --right-of eDP-1
+# exec --no-startup-id xrandr --output HDMI-1-2 --right-of eDP-1-1'
 # exec_always --no-startup-id xrandr --output HDMI-1 --off --output DP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output eDP-1 --mode 1920x1080 --pos 0x0 --rotate normal --output HDMI-2 --mode 1920x1080 --pos 3840x0 --rotate normal
 
 # Wallpaper
@@ -260,3 +262,4 @@ exec steam
 #exec slack
 #exec nm-applet
 #exec NetworkManager or nmtui
+
