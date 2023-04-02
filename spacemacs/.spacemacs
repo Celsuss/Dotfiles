@@ -585,7 +585,7 @@ before packages are loaded."
   (setq-default
    beacon-blink-when-window-changes 1
    beacon-blink-when-point-moves-vertically 1
-   beacon-color "#16706f"
+   beacon-color "#928374"
    )
 
   ;; Enable org-roam
