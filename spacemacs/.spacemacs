@@ -32,7 +32,8 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(markdown
+   '(rust
+     markdown
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
@@ -72,6 +73,7 @@ This function should only modify configuration layer settings."
      org-roam
      org-sidebar
      gruvbox-theme
+     ;; smart-mode-line
     )
 
    ;; A list of packages that cannot be updated.
@@ -256,7 +258,8 @@ It should only modify the values of Spacemacs settings."
    ;; refer to the DOCUMENTATION.org for more info on how to create your own
    ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
-   dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
+   ;; dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
+   dotspacemacs-mode-line-theme '(spacemacs :separator arrow :separator-scale 1.5)
 
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
@@ -599,10 +602,11 @@ before packages are loaded."
        org-enable-roam-support t
        org-enable-roam-ui t
        org-enable-roam-protocol t
+       org-enable-hugo-support t
        )))
 
   (setq-default
-   org-roam-directory "~/workspace/second-brain/"
+   org-roam-directory "~/workspace/second-brain/org-roam/"
    org-roam-completion-everywhere t
    )
 
@@ -613,6 +617,17 @@ before packages are loaded."
   (global-set-key (kbd "C-c n p") 'org-roam-alias-add)
   (global-set-key (kbd "C-c n a") 'org-id)
   (global-set-key (kbd "C-c n I") 'org-id-get-create)
+
+  ;; Smart mode line
+  ;; (sml/setup)
+
+  ;; powerline
+  (setq
+   spaceline-version-control-p t
+   spaceline-org-clock-p t
+   spaceline-flycheck-error-p t
+   spaceline-flycheck-warning-p t
+   )
 
 )
 
@@ -634,9 +649,9 @@ This function is called at the very end of Spacemacs initialization."
  '(evil-want-Y-yank-to-eol nil)
  '(helm-completion-style 'helm-fuzzy)
  '(org-agenda-files
-   '("/home/jens/workspace/second-brain/todo.org" "/home/jens/workspace/second-brain/study.org" "/home/jens/workspace/second-brain/tools/terraform.org" "/home/jens/workspace/second-brain/org-tutorial.org" "/home/jens/workspace/second-brain/org-agenda.org"))
+   '("/home/jens/workspace/second-brain/recipes/matcha-cheescake.org" "/home/jens/workspace/second-brain/todo.org" "/home/jens/workspace/second-brain/study.org" "/home/jens/workspace/second-brain/tools/terraform.org"))
  '(package-selected-packages
-   '(org-sidebar org-ql peg ov org-super-agenda map ts flycheck-pos-tip pos-tip helm-lsp lsp-origami origami lsp-ui lsp-mode eldoc esh-help eshell-prompt-extras eshell-z multi-term multi-vterm project xref shell-pop terminal-here vterm xterm-color org-roam org-roam-ui autothemer evil-org gnuplot helm-org-rifle htmlize org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-category-capture org-rich-yank orgit-forge orgit org ac-ispell auto-complete auto-yasnippet fuzzy helm-c-yasnippet helm-company mwim neotree unfill yasnippet-snippets yasnippet beacon gruvbox-theme company-emoji company emoji-cheat-sheet-plus gh-md markdown-toc markdown-mode mmm-mode valign vmd-mode ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen use-package undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline-all-the-icons space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
+   '(cargo counsel-gtags counsel swiper ivy dap-mode lsp-docker lsp-treemacs bui treemacs cfrs pfuture flycheck-rust ggtags helm-gtags racer ron-mode rust-mode toml-mode doom-modeline shrink-path smart-mode-line rich-minority org-sidebar org-ql peg ov org-super-agenda map ts flycheck-pos-tip pos-tip helm-lsp lsp-origami origami lsp-ui lsp-mode eldoc esh-help eshell-prompt-extras eshell-z multi-term multi-vterm project xref shell-pop terminal-here vterm xterm-color org-roam org-roam-ui autothemer evil-org gnuplot helm-org-rifle htmlize org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-category-capture org-rich-yank orgit-forge orgit org ac-ispell auto-complete auto-yasnippet fuzzy helm-c-yasnippet helm-company mwim neotree unfill yasnippet-snippets yasnippet beacon gruvbox-theme company-emoji company emoji-cheat-sheet-plus gh-md markdown-toc markdown-mode mmm-mode valign vmd-mode ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen use-package undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline-all-the-icons space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
