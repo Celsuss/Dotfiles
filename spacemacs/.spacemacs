@@ -678,7 +678,15 @@ before packages are loaded."
   (global-set-key (kbd "C-c n I") 'org-id-get-create)
 
   ;; RSS feed
-  (elfeed :variables rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org"))
+  ;; (setq-default
+  ;;  dotspacemacs--configuration-layers '(
+  ;;                                       (elfeed :variables
+  ;;                                               rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org"))
+  ;;  ))
+
+  (elfeed :variables
+          rmh-elfeed-org-files '("~/.emacs.d/private/elfeed.org"))
+
 
   ;; LSP key bindings
   (global-set-key (kbd "<f12>") 'lsp-goto-implementation)
