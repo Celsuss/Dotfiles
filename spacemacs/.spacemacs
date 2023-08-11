@@ -678,14 +678,13 @@ before packages are loaded."
   (global-set-key (kbd "C-c n I") 'org-id-get-create)
 
   ;; RSS feed
-  ;; (setq-default
-  ;;  dotspacemacs--configuration-layers '(
-  ;;                                       (elfeed :variables
-  ;;                                               rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org"))
-  ;;  ))
-
-  (elfeed :variables
-          rmh-elfeed-org-files '("~/.emacs.d/private/elfeed.org"))
+  (setq-default dotspacemacs-configuration-layers '(
+                                                    (elfeed :variables rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org"))
+                                                    )
+  ;; (setq elfeed-feeds
+  ;;       '(("http://nullprogram.com/feed/" hackernews)
+  ;;         ("http://www.50ply.com/atom.xml" news)
+  ;;         ("http://nedroid.com/feed/" news)))
 
 
   ;; LSP key bindings
