@@ -56,7 +56,10 @@ This function should only modify configuration layer settings."
 
      ;; Typing related
      auto-completion
-     spell-checking
+     (spell-checking :variables
+                     spell-checking-enable-auto-dictionary t
+                     =enable-flyspell-auto-completion= t
+                     )
      ;; syntax-checking
 
      ;; Search related
@@ -71,10 +74,14 @@ This function should only modify configuration layer settings."
      markdown
      systemd
      yaml
-     docker
+     (docker :variables
+             docker-dockerfile-backend 'eglot
+             )
 
      ;; RSS
-     elfeed
+     (elfeed :variables
+             rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org")
+             )
 
      ;; Development
      git
@@ -682,13 +689,9 @@ before packages are loaded."
   (setq alert-default-style 'notifications)
 
   ;; RSS feed
-  (setq-default dotspacemacs-configuration-layers '(
-                                                    (elfeed :variables rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org"))
-                                                    ))
-  ;; (setq elfeed-feeds
-  ;;       '(("http://nullprogram.com/feed/" hackernews)
-  ;;         ("http://www.50ply.com/atom.xml" news)
-  ;;         ("http://nedroid.com/feed/" news)))
+  ;; (setq-default dotspacemacs-configuration-layers '(
+  ;;                                                   (elfeed :variables rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org"))
+  ;;                                                   ))
 
 
   ;; LSP key bindings
@@ -698,15 +701,15 @@ before packages are loaded."
   ;; (sml/setup)
 
   ;; Spell checking
-  (setq-default dotspacemacs-configuration-layers '(
-    (spell-checking :variables
-                    spell-checking-enable-auto-dictionary t
-                    =enable-flyspell-auto-completion= t
-                    )))
+  ;; (setq-default dotspacemacs-configuration-layers '(
+  ;;   (spell-checking :variables
+  ;;                   spell-checking-enable-auto-dictionary t
+  ;;                   =enable-flyspell-auto-completion= t
+  ;;                   )))
 
   ;; Docker
-  (setq-default dotspacemacs-configuration-layers
-                '((docker :variables docker-dockerfile-backend 'lsp)))
+  ;; (setq-default dotspacemacs-configuration-layers
+  ;;               '((docker :variables docker-dockerfile-backend 'lsp)))
 
   ;; powerline
   (setq
