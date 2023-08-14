@@ -118,7 +118,7 @@ This function should only modify configuration layer settings."
      beacon
 
      ;; Org
-     org-roam
+     ;; org-roam
      org-sidebar
      org-super-agenda
      org-bullets  ;; Show org-mode bullets as UTF-8 characters
@@ -670,20 +670,23 @@ before packages are loaded."
   (setq-default
    org-roam-directory "~/workspace/second-brain/org-roam/"
    org-roam-completion-everywhere t
+   org-roam-capture-templates '(("d" "default" plain
+                                 "%?"
+                                 :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens\n#+date: %U")
+                                 :unnarrowed t))
    )
 
-  ;; To add all org files in a repository to the agenda
-  (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
-  ;; Skip deleted files
-  (setq org-agenda-skip-unavailable-files t)
-
-  ;; Org roam key bindings
   (global-set-key (kbd "C-c n f") 'org-roam-node-find)
   (global-set-key (kbd "C-c n i") 'org-roam-node-insert)
   (global-set-key (kbd "C-c n l") 'org-roam-buffer-toggle)
   (global-set-key (kbd "C-c n p") 'org-roam-alias-add)
   (global-set-key (kbd "C-c n a") 'org-id)
   (global-set-key (kbd "C-c n I") 'org-id-get-create)
+
+  ;; To add all org files in a repository to the agenda
+  (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
+  ;; Skip deleted files
+  (setq org-agenda-skip-unavailable-files t)
 
   ;; Alerts
   (setq alert-default-style 'notifications)
