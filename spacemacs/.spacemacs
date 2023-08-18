@@ -688,6 +688,41 @@ before packages are loaded."
   ;; Skip deleted files
   (setq org-agenda-skip-unavailable-files t)
 
+  ;; Org super agenda
+  (setq org-agenda-custom-commands
+        '(("t" "Todo view"
+           ((agenda "" ((org-agenda-span 'day)
+                       (org-super-agenda-groups
+                        '((:name "Today"
+                                 :time-grid t
+                                 :todo "TODAY"
+                                 :scheduled today
+                                 :order 0)
+                          (:habit t)
+                          (:name "Due Today"
+                                 :deadline today
+                                 :order 2)
+                          (:name "Due Soon"
+                                 :deadline future
+                                 :order 8)
+                          (:name "Overdue"
+                                 :deadline past
+                                 :order 7)
+                          ))))
+           (todo "" ((org-agenda-overriding-header "")
+                      (org-super-agenda-groups
+                      '((:name "Inbox"
+                               :file-path "inbox"
+                               :order 0)
+                        ;; (:auto-category t
+                        (:auto-tags t
+                                       :order 9)
+                      )))
+           )))))
+  (org-super-agenda-mode)
+
+
+
   ;; Alerts
   (setq alert-default-style 'notifications)
 
