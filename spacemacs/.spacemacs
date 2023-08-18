@@ -717,8 +717,8 @@ before packages are loaded."
                         ;; (:auto-category t
                         (:auto-tags t
                                        :order 9)
-                      )))
-           )))))
+                      ))))
+           ))))
   (org-super-agenda-mode)
 
 
