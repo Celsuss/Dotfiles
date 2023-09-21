@@ -60,6 +60,7 @@ This function should only modify configuration layer settings."
                      spell-checking-enable-auto-dictionary t
                      =enable-flyspell-auto-completion= t
                      )
+
      ;; syntax-checking
 
      ;; Search related
@@ -86,7 +87,12 @@ This function should only modify configuration layer settings."
      markdown
      systemd
      yaml
-     emacs-lisp
+     ;; (sql  :variables
+     ;;       sql-backend 'dap
+     ;;       sql-capitalize-keywords t
+     ;;       lsp-sqls-workspace-config-path 'root)
+     my-ejc-sql  ;; Needed for snowflake
+
      (docker :variables
              docker-dockerfile-backend 'eglot
              )
@@ -125,13 +131,14 @@ This function should only modify configuration layer settings."
      gruvbox-theme
      beacon
 
-     ;; Org
-     ;; org-roam
      org-sidebar
      org-super-agenda
      org-bullets  ;; Show org-mode bullets as UTF-8 characters
      ox-hugo
      org-kanban
+
+     ;; Language support
+     ;; ejc-sql
 
      ;; Writing
      writegood-mode
@@ -139,7 +146,6 @@ This function should only modify configuration layer settings."
      ;; Multiple cursor
      multiple-cursors
 
-     ;; eglot
      ;; smart-mode-line
     )
 
@@ -650,7 +656,6 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
 dump."
-  
 )
 
 
@@ -660,8 +665,6 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
-
-  (require 'dap-cpptools) ;; For rust dap mode
 
   ;; set default theme
   (setq-default dotspacemacs-themes '(gruvbox-dark-medium))
@@ -756,10 +759,6 @@ before packages are loaded."
   ;;                   =enable-flyspell-auto-completion= t
   ;;                   )))
 
-  ;; Docker
-  ;; (setq-default dotspacemacs-configuration-layers
-  ;;               '((docker :variables docker-dockerfile-backend 'lsp)))
-
   ;; powerline
   (setq
    spaceline-version-control-p t
@@ -781,15 +780,11 @@ before packages are loaded."
 
   ;; Dap mode
   (defun python/pre-init-dap-mode ()
-    (when (eq python-backend 'eglot)
+    (when (eq python-backend 'lsp)
       (add-to-list 'spacemacs--dap-supported-modes 'python-mode))
     (add-hook 'python-mode-local-vars-hook 'spacemacs//python-setup-dap))
 
   (setq dap-python-debugger 'debugpy)
-
-  ;; Rust
-  ;;(rust :variables
-  ;;rust-format-on-save t)
 
   ;; Projectile
   (setq projectile-project-search-path '("~/workspace/"))
@@ -834,7 +829,7 @@ This function is called at the very end of Spacemacs initialization."
  '(org-agenda-files
    '("~/workspace/second-brain/org-roam/tele2-effective-teams-workshop.org" "~/workspace/second-brain/org-roam/elementary.org" "~/workspace/second-brain/org-roam/Ubuntu-server.org" "~/workspace/second-brain/org-roam/dataiku-mlops-practitoner.org" "~/workspace/second-brain/org-roam/Git.org" "~/workspace/second-brain/org-roam/mango-sago.org" "~/workspace/second-brain/org-roam/matcha-cheescake.org" "~/workspace/second-brain/org-roam/My-hosts.org" "~/workspace/second-brain/org-roam/My-devices.org" "~/workspace/second-brain/org-roam/grep.org" "~/workspace/second-brain/org-roam/tele2-dbt-conversion.org" "~/workspace/second-brain/org-roam/the-progmatic-programmer.org" "~/workspace/second-brain/org-roam/Wishlist.org" "~/workspace/second-brain/org-roam/airflow-backfilling.org" "~/workspace/second-brain/org-roam/org.org" "~/workspace/second-brain/org-roam/airflow-docker.org" "~/workspace/second-brain/org-roam/tele2-dbt-snapshot.org" "~/workspace/second-brain/org-roam/PiHole.org" "~/workspace/second-brain/org-roam/airflow-open-source.org" "~/workspace/second-brain/org-roam/tele2-ai-hub-focus-area.org" "~/workspace/second-brain/org-roam/tele2-comviq-backfill.org" "~/workspace/second-brain/org-roam/none-relational-databases.org" "~/workspace/second-brain/org-roam/snowflake-connector.org" "~/workspace/second-brain/org-roam/windows-terminal.org" "~/workspace/second-brain/org-roam/Machine-learning.org" "~/workspace/second-brain/org-roam/computer-science-vocab.org" "~/workspace/second-brain/org-roam/Open-source-projects.org" "~/workspace/second-brain/org-roam/blog-sites.org" "~/workspace/second-brain/org-roam/org-roam.org" "~/workspace/second-brain/org-roam/export-environment-variables.org" "~/workspace/second-brain/org-roam/Traefik.org" "~/workspace/second-brain/org-roam/todo.org" "~/workspace/second-brain/org-roam/query-optimization.org" "~/workspace/second-brain/org-roam/Data-structures.org" "~/workspace/second-brain/org-roam/Sql.org" "~/workspace/second-brain/org-roam/Raspberrypihole.org" "~/workspace/second-brain/org-roam/blog-index.org" "~/workspace/second-brain/org-roam/matcha-cheesecake-brownies.org" "~/workspace/second-brain/org-roam/org-roam-backlinks.org" "~/workspace/second-brain/org-roam/Containers.org" "~/workspace/second-brain/org-roam/org-agenda.org" "~/workspace/second-brain/org-roam/dbt-airflow-integration.org" "~/workspace/second-brain/org-roam/elementary-cli.org" "~/workspace/second-brain/org-roam/mlflow.org" "~/workspace/second-brain/org-roam/residual-attention-network-image-classification.org" "~/workspace/second-brain/org-roam/snowflake.org" "~/workspace/second-brain/org-roam/MLOps-tools.org" "~/workspace/second-brain/org-roam/ml-papers.org" "~/workspace/second-brain/org-roam/terraform.org" "~/workspace/second-brain/org-roam/Emacs.org" "~/workspace/second-brain/org-roam/wget.org" "~/workspace/second-brain/org-roam/study.org" "~/workspace/second-brain/org-roam/MLOps-vocab.org" "~/workspace/second-brain/org-roam/Dbt.org" "~/workspace/second-brain/org-roam/Machine-learning-general.org" "~/workspace/second-brain/org-roam/pytorch-open-source.org" "~/workspace/second-brain/org-roam/org-roam-node-properties.org" "~/workspace/second-brain/org-roam/Ssh-key.org" "~/workspace/second-brain/org-roam/airflow.org" "~/workspace/second-brain/org-roam/DBT-backfilling.org" "~/workspace/second-brain/org-roam/LLM-for-production.org" "~/workspace/second-brain/org-roam/dbt-conversion.org" "~/workspace/second-brain/org-roam/reading-list.org" "~/workspace/second-brain/org-roam/elementary-setup.org" "~/workspace/second-brain/org-roam/tele2.org" "~/workspace/second-brain/org-roam/dataiku.org" "~/workspace/second-brain/org-roam/my-blog-articles.org" "~/workspace/second-brain/org-roam/marchine-learning.org" "~/workspace/second-brain/org-roam/Linear-algebra.org" "~/workspace/second-brain/org-roam/DAVG-389-add_write_time_and_dbt_run_started_at_to_lifetime_change_tag.org" "~/workspace/second-brain/org-roam/Interview-questions.org" "~/workspace/second-brain/org-roam/Portainer.org" "~/workspace/second-brain/org-roam/validio.org" "~/workspace/second-brain/org-roam/Markdown.org" "~/workspace/second-brain/org-roam/recipes.org" "~/workspace/second-brain/org-roam/RaspberryPi.org" "~/workspace/second-brain/org-roam/ox-hugo.org" "~/workspace/second-brain/org-roam/bash.org" "~/workspace/second-brain/org-roam/org-roam-publish.org" "~/workspace/second-brain/org-roam/all-posts.org" "~/workspace/second-brain/org-roam/org-todo.org" "~/workspace/second-brain/org-roam/hugo.org" "~/workspace/second-brain/org-roam/grafana-dashboards.org" "~/workspace/second-brain/org-roam/blog-dbt.org" "~/workspace/second-brain/org-roam/tele2-development-goals.org" "~/workspace/second-brain/org-roam/blog-posts.org" "~/workspace/second-brain/org-roam/validio-tele2-meeting.org" "~/workspace/second-brain/org-roam/sql-exclude-columns.org" "~/workspace/second-brain/org-roam/docker-compose.org" "~/workspace/second-brain/org-roam/sql-delete-tables.org" "~/workspace/second-brain/org-roam/Books.org" "~/workspace/second-brain/org-roam/go.org" "~/workspace/second-brain/org-roam/Raspberry-pi-powered-mirror.org" "~/workspace/second-brain/org-roam/relational-databases.org" "~/workspace/second-brain/org-roam/spacemacs-packages.org" "~/workspace/second-brain/org-roam/the-three-body-problem.org"))
  '(package-selected-packages
-   '(json-mode json-navigator hierarchy json-reformat json-snatcher prettier-js web-beautify ox-hugo cargo counsel-gtags counsel swiper ivy dap-mode lsp-docker lsp-treemacs bui treemacs cfrs pfuture flycheck-rust ggtags helm-gtags racer ron-mode rust-mode toml-mode doom-modeline shrink-path smart-mode-line rich-minority org-sidebar org-ql peg ov org-super-agenda map ts flycheck-pos-tip pos-tip helm-lsp lsp-origami origami lsp-ui lsp-mode eldoc esh-help eshell-prompt-extras eshell-z multi-term multi-vterm project xref shell-pop terminal-here vterm xterm-color org-roam org-roam-ui autothemer evil-org gnuplot helm-org-rifle htmlize org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-category-capture org-rich-yank orgit-forge orgit org ac-ispell auto-complete auto-yasnippet fuzzy helm-c-yasnippet helm-company mwim neotree unfill yasnippet-snippets yasnippet beacon gruvbox-theme company-emoji company emoji-cheat-sheet-plus gh-md markdown-toc markdown-mode mmm-mode valign vmd-mode ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen use-package undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline-all-the-icons space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
+   '(clomacs cider sesman parseedn clojure-mode parseclj ox-hugo cargo counsel-gtags counsel swiper ivy dap-mode lsp-docker lsp-treemacs bui treemacs cfrs pfuture flycheck-rust ggtags helm-gtags racer ron-mode rust-mode toml-mode doom-modeline shrink-path smart-mode-line rich-minority org-sidebar org-ql peg ov org-super-agenda map ts flycheck-pos-tip pos-tip helm-lsp lsp-origami origami lsp-ui lsp-mode eldoc esh-help eshell-prompt-extras eshell-z multi-term multi-vterm project xref shell-pop terminal-here vterm xterm-color org-roam org-roam-ui autothemer evil-org gnuplot helm-org-rifle htmlize org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-category-capture org-rich-yank orgit-forge orgit org ac-ispell auto-complete auto-yasnippet fuzzy helm-c-yasnippet helm-company mwim neotree unfill yasnippet-snippets yasnippet beacon gruvbox-theme company-emoji company emoji-cheat-sheet-plus gh-md markdown-toc markdown-mode mmm-mode valign vmd-mode ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen use-package undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline-all-the-icons space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
