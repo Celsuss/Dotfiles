@@ -1,26 +1,37 @@
 * Elfeed                                                             :elfeed:
-** News                                                                :news:
-*** Wired                                                             :wired:
-**** https://www.wired.com/feed/tag/ai/latest/rss
-**** https://www.wired.com/feed/category/science/latest/rss
-*** The Verge                                                         :verge:
-**** http://www.theverge.com/rss/full.xml
+
 ** Blogs                                                               :blog:
-*** Lil’Log                                                          :lillog:
-**** https://lilianweng.github.io/lil-log/feed.xml
-*** Planet emacslife                                              :emacs:dev:
+*** Planet emacslife                                                  :emacs:
 **** https://planet.emacslife.com/atom.xml
 ** Software Development                                                 :dev:
+*** Schemescape                                                  :scemescape:
+**** https://log.schemescape.com/feed.xml
+*** Ntietz                                                             :gwen:
+**** https://ntietz.com/atom.xml
+*** Xe Iaso                                                         :xe_iaso:
+- https://xeiaso.net/blog.rss
 ** Machine Learning                                                      :ml:
-*** Jay Alammar                                             :jayalammar:blog:
+*** Jay Alammar                                                  :jayalammar:
 **** https://jalammar.github.io/feed.xml
-*** OpenAI                                                           :openai:
-**** https://openai.com/blog/rss.xml                                  :arxiv:
+*** Lil’Log                                                          :lillog:
+**** https://lilianweng.github.io/lil-log/feed.xml
+*** Huyen Chip                                                   :huyen_chip:
+- https://huyenchip.com/feed.xml
+
+# ** News                                                                :news:
+# *** Wired                                                             :wired:
+# **** https://www.wired.com/feed/tag/ai/latest/rss
+# **** https://www.wired.com/feed/category/science/latest/rss
+# *** The Verge                                                         :verge:
+# **** http://www.theverge.com/rss/full.xml
+
+# *** OpenAI                                                           :openai:
+# **** https://openai.com/blog/rss.xml                                  :arxiv:
 # ** arXiv
 # *** http://export.arxiv.org/rss/cs.LG
-** Reddit                                                            :reddit:
-*** Machine Learning                                                     :ml:
-**** https://www.reddit.com/r/MachineLearning/.rss
-** Hacker news                                                   :hackernews:
-*** frontpage                                                     :frontpage:
-**** http://export.arxiv.org/rss/cs.LG
+# ** Reddit                                                            :reddit:
+# *** Machine Learning                                                     :ml:
+# **** https://www.reddit.com/r/MachineLearning/.rss
+# ** Hacker news                                                   :hackernews:
+# *** frontpage                                                     :frontpage:
+# **** http://export.arxiv.org/rss/cs.LG
