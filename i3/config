@@ -174,7 +174,7 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 # Custom Bindings #
 ###################
 
-set $wallpaper ~/Pictures/Wallpapers/gruvbox-astro.jpg
+set $wallpaper ~/Pictures/wallpapers/gruvbox_astro.jpg
 
 ##########
 # Colors #
