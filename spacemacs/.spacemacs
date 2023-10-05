@@ -666,6 +666,10 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
+  ;; Requires
+  (require 'dap-cpptools)
+  (require 'dap-python)
+
   ;; set default theme
   (setq-default dotspacemacs-themes '(gruvbox-dark-medium))
 
