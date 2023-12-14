@@ -10,4 +10,4 @@ configuration {
   font: "System San Francisco Display 18";
 }
 
-@theme "gruvbox-dark-hard_theme"
+@theme "gruvbox-material_theme"
