@@ -1,24 +1,64 @@
+
 - name: Development environment playbook Ubuntu
   host: localhost
+  when: ansible_distribution == "Ubuntu"
   tasks:
-    - name: Apt update and upgrade
+    - name: Install dev packages using apt
       become: yes
       ansible.builtin.apt:
         update_cache: true
         upgrade: "yes"
-
-    - name: Install packages using apt
-      become: yes
-      ansible.builtin.apt:
         name:
           - git
-          - zsh
           - docker
           - cmake
+          - build-essential
+        state: latest
+
+    # Repos
+    - name: Download org second brain repo
+      ansible.builtin.git:
+        repo: https://github.com/Celsuss/second-brain.git
+        clone: yes
+        dest: ~/workspace/second-brain
+      become: yes
+
+      # Emacs
+    - name: Install emacs dependencies
+      become: yes
+      ansible.builtin.apt:
+        pkg: emacs
+        state: build-dep
+
+    - name: Download emacs v29
+      ansible.builtin.get_url:
+        url: https://ftp.gnu.org/pub/gnu/emacs/emacs-29.1.tar.gz
+        dest: ~/emacs-29.1.tar.gz
+        become: yes
+
+    - name: Install spacemacs
+      become: yes
+
+    - name: Copy spacemacs dotfile
+      become: yes
+      ansible.buildin.copy:
+        src: ../spacemacs/.spacemacs
+        dest: ~/.spacemacs
+
+- name: Zsh and oh-my-zsh Ubuntu
+  host: localhost
+  when: ansible_distribution == "Ubuntu"
+  tasks:
+    - name: Install zsh
+      become: yes
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: "yes"
+        name:
           - zsh
         state: latest
 
-      # TODO Maybe split this up so not shell is doing too much
+  # TODO Maybe split this up so not shell is doing too much
     - name: Install oh-my-zsh
       become: yes
       ansible.builtin.shell:
@@ -42,11 +82,3 @@
       become: yes
       ansible.builtin.shell:
         cmd: source .zshrc
-
-    - name: Setup emacs
-      become: yes
-
-    - name: Setup org second brain
-      become: yes
-
-  when: ansible_distribution == "Ubuntu"
