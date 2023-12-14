@@ -1,0 +1,52 @@
+- name: Development environment playbook Ubuntu
+  host: localhost
+  tasks:
+    - name: Apt update and upgrade
+      become: yes
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: "yes"
+
+    - name: Install packages using apt
+      become: yes
+      ansible.builtin.apt:
+        name:
+          - git
+          - zsh
+          - docker
+          - cmake
+          - zsh
+        state: latest
+
+      # TODO Maybe split this up so not shell is doing too much
+    - name: Install oh-my-zsh
+      become: yes
+      ansible.builtin.shell:
+        cmd: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+    - name: Download oh-my-zsh theme
+      become: yes
+      ansible.builtin.git:
+        repo: https://github.com/romkatv/powerlevel10k.git
+        clone: yes
+        dest: ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+        depth: 1
+
+    - name: Copy oh-my-zsh dotfile
+      become: yes
+      ansible.builtin.copy:
+        src: ../oh-my-zsh/.zshrc
+        dest: ~/.zshrc
+
+    - name: Restart zsh
+      become: yes
+      ansible.builtin.shell:
+        cmd: source .zshrc
+
+    - name: Setup emacs
+      become: yes
+
+    - name: Setup org second brain
+      become: yes
+
+  when: ansible_distribution == "Ubuntu"

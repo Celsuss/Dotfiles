@@ -1,19 +1,11 @@
 - name: Development environment playbook
   host: localhost
   tasks:
-    - name: Install packages using apt
+    - name: Apt update and upgrade
       become: yes
       ansible.builtin.apt:
-        name:
-          - git
-          - zsh
-          - docker
-          - cmake
-        state: present # could also be 'latest' or 'absent'
-    - name: Install oh-my-zsh
-      become: yes
-    - name: Install emacs
-      become: yes
+        update_cache: true
+        upgrade: "yes"
 
 - name: i3 wm playbook
   host: localhost
@@ -39,8 +31,7 @@
       ansible.builtin.copy:
         src: ./polybar/spotify_status.py
         dest: ~/.config/polybar/spotify_status.py
-        mode: a+x # Make file executable
-        mode: u=rwx, g=r, o=r # Make file executable ?
+        mode: u=rwx, g=r, o=r
 
 
     # Rofi
