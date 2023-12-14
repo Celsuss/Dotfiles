@@ -1,0 +1,68 @@
+- name: Development environment playbook
+  host: localhost
+  tasks:
+    - name: Install packages using apt
+      become: yes
+      ansible.builtin.apt:
+        name:
+          - git
+          - zsh
+          - docker
+          - cmake
+        state: present # could also be 'latest' or 'absent'
+    - name: Install oh-my-zsh
+      become: yes
+    - name: Install emacs
+      become: yes
+
+- name: i3 wm playbook
+  host: localhost
+  tasks:
+    # i3
+    - name: Install i3
+      ansible.builtin.apt:
+        name:
+          - i3
+          - i3lock
+          - i3status
+      become: yes
+
+
+    # polybar
+    - name: Install polybar
+      become: yes
+      ansible.builtin.apt:
+        name:
+          - polybar
+    - name: Setup spotify status for polybar
+      become: yes
+      ansible.builtin.copy:
+        src: ./polybar/spotify_status.py
+        dest: ~/.config/polybar/spotify_status.py
+        mode: a+x # Make file executable
+        mode: u=rwx, g=r, o=r # Make file executable ?
+
+
+    # Rofi
+    - name: Install rofi
+      become: yes
+      ansible.builtin.apt:
+        name:
+          - rofi
+        state: present
+    - name: Copy rofi config file
+      ansible.builtin.copy:
+        src: ./rofi/config.rasi
+        dest: ~/.config/rofi/config.rasi
+        # owner: foo
+        # group: foo
+        # mode: u=rw, g=r, o=r
+    - name: Copy rofi slate theme file
+      ansible.builtin.copy:
+        src: ./rofi/slate_theme.rasi
+        dest: ~/.config/rofi/slate_theme.rasi
+    - name: Copy rofi monokai theme file
+      ansible.builtin.copy:
+        src: ./rofi/monokai_theme.rasi
+        dest: ~/.config/rofi/monokai_theme.rasi
+  when: ansible_distribution == "Ubuntu"
