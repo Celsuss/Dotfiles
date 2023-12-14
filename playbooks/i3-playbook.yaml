@@ -1,5 +1,5 @@
 - name: Development environment playbook
-  host: localhost
+  hosts: localhost
   tasks:
     - name: Apt update and upgrade
       become: yes
@@ -8,16 +8,21 @@
         upgrade: "yes"
 
 - name: i3 wm playbook
-  host: localhost
+  hosts: localhost
   tasks:
     # i3
     - name: Install i3
+      become: yes
+      tags:
+        - i3
       ansible.builtin.apt:
         name:
           - i3
           - i3lock
           - i3status
-      become: yes
+          - compton
+          - fonts-font-awesome
+          - feh
 
 
     # polybar
@@ -37,23 +42,54 @@
     # Rofi
     - name: Install rofi
       become: yes
+      tags:
+        - rofi
       ansible.builtin.apt:
         name:
           - rofi
         state: present
+
     - name: Copy rofi config file
+      tags:
+        - rofi
       ansible.builtin.copy:
         src: ./rofi/config.rasi
         dest: ~/.config/rofi/config.rasi
-        # owner: foo
-        # group: foo
-        # mode: u=rw, g=r, o=r
+
     - name: Copy rofi slate theme file
+      tags:
+        - rofi
       ansible.builtin.copy:
         src: ./rofi/slate_theme.rasi
         dest: ~/.config/rofi/slate_theme.rasi
+
     - name: Copy rofi monokai theme file
+      tags:
+        - rofi
       ansible.builtin.copy:
         src: ./rofi/monokai_theme.rasi
         dest: ~/.config/rofi/monokai_theme.rasi
-  when: ansible_distribution == "Ubuntu"
+
+    - name: Copy gruvbox common
+      tags:
+        - rofi
+      ansible.builtin.copy:
+        src: ./rofi/gruvbox-common.rasinc
+        dest: ~/.config/rofi/gruvbox-common.rasi
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Copy gruvbox dark hard theme
+      tags:
+        - rofi
+      ansible.builtin.copy:
+        src: ./rofi/gruvbox-dark-hard_theme.rasi
+        dest: ~/.config/rofi/gruvbox-dark-hard_theme.rasi
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Copy gruvbox material theme
+      tags:
+        - rofi
+      ansible.builtin.copy:
+        src: ./rofi/gruvbox-material_theme.rasi
+        dest: ~/.config/rofi/gruvbox-material_theme.rasi
+      when: ansible_distribution == "Ubuntu"
