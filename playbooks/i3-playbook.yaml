@@ -31,13 +31,25 @@
       register: polybar_result
       ignore_errors: true
 
+    - name: Create a directory for polybar if it does not exist
+      when: polybar_result is succeeded
+      ansible.builtin.file:
+        path: ~/.config/polybar
+        state: directory
+
+    - name: Copy polybar config file
+      when: polybar_result is succeeded
+      ansible.builtin.copy:
+        src: ../polybar/config
+        dest: ~/.config/polybar/config
+        mode: u=rwx,g=r,o=r
+
     - name: Setup spotify status for polybar
       when: polybar_result is succeeded
-      become: yes
       ansible.builtin.copy:
-        src: ./polybar/spotify_status.py
+        src: ../polybar/spotify_status.py
         dest: ~/.config/polybar/spotify_status.py
-        mode: u=rwx, g=r, o=r
+        mode: u=rwx,g=r,o=r
 
     # Rofi
     - name: Install rofi
@@ -51,12 +63,18 @@
       register: rofi_result
       ignore_errors: true
 
+    - name: Create a directory for rofi if it does not exist
+      when: polybar_result is succeeded
+      ansible.builtin.file:
+        path: ~/.config/rofi
+        state: directory
+
     - name: Copy rofi config file
       when: rofi_result is succeeded
       tags:
         - rofi
       ansible.builtin.copy:
-        src: ./rofi/config.rasi
+        src: ../rofi/config.rasi
         dest: ~/.config/rofi/config.rasi
 
     - name: Copy gruvbox common
@@ -64,7 +82,7 @@
       tags:
         - rofi
       ansible.builtin.copy:
-        src: ./rofi/gruvbox-common.rasinc
+        src: ../rofi/gruvbox-common.rasinc
         dest: ~/.config/rofi/gruvbox-common.rasi
 
     - name: Copy rofi gruvbox material theme
@@ -72,7 +90,5 @@
       tags:
         - rofi
       ansible.builtin.copy:
-        src: ./rofi/gruvbox-material_theme.rasi
+        src: ../rofi/gruvbox-material_theme.rasi
         dest: ~/.config/rofi/gruvbox-material_theme.rasi
-
-    when: ansible_distribution == "Ubuntu"
