@@ -1,13 +1,16 @@
 
 - name: Development environment playbook Ubuntu
-  host: localhost
-  when: ansible_distribution == "Ubuntu"
+  hosts: localhost
   tasks:
-    - name: Install dev packages using apt
+    - name: Apt update and upgrade
       become: yes
       ansible.builtin.apt:
         update_cache: true
         upgrade: "yes"
+
+    - name: Install packages using apt
+      become: yes
+      ansible.builtin.apt:
         name:
           - git
           - docker
@@ -15,45 +18,34 @@
           - build-essential
         state: latest
 
-    # Repos
-    - name: Download org second brain repo
-      ansible.builtin.git:
-        repo: https://github.com/Celsuss/second-brain.git
-        clone: yes
-        dest: ~/workspace/second-brain
-      become: yes
-
       # Emacs
-    - name: Install emacs dependencies
-      become: yes
-      ansible.builtin.apt:
-        pkg: emacs
-        state: build-dep
+    # - name: Install emacs dependencies
+    #   become: yes
+    #   ansible.builtin.apt:
+    #     pkg: emacs
+    #     state: build-dep
 
-    - name: Download emacs v29
-      ansible.builtin.get_url:
-        url: https://ftp.gnu.org/pub/gnu/emacs/emacs-29.1.tar.gz
-        dest: ~/emacs-29.1.tar.gz
-        become: yes
+#    - name: Download emacs v29
+#      ansible.builtin.get_url:
+#        url: https://ftp.gnu.org/pub/gnu/emacs/emacs-29.1.tar.gz
+#        dest: ~/emacs-29.1.tar.gz
+#        become: yes
 
-    - name: Install spacemacs
-      become: yes
+#    - name: Install spacemacs
+#      become: yes
 
-    - name: Copy spacemacs dotfile
-      become: yes
-      ansible.buildin.copy:
-        src: ../spacemacs/.spacemacs
-        dest: ~/.spacemacs
+#    - name: Copy spacemacs dotfile
+#      become: yes
+#      ansible.buildin.copy:
+#        src: ../spacemacs/.spacemacs
+#        dest: ~/.spacemacs
 
-- name: Zsh and oh-my-zsh Ubuntu
-  host: localhost
-  when: ansible_distribution == "Ubuntu"
+- name: Zsh and oh-my-zsh
+  hosts: localhost
   tasks:
     - name: Install zsh
       become: yes
       ansible.builtin.apt:
-        update_cache: true
-        upgrade: "yes"
         name:
           - zsh
         state: latest
@@ -65,7 +57,6 @@
         cmd: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
     - name: Download oh-my-zsh theme
-      become: yes
       ansible.builtin.git:
         repo: https://github.com/romkatv/powerlevel10k.git
         clone: yes
@@ -73,7 +64,6 @@
         depth: 1
 
     - name: Copy oh-my-zsh dotfile
-      become: yes
       ansible.builtin.copy:
         src: ../oh-my-zsh/.zshrc
         dest: ~/.zshrc
