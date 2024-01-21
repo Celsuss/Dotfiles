@@ -1,0 +1,23 @@
+- name: Build rust source playbook
+  hosts: localhost
+
+  pre_tasks:
+    - name: Update repositories
+      apt: update_cache=yes
+      become_user: root
+      changed_when: False
+
+  tasks:
+    - name: Download Installer
+      get_url:
+        url: https://sh.rustup.rs
+        dest: /tmp/sh.rustup.rs
+        mode: '0755'
+        force: 'yes'
+      tags:
+        - rust
+
+    - name: install rust/cargo
+      shell: /tmp/sh.rustup.rs -y
+      tags:
+        - rust
