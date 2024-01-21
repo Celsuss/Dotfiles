@@ -22,6 +22,12 @@
           - fonts-font-awesome
           - feh
 
+    - name: Copy i3 config files
+      ansible.builtin.copy:
+        src: ../i3/config
+        dest: ~/.config/i3/config
+        mode: u=rwx,g=r,o=r
+
     # polybar
     - name: Install polybar
       become: yes
@@ -42,6 +48,13 @@
       ansible.builtin.copy:
         src: ../polybar/config
         dest: ~/.config/polybar/config
+        mode: u=rwx,g=r,o=r
+
+    - name: Copy polybar launch script
+      when: polybar_result is succeeded
+      ansible.builtin.copy:
+        src: ../polybar/launch.sh
+        dest: ~/.config/polybar/launch.sh
         mode: u=rwx,g=r,o=r
 
     - name: Setup spotify status for polybar
@@ -92,3 +105,42 @@
       ansible.builtin.copy:
         src: ../rofi/gruvbox-material_theme.rasi
         dest: ~/.config/rofi/gruvbox-material_theme.rasi
+
+    # Alacritty terminal emulator
+    - name: Install Alacritty dependencies
+      become: yes
+      ansible.builtin.apt:
+        name:
+          - cmake
+          - pkg-config
+          - libfreetype6-dev
+          - libfontconfig1-dev
+          - libxcb-xfixes0-dev
+          - libxkbcommon-dev
+          - python3
+
+      - name: Create a directory for alacritty source code
+        ansible.builtin.file:
+          path: ~/source-codes/
+          state: directory
+
+      - name: Just get information about the repository whether or not it has already been cloned locally
+        ansible.builtin.git:
+          repo: 'https://github.com/alacritty/alacritty.git'
+          dest: ~/source-codes/
+          clone: yes
+          update: yes
+
+        - name: Check if cargo is installed
+          shell: command -v cargo
+          register: cargo_exists
+          ignore_errors: yes
+
+        - name: Install rust
+          ansible.builtin.import_tasks: rust-playbook.yaml
+          when: cargo_exists is failed
+
+        # TODO Finish this
+        - name: Build alacritty using cargo
+          community.general.cargo:
+            name: alacritty
