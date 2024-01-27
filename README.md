@@ -28,7 +28,7 @@ sudo apt-get install ansible
 To install i3 dotfiles, use the following command:
 
 ``` bash
-anisble-playbook /playbooks/i3-playbook.yaml
+anisble-playbook playbooks/i3-playbook.yaml
 ```
 This playbook will configure your i3 window manager according to the settings specified in my dotfiles.
 
@@ -37,6 +37,6 @@ This playbook will configure your i3 window manager according to the settings sp
 To set up your development environment, use the following command:
 
 ``` bash
-ansible-playbook /playbooks/development-env-playbook.yaml
+ansible-playbook playbooks/development-env-playbook.yaml
 ```
 This playbook will install and configure the necessary tools and packages used in my development environment.
