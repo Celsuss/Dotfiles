@@ -1,4 +1,0 @@
-wget https://github.com/supermarin/YosemiteSanFranciscoFont/archive/master.zip
-unzip master.zip
-mkdir ~/.fonts
-mv YosemiteSanFranciscoFont-master/*.ttf ~/.fonts/
