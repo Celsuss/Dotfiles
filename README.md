@@ -28,7 +28,7 @@ sudo apt-get install ansible
 To install i3 dotfiles, use the following command:
 
 ``` bash
-/playbooks/i3-playbook.yaml
+anisble-playbook /playbooks/i3-playbook.yaml
 ```
 This playbook will configure your i3 window manager according to the settings specified in my dotfiles.
 
