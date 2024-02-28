@@ -1,16 +1,16 @@
-
-- name: i3 wm playbook
+---
+- name: I3 wm playbook
   hosts: localhost
   tasks:
     - name: Apt update and upgrade
-      become: yes
+      become: true
       ansible.builtin.apt:
         update_cache: true
         upgrade: "yes"
 
     # i3
     - name: Install i3
-      become: yes
+      become: true
       tags:
         - i3
       ansible.builtin.apt:
@@ -30,7 +30,7 @@
 
     # polybar
     - name: Install polybar
-      become: yes
+      become: true
       ansible.builtin.apt:
         name:
           - polybar
@@ -42,6 +42,7 @@
       ansible.builtin.file:
         path: ~/.config/polybar
         state: directory
+        mode: "0600"
 
     - name: Copy polybar config file
       when: polybar_result is succeeded
@@ -66,7 +67,7 @@
 
     # Rofi
     - name: Install rofi
-      become: yes
+      become: true
       tags:
         - rofi
       ansible.builtin.apt:
@@ -81,6 +82,7 @@
       ansible.builtin.file:
         path: ~/.config/rofi
         state: directory
+        mode: "0600"
 
     - name: Copy rofi config file
       when: rofi_result is succeeded
@@ -89,6 +91,7 @@
       ansible.builtin.copy:
         src: ../rofi/config.rasi
         dest: ~/.config/rofi/config.rasi
+        mode: "0600"
 
     - name: Copy gruvbox common
       when: rofi_result is succeeded
@@ -97,6 +100,7 @@
       ansible.builtin.copy:
         src: ../rofi/gruvbox-common.rasinc
         dest: ~/.config/rofi/gruvbox-common.rasi
+        mode: "0600"
 
     - name: Copy rofi gruvbox material theme
       when: rofi_result is succeeded
@@ -105,10 +109,11 @@
       ansible.builtin.copy:
         src: ../rofi/gruvbox-material_theme.rasi
         dest: ~/.config/rofi/gruvbox-material_theme.rasi
+        mode: "0600"
 
     # Alacritty terminal emulator
     - name: Install Alacritty dependencies
-      become: yes
+      become: true
       ansible.builtin.apt:
         name:
           - cmake
@@ -119,28 +124,30 @@
           - libxkbcommon-dev
           - python3
 
-      - name: Create a directory for alacritty source code
-        ansible.builtin.file:
-          path: ~/source-codes/
-          state: directory
+    - name: Create a directory for alacritty source code
+      ansible.builtin.file:
+        path: ~/source-codes/
+        state: directory
+        mode: "0600"
 
-      - name: Just get information about the repository whether or not it has already been cloned locally
-        ansible.builtin.git:
-          repo: 'https://github.com/alacritty/alacritty.git'
-          dest: ~/source-codes/
-          clone: yes
-          update: yes
+    - name: Clone repo
+      ansible.builtin.git:
+        repo: 'https://github.com/alacritty/alacritty.git'
+        dest: ~/source-codes/
+        clone: true
+        update: true
+        version: 93e3de7
 
-        - name: Check if cargo is installed
-          shell: command -v cargo
-          register: cargo_exists
-          ignore_errors: yes
+    # - name: Check if cargo is installed
+    #   ansible.builtin.shell: command -v cargo
+    #   register: cargo_exists
+    #   ignore_errors: true
 
-        - name: Install rust
-          ansible.builtin.import_tasks: rust-playbook.yaml
-          when: cargo_exists is failed
+    # - name: Install rust
+    #   ansible.builtin.import_tasks: rust-playbook.yaml
+    #   when: cargo_exists is failed
 
-        # TODO Finish this
-        - name: Build alacritty using cargo
-          community.general.cargo:
-            name: alacritty
+    # TODO Finish this
+    # - name: Build alacritty using cargo
+    #   community.general.cargo:
+    #     name: alacritty
