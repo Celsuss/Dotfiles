@@ -2,11 +2,11 @@
 - name: Development environment playbook Ubuntu
   hosts: localhost
   tasks:
-    - name: Apt update and upgrade
+    - name: Update apt cache
       become: true
       ansible.builtin.apt:
         update_cache: true
-        upgrade: "yes"
+        # upgrade: "yes"
 
     - name: Install packages using apt
       become: true
@@ -16,8 +16,7 @@
           - docker
           - cmake
           - build-essential
-          - rust-c
-        state: latest
+        state: present
 
     # Emacs
     # - name: Install emacs dependencies
@@ -49,13 +48,15 @@
       ansible.builtin.apt:
         name:
           - zsh
-        state: latest
+        state: present
 
     # TODO Maybe split this up so not shell is doing too much
     - name: Install oh-my-zsh
       become: true
       ansible.builtin.shell:
         cmd: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      register: output
+      changed_when: output.rc != 0
 
     - name: Download oh-my-zsh theme
       ansible.builtin.git:
@@ -71,6 +72,8 @@
         dest: ~/.zshrc
         mode: "0600"
 
-    - name: Restart zsh
-      become: true
-      ansible.builtin.command: source .zshrc
+    # - name: Restart zsh
+    #   become: true
+    #   ansible.builtin.command: source .zshrc
+    #   register: output
+    #   changed_when: output.rc != 0
