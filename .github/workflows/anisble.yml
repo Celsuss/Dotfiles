@@ -1,5 +1,5 @@
 name: Ansible lint
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+run-name: Linting ansible
 on:
   pull_request:
     branches: ["master"]
