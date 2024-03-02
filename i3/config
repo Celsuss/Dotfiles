@@ -181,12 +181,6 @@ set $wallpaper ~/Pictures/wallpapers/gruvbox_astro.jpg
 ##########
 
 # Default
-# set $bg-color 	         #2f343f
-# set $inactive-bg-color   #2f343f
-# set $text-color          #f3f4f5
-# set $inactive-text-color #676E7D
-# set $urgent-bg-color     #E53935
-
 set $bg #282828
 set $red #cc241d
 set $green #98971a
@@ -199,14 +193,7 @@ set $darkgray #1d2021
 set $lightgray #bdae93
 
 # window colors
-# Default
-#                       border              background         text                 indicator
-# client.focused          $bg-color           $bg-color          $text-color          #00ff00
-# client.unfocused        $inactive-bg-color  $inactive-bg-color $inactive-text-color #00ff00
-# client.focused_inactive $inactive-bg-color  $inactive-bg-color $inactive-text-color #00ff00
-# client.urgent           $urgent-bg-color    $urgent-bg-color   $text-color          #00ff00
-
-# class                 border|backgr|text|indicator|child_border
+# class                 border|background|text|indicator|child_border
 client.focused          $gray         $gray          $lightgray          $purple $darkgray
 client.focused_inactive $darkgray     $darkgray      $lightgray   $purple $darkgray
 client.unfocused        $darkgray     $darkgray      $lightgray   $purple $darkgray
@@ -241,27 +228,8 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-
 # Launch Polybar
 exec_always --no-startup-id ~/.config/polybar/launch.sh
-
-# bar {
-#         status_command i3status
-#         # status_command i3blocks -c ~/.config/i3/i3blocks.conf
-#         position top
-# 
-#         colors {
-# 		background $bg-color
-# 	    	separator #757575
-# 
-# 		#                  border             background         text
-# 		focused_workspace  $bg-color          $bg-color          $text-color
-# 		inactive_workspace $inactive-bg-color $inacqqtive-bg-color $inactive-text-color
-# 		urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
-# 	}
-# }
 
 ###################
 # Custom settings #
@@ -269,21 +237,17 @@ exec_always --no-startup-id ~/.config/polybar/launch.sh
 
 # Start rofi, a program launcher
 bindsym $mod+d exec rofi -show drun
-# bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -opacity "85" -bw 0 -bc "$bg-color" -bg "$bg-color" -fg "$text-color" -hlbg "$bg-color" -hlfg "#9575cd" -font "System San Francisco Display 18"
 
 # Lock screen
-bindsym $mod+ctrl+l exec i3lock -i $wallpaper
-# bindsym $mod+ctrl+l exec ~/.config/i3/i3lock-screen.sh
+bindsym $mod+ctrl+l exec i3lock -c 000000 -i $wallpaper
+# TODO Try out i3-lock fancy: https://github.com/meskarune/i3lock-fancy?tab=readme-ov-file
 
 # Key and mouse bindings
 exec_always xmodmap -e "pointer = 3 2 1 "
 
 # Monitors
-exec_always --no-startup-id xrandr --output HDMI-1-0 --primary --right-of eDP-1 --output eDP-1 --mode 1920x1080
-# exec_always --no-startup-id xrandr --output HDMI-1-1 --right-of HDMI-1-2 --output HDMI-1-2 --primary --right-of eDP-1-1
-# exec_always --no-startup-id xrandr --output HDMI-1 --right-of HDMI-2 --output HDMI-2 --primary --right-of eDP-1
-# exec --no-startup-id xrandr --output HDMI-1-2 --right-of eDP-1-1'
-# exec_always --no-startup-id xrandr --output HDMI-1 --off --output DP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output eDP-1 --mode 1920x1080 --pos 0x0 --rotate normal --output HDMI-2 --mode 1920x1080 --pos 3840x0 --rotate normal
+# exec_always --no-startup-id xrandr --output HDMI-1-0 --primary --right-of eDP-1 --output eDP-1 --mode 1920x1080
+exec_always --no-startup-id xrandr --output XWAYLAND1 --primary --right-of XWAYLAND2 --output XWAYLAND2 --mode 1920x1080
 
 # Wallpaper
 exec_always feh --bg-scale $wallpaper
@@ -299,4 +263,3 @@ exec spotify
 #exec slack
 #exec nm-applet
 #exec NetworkManager or nmtui
-

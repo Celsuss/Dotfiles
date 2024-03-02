@@ -1,24 +1,24 @@
-
+---
 - name: Development environment playbook Ubuntu
   hosts: localhost
   tasks:
-    - name: Apt update and upgrade
-      become: yes
+    - name: Update apt cache
+      become: true
       ansible.builtin.apt:
         update_cache: true
-        upgrade: "yes"
+        # upgrade: "yes"
 
     - name: Install packages using apt
-      become: yes
+      become: true
       ansible.builtin.apt:
         name:
           - git
           - docker
           - cmake
           - build-essential
-        state: latest
+        state: present
 
-      # Emacs
+    # Emacs
     # - name: Install emacs dependencies
     #   become: yes
     #   ansible.builtin.apt:
@@ -44,31 +44,36 @@
   hosts: localhost
   tasks:
     - name: Install zsh
-      become: yes
+      become: true
       ansible.builtin.apt:
         name:
           - zsh
-        state: latest
+        state: present
 
-  # TODO Maybe split this up so not shell is doing too much
+    # TODO Maybe split this up so not shell is doing too much
     - name: Install oh-my-zsh
-      become: yes
+      become: true
       ansible.builtin.shell:
         cmd: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      register: output
+      changed_when: output.rc != 0
 
     - name: Download oh-my-zsh theme
       ansible.builtin.git:
         repo: https://github.com/romkatv/powerlevel10k.git
-        clone: yes
+        clone: true
         dest: ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
         depth: 1
+        version: 0cc19ac
 
     - name: Copy oh-my-zsh dotfile
       ansible.builtin.copy:
         src: ../oh-my-zsh/.zshrc
         dest: ~/.zshrc
+        mode: "0600"
 
-    - name: Restart zsh
-      become: yes
-      ansible.builtin.shell:
-        cmd: source .zshrc
+    # - name: Restart zsh
+    #   become: true
+    #   ansible.builtin.command: source .zshrc
+    #   register: output
+    #   changed_when: output.rc != 0
