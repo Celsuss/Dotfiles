@@ -1,0 +1,4 @@
+---
+- name: Install go
+  ansible.builtin.import_tasks: debian.yaml
+  when: ansible_facts['os_family']|lower == 'debian'
