@@ -21,6 +21,8 @@
           - compton
           - fonts-font-awesome
           - feh
+          - cava
+          - fzf
 
     - name: Copy i3 config files
       ansible.builtin.copy:
