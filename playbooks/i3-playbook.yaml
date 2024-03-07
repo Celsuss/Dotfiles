@@ -23,6 +23,7 @@
           - feh
           - cava
           - fzf
+          - btop
 
     - name: Copy i3 config files
       ansible.builtin.copy:

@@ -194,7 +194,7 @@ set $lightgray #bdae93
 
 # window colors
 # class                 border|background|text|indicator|child_border
-client.focused          $gray         $gray          $lightgray          $purple $darkgray
+client.focused          $gray         $gray          $yellow      $purple $darkgray
 client.focused_inactive $darkgray     $darkgray      $lightgray   $purple $darkgray
 client.unfocused        $darkgray     $darkgray      $lightgray   $purple $darkgray
 client.urgent           $red          $red           $white       $red    $red
