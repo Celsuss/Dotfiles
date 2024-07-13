@@ -183,20 +183,20 @@ set $wallpaper ~/Pictures/wallpapers/gruvbox_astro.jpg
 ##########
 
 # Default
-set $bg #282828
-set $red #cc241d
-set $green #98971a
-set $yellow #d79921
-set $blue #458588
-set $purple #b16286
-set $aqua #689d68
-set $gray #3c3836
-set $darkgray #1d2021
-set $lightgray #bdae93
+set $bg #28282899
+set $red #cc241d99
+set $green #98971a99
+set $yellow #d7992199
+set $blue #45858899
+set $purple #b1628699
+set $aqua #689d6899
+set $gray #3c383699
+set $darkgray #1d202199
+set $lightgray #bdae9399
 
 # window colors
 # class                 border|background|text|indicator|child_border
-client.focused          $gray         $gray          $yellow   $purple $darkgray
+client.focused          $gray         $gray          $yellow      $purple $darkgray
 client.focused_inactive $darkgray     $darkgray      $lightgray   $purple $darkgray
 client.unfocused        $darkgray     $darkgray      $lightgray   $purple $darkgray
 client.urgent           $red          $red           $white       $red    $red
