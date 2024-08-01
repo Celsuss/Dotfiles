@@ -1,0 +1,20 @@
+---
+applications:
+  - i3
+  - i3lock
+  - i3status
+  - compton
+  - fonts-font-awesome
+  - feh
+  - vlc
+  - git
+  - fastfetch
+  - btop
+  - cava
+  - fzf
+
+arch_applications:
+  - fastfetch
+
+debian_applications:
+  - neofetch

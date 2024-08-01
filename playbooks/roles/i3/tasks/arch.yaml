@@ -1,0 +1,5 @@
+---
+- name: Install i3
+  become: true
+  community.general.pacman:
+    name: "{{ applications }}"

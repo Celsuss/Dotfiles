@@ -1,73 +1,86 @@
 ---
-- name: I3 wm playbook
+- name: i3 wm playbook linux
   hosts: localhost
   tasks:
-    - name: Apt update and upgrade
-      become: true
-      ansible.builtin.apt:
-        update_cache: true
-        upgrade: "yes"
+    # - name: Apt update and upgrade
+    #   become: true
+    #   when: ansible_facts['os_family']|lower == 'debian'
+    #   ansible.builtin.apt:
+    #     update_cache: true
+    #     upgrade: "yes"
 
-    # i3
-    - name: Install i3
-      become: true
-      tags:
-        - i3
-      ansible.builtin.apt:
-        name:
-          - i3
-          - i3lock
-          - i3status
-          - compton
-          - fonts-font-awesome
-          - feh
-          - cava
-          - fzf
-          - btop
-          - neofetch
+    # - name: Install i3
+    #   become: true
+    #   when: ansible_facts['os_family']|lower == 'debian'
+    #   tags:
+    #     - i3
+    #   ansible.builtin.apt:
+    #     name:
+    #       - i3
+    #       - i3lock
+    #       - i3status
+    #       - compton
+    #       - fonts-font-awesome
+    #       - feh
+    #       - cava
+    #       - fzf
+    #       - btop
+    #       - neofetch
 
-    - name: Copy i3 config files
-      ansible.builtin.copy:
-        src: ../i3/config
-        dest: ~/.config/i3/config
-        mode: u=rwx,g=r,o=r
+    # - name: Install pacman packages
+    #   when: ansible_facts['os_family']|lower == 'arch'
+    #   community.general.pacman:
+    #     name:
+    #       - vlc
+    #       - brave
+    #       - alacritty
+    #       - feh
+    #       - btop
+    #       - fastfetch
+    #       - cava
+
+    # - name: Copy i3 config files
+    #   ansible.builtin.copy:
+    #     src: ../i3/config
+    #     dest: ~/.config/i3/config
+    #     mode: u=rwx,g=r,o=r
 
     # polybar
-    - name: Install polybar
-      become: true
-      ansible.builtin.apt:
-        name:
-          - polybar
-      register: polybar_result
-      ignore_errors: true
+    # - name: Install polybar
+    #   become: true
+    #   ansible.builtin.apt:
+    #     name:
+    #       - polybar
+    #   register: polybar_result
+    #   ignore_errors: true
 
-    - name: Create a directory for polybar if it does not exist
-      when: polybar_result is succeeded
-      ansible.builtin.file:
-        path: ~/.config/polybar
-        state: directory
-        mode: "0600"
+    # - name: Create a directory for polybar if it does not exist
+    #   when: polybar_result is succeeded
+    #   ansible.builtin.file:
+    #     path: ~/.config/polybar
+    #     state: directory
+    #     mode: "0600"
 
-    - name: Copy polybar config file
-      when: polybar_result is succeeded
-      ansible.builtin.copy:
-        src: ../polybar/config
-        dest: ~/.config/polybar/config
-        mode: u=rwx,g=r,o=r
+    # - name: Copy polybar config file
+    #   when: polybar_result is succeeded
+    #   ansible.builtin.copy:
+    #     src: ../polybar/config
+    #     dest: ~/.config/polybar/config
+    #     mode: u=rwx,g=r,o=r
 
-    - name: Copy polybar launch script
-      when: polybar_result is succeeded
-      ansible.builtin.copy:
-        src: ../polybar/launch.sh
-        dest: ~/.config/polybar/launch.sh
-        mode: u=rwx,g=r,o=r
+    # - name: Copy polybar launch script
+    #   when: polybar_result is succeeded
+    #   ansible.builtin.copy:
+    #     src: ../polybar/launch.sh
+    #     dest: ~/.config/polybar/launch.sh
+    #     mode: u=rwx,g=r,o=r
 
-    - name: Setup spotify status for polybar
-      when: polybar_result is succeeded
-      ansible.builtin.copy:
-        src: ../polybar/spotify_status.py
-        dest: ~/.config/polybar/spotify_status.py
-        mode: u=rwx,g=r,o=r
+    # - name: Setup spotify status for polybar
+    #   when: polybar_result is succeeded
+    #   ansible.builtin.copy:
+    #     src: ../polybar/spotify_status.py
+    #     dest: ~/.config/polybar/spotify_status.py
+    #     mode: u=rwx,g=r,o=r
 
     # Rofi
     - name: Install rofi
