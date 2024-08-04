@@ -7,6 +7,7 @@
       - -v
       - cargo
   register: cargo_exists
+  changed_when: false
   ignore_errors: true
 
 - name: Download Installer
@@ -25,6 +26,8 @@
     argv:
       - /tmp/sh.rustup.rs
       - -y
+  register: cargo_output
+  changed_when: cargo_output.rc != 0
   tags:
     - rust
 
@@ -36,6 +39,7 @@
       - -v
       - brew
   register: brew_exists
+  changed_when: false
   ignore_errors: true
 
 - name: Download homebrew installer
@@ -51,9 +55,11 @@
 
 - name: Install homebrew
   when: brew_exists is failed
-  ansible.builtin.shell:
+  ansible.builtin.command:
     argv:
       - /tmp/install.sh
       - -y # TODO is -y needed?
+  register: brew_output
+  changed_when: brew_output.rc != 0
   tags:
     - homebrew
