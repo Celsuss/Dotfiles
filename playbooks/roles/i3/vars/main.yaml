@@ -1,5 +1,5 @@
 ---
-applications:
+i3_applications:
   - i3
   - i3lock
   - i3status
@@ -13,8 +13,8 @@ applications:
   - cava
   - fzf
 
-arch_applications:
+i3_arch_applications:
   - fastfetch
 
-debian_applications:
+i3_debian_applications:
   - neofetch

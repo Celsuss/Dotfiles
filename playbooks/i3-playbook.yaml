@@ -1,6 +1,9 @@
 ---
-- name: i3 wm playbook linux
+- name: I3 wm playbook linux
   hosts: localhost
+  roles:
+    - i3
+    - rofi
   tasks:
     # - name: Apt update and upgrade
     #   become: true
@@ -83,50 +86,50 @@
     #     mode: u=rwx,g=r,o=r
 
     # Rofi
-    - name: Install rofi
-      become: true
-      tags:
-        - rofi
-      ansible.builtin.apt:
-        name:
-          - rofi
-        state: present
-      register: rofi_result
-      ignore_errors: true
+    # - name: Install rofi
+    #   become: true
+    #   tags:
+    #     - rofi
+    #   ansible.builtin.apt:
+    #     name:
+    #       - rofi
+    #     state: present
+    #   register: rofi_result
+    #   ignore_errors: true
 
-    - name: Create a directory for rofi if it does not exist
-      when: polybar_result is succeeded
-      ansible.builtin.file:
-        path: ~/.config/rofi
-        state: directory
-        mode: "0600"
+    # - name: Create a directory for rofi if it does not exist
+    #   when: rofi_result is succeeded
+    #   ansible.builtin.file:
+    #     path: ~/.config/rofi
+    #     state: directory
+    #     mode: "0600"
 
-    - name: Copy rofi config file
-      when: rofi_result is succeeded
-      tags:
-        - rofi
-      ansible.builtin.copy:
-        src: ../rofi/config.rasi
-        dest: ~/.config/rofi/config.rasi
-        mode: "0600"
+    # - name: Copy rofi config file
+    #   when: rofi_result is succeeded
+    #   tags:
+    #     - rofi
+    #   ansible.builtin.copy:
+    #     src: ../rofi/config.rasi
+    #     dest: ~/.config/rofi/config.rasi
+    #     mode: "0600"
 
-    - name: Copy gruvbox common
-      when: rofi_result is succeeded
-      tags:
-        - rofi
-      ansible.builtin.copy:
-        src: ../rofi/gruvbox-common.rasinc
-        dest: ~/.config/rofi/gruvbox-common.rasi
-        mode: "0600"
+    # - name: Copy gruvbox common
+    #   when: rofi_result is succeeded
+    #   tags:
+    #     - rofi
+    #   ansible.builtin.copy:
+    #     src: ../rofi/gruvbox-common.rasinc
+    #     dest: ~/.config/rofi/gruvbox-common.rasi
+    #     mode: "0600"
 
-    - name: Copy rofi gruvbox material theme
-      when: rofi_result is succeeded
-      tags:
-        - rofi
-      ansible.builtin.copy:
-        src: ../rofi/gruvbox-material_theme.rasi
-        dest: ~/.config/rofi/gruvbox-material_theme.rasi
-        mode: "0600"
+    # - name: Copy rofi gruvbox material theme
+    #   when: rofi_result is succeeded
+    #   tags:
+    #     - rofi
+    #   ansible.builtin.copy:
+    #     src: ../rofi/gruvbox-material_theme.rasi
+    #     dest: ~/.config/rofi/gruvbox-material_theme.rasi
+    #     mode: "0600"
 
     # Alacritty terminal emulator
     - name: Install Alacritty dependencies

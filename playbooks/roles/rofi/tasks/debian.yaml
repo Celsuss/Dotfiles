@@ -1,0 +1,9 @@
+---
+- name: Install rofi
+  become: true
+  tags:
+    - rofi
+  ansible.builtin.apt:
+    name:
+      - rofi
+    state: present
