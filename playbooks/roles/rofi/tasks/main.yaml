@@ -11,7 +11,7 @@
   ansible.builtin.file:
     path: ~/.config/rofi
     state: directory
-    mode: "0600"
+    mode: "0755"
 
 - name: Copy rofi config file
   tags:

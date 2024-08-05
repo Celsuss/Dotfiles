@@ -1,7 +1,7 @@
 ---
 - name: Install zsh
   become: true
-  ansible.builtin.apt:
+  community.general.pacman:
     name:
       - zsh
     state: present

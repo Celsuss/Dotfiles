@@ -18,6 +18,7 @@
           - build-essential
         state: present
   roles:
+    - package_managers
     - zsh
     # - emacs
     - go
