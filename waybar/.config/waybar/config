@@ -18,11 +18,13 @@
          "all-outputs": true,
          "format": "{name}: {icon}",
          "format-icons": {
-             "1": "",
+             "1": "󰣇",
              "2": "",
-             "3": "",
-             "4": "",
-             "5": "",
+             "3": "",
+             "4": "",
+             "8": "",
+             "9": "",
+             "10": "",
              "urgent": "",
              "active": "",
              "default": ""
@@ -89,7 +91,7 @@
         // "timezone": "America/New_York",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         // "format-alt": "{:%I:%M:%S}",
-        "format": "{:%Y-%m-%d %I:%M}",
+        "format": "{:%Y-%m-%d %H:%M}",
         "interval": 60
     },
     "cpu": {
