@@ -6,5 +6,7 @@ One setup is using i3 running on X and the other is hyprland running on Wayland.
 The hyprland setup is my current setup.
 
 
-![Hyprland screenshot](blob:https://drive.proton.me/735402ce-6961-477e-b971-c0c56974584b)
+![Hyprland screenshot](https://i.imghippo.com/files/HAGx8223pzI.png)
 
+
+![Hyprland screenshot wallpaper](https://i.imghippo.com/files/WZ9348xLQ.png)
