@@ -23,15 +23,15 @@
     # - emacs
     - go
 
-- name: Development environment playbook arch
-  hosts: localhost
-  tasks:
-    - name: Install pacman packages
-      community.general.pacman:
-        name:
-          - unrar
-          - tar
-          - libreoffice
-          - git
-          - docker
-        state: present
+# - name: Development environment playbook arch
+#   hosts: localhost
+#   tasks:
+#     - name: Install pacman packages
+#       community.general.pacman:
+#         name:
+#           - unrar
+#           - tar
+#           - libreoffice
+#           - git
+#           - docker
+#         state: present
