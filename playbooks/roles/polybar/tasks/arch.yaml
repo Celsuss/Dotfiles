@@ -1,6 +1,6 @@
 ---
-- name: Install polybar
-  become: true
+# - name: Install polybar
+#   become: true
   # community.general.pacman:
   #   name:
   #     - polybar
