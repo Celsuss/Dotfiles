@@ -1,0 +1,21 @@
+---
+- name: Check if go is already installed
+  ansible.builtin.stat:
+    path: /usr/local/go
+  register: register_name
+
+- name: Exit if go is already installed
+  ansible.builtin.meta: end_play
+  when: register_name.stat.exists
+
+- name: Download and unzip go
+  become: true
+  ansible.builtin.unarchive:
+    src: https://go.dev/dl/go1.22.0.linux-amd64.tar.gz
+    dest: /usr/local
+    remote_src: true
+
+- name: Export go environment variable
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    line: PATH=$PATH:/usr/local/go/bin

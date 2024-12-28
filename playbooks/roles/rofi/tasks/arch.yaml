@@ -1,0 +1,5 @@
+---
+# - name: Install rofi
+#   become: true
+  # community.general.pacman:
+  #   name: rofi

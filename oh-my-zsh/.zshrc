@@ -1,4 +1,4 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -77,11 +77,46 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(
+    git
+    vi-mode
+    fzf
+    ssh-agent
+    ssh
+    rust
+    pyenv
+    pylint
+    pip
+    minikube
+    kubectl
+    keychain
+    helm
+    gpg-agent
+    emacs
+    docker
+    docker-compose
+)
+
+# fzf
+export FZF_BASE=/usr/bin/fzf
+DISABLE_FZF_AUTO_COMPLETION="true"
+DISABLE_FZF_KEY_BINDINGS="true"
+
+# ssh-agent
+zstyle :omz:plugins:ssh-agent agent-forwarding yes
+zstyle :omz:plugins:ssh-agent helper ksshaskpass
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
+
+# VI-MODE
+VI_MODE_SET_CURSOR=true
+MODE_INDICATOR="%F{white}+%f"
+INSERT_MODE_INDICATOR="%F{yellow}+%f"
+# Fix keybinding conflict
+zvm_after_init_commands+=('[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh')
+
 
 # export MANPATH="/usr/local/man:$MANPATH"
 

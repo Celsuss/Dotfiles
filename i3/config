@@ -42,7 +42,8 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+# TODO Update terminal
+bindsym $mod+Return exec alacritty
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -55,10 +56,10 @@ bindsym $mod+Shift+q kill
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
 # change focus
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+l focus up
-bindsym $mod+odiaeresis focus right
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -67,10 +68,10 @@ bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
 # move focused window
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+odiaeresis move right
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -79,7 +80,8 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+h split h
+# bindsym $mod+h split h
+bindsym $mod+n split h
 
 # split in vertical orientation
 bindsym $mod+v split v
@@ -181,20 +183,20 @@ set $wallpaper ~/Pictures/wallpapers/gruvbox_astro.jpg
 ##########
 
 # Default
-set $bg #282828
-set $red #cc241d
-set $green #98971a
-set $yellow #d79921
-set $blue #458588
-set $purple #b16286
-set $aqua #689d68
-set $gray #3c3836
-set $darkgray #1d2021
-set $lightgray #bdae93
+set $bg #28282899
+set $red #cc241d99
+set $green #98971a99
+set $yellow #d7992199
+set $blue #45858899
+set $purple #b1628699
+set $aqua #689d6899
+set $gray #3c383699
+set $darkgray #1d202199
+set $lightgray #bdae9399
 
 # window colors
 # class                 border|background|text|indicator|child_border
-client.focused          $gray         $gray          $lightgray          $purple $darkgray
+client.focused          $gray         $gray          $yellow      $purple $darkgray
 client.focused_inactive $darkgray     $darkgray      $lightgray   $purple $darkgray
 client.unfocused        $darkgray     $darkgray      $lightgray   $purple $darkgray
 client.urgent           $red          $red           $white       $red    $red
@@ -209,10 +211,10 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym odiaeresis resize grow width 10 px or 10 ppt
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
@@ -256,7 +258,10 @@ exec_always feh --bg-scale $wallpaper
 # Autostart #
 #############
 
-exec compton -f
+# exec compton -f
+exec compton --config ~/.config/i3/compton.conf
+# exec compton -b --config ~/.config/i3/compton.conf
+
 exec spotify
 #exec steam
 

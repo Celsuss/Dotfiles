@@ -1,0 +1,35 @@
+---
+- name: Install zsh in Debian
+  ansible.builtin.import_tasks: debian.yaml
+  when: ansible_facts['os_family']|lower == 'debian'
+
+- name: Install zsh in Arch
+  ansible.builtin.import_tasks: arch.yaml
+  when: ansible_facts['os_family']|lower == 'arch'
+
+- name: Install oh-my-zsh
+  become: true
+  ansible.builtin.shell:
+    cmd: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  register: output
+  changed_when: output.rc != 0
+
+- name: Download oh-my-zsh theme
+  ansible.builtin.git:
+    repo: https://github.com/romkatv/powerlevel10k.git
+    clone: true
+    dest: ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+    depth: 1
+    version: 0cc19ac # TODO Move to variables
+
+- name: Copy oh-my-zsh dotfile
+  ansible.builtin.copy:
+    src: ../oh-my-zsh/.zshrc
+    dest: ~/.zshrc
+    mode: "0600"
+
+# - name: Restart zsh
+#   become: true
+#   ansible.builtin.command: source .zshrc
+#   register: output
+#   changed_when: output.rc != 0
