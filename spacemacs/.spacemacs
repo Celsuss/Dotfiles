@@ -82,13 +82,16 @@ This function should only modify configuration layer settings."
      emacs-lisp
      (python :variables
              python-backend 'lsp
-             python-formatter 'lsp
-             python-format-on-save t)
+             python-formatter 'yapf ;; black, yapf or lsp
+             python-format-on-save t
+             python-sort-imports-on-save t
+             python-test-runner 'pytest)
      (ipython-notebook :variables
                        ein-backend 'lsp
                        python-formatter 'lsp
                        python-sort-imports-on-save t
-                       python-format-on-save t)
+                       python-format-on-save t
+                       )
      (rust :variables
            rust-backend 'lsp
            lsp-rust-analyzer-cargo-auto-reload t
