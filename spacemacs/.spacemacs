@@ -140,7 +140,8 @@ This function should only modify configuration layer settings."
      ;; LLMs
      (llm-client :variables
                  llm-client-enable-gptel t
-                 llm-client-enable-ellama t)
+                 llm-client-enable-ellama t
+                 llm-client-preferred-backends '(ollama))
 
      ;; Other
      (tree-sitter :variables
@@ -737,6 +738,7 @@ before packages are loaded."
     :custom (gdscript-eglot-version 3))
   (setq gdscript-godot-executable "/usr/local/bin/godot-engine")
 
+  ;;;; LLMs
   ;; aidermacs
   (use-package aidermacs
     ;; :bind (("C-c a" . aidermacs-transient-menu))
@@ -751,6 +753,14 @@ before packages are loaded."
     (aidermacs-use-architect-mode t)
     (aidermacs-default-model "ollama/deepseek-r1:14b"))
   (setq aidermacs-program (expand-file-name "~/.local/bin/aider"))
+
+  (setq
+   gptel-model 'deepseek-r1:14b
+   gptel-format 'org
+   gptel-backend (gptel-make-ollama "Ollama"
+                   :host "localhost:11434"
+                   :stream t
+                   :models '(deepseek-r1:14b)))
 
   ;; Codeium
   ;; Install package with: git clone --depth 1 https://github.com/Exafunction/codeium.el ~/.emacs.d/private/codeium.el
@@ -828,6 +838,7 @@ before packages are loaded."
 
   ;; set default theme
   (setq-default dotspacemacs-themes '(gruvbox-dark-medium))
+
 
   ;; Line numbers
   (set-face-attribute 'line-number nil :background nil) ;; nil
