@@ -48,9 +48,11 @@ This function should only modify configuration layer settings."
           org-enable-roam-ui t
           org-mesenable-roam-protocol t
           org-enable-hugo-support t
-
-
+          org-enable-org-contacts-support t   ;; Contact support
+          org-enable-appear-support t         ;; It toggles visibility of some markers
           org-enable-github-support t
+
+          org-hide-emphasis-markers t
 
           ;; Agenda notifications
           org-enable-notifications t
@@ -59,7 +61,12 @@ This function should only modify configuration layer settings."
           )
 
      ;; Typing related
-     auto-completion
+     (auto-completion :variables
+                      auto-completion-enable-help-tooltip t
+                      auto-completion-return-key-behavior 'complete ;; complete or nil
+                      auto-completion-tab-key-behavior 'cycle       ;; complete, cycle, or nil
+                      auto-completion-enable-sort-by-usage t
+                      )
      (spell-checking :variables
                      spell-checking-enable-auto-dictionary t
                      =enable-flyspell-auto-completion= t
@@ -101,7 +108,7 @@ This function should only modify configuration layer settings."
             c-c++-enable-organize-includes-on-save t
             c-c++-default-mode-for-headers 'c++-mode
             c-c++-lsp-enable-semantic-highlight 'rainbow
-            c-c++-dap-adapters '(dap-lldb dap-cpptools)
+            c-c++-dap-adapters '(dap-lldb dap-cpptools dap-gdb)
             c-c++-enable-clang-format-on-save t
             c-c++-backend 'lsp-clangd)
      (cmake :variables
@@ -812,20 +819,20 @@ before packages are loaded."
   ;;   )
 
   ;; Company mode
-  (use-package company
-    :defer 0.1
-    :config
-    (global-company-mode t)
-    (setq-default
-     company-idle-delay 0.05
-     company-require-match nil
-     company-minimum-prefix-length 0
+  ;; (use-package company
+  ;;   :defer 0.1
+  ;;   :config
+  ;;   (global-company-mode t)
+  ;;   (setq-default
+  ;;    company-idle-delay 0.05
+  ;;    company-require-match nil
+  ;;    company-minimum-prefix-length 0
 
-     ;; get only preview
-     company-frontends '(company-preview-frontend)
-     ;; also get a drop down
-     ;; company-frontends '(company-pseudo-tooltip-frontend company-preview-frontend)
-     ))
+  ;;    ;; get only preview
+  ;;    company-frontends '(company-preview-frontend)
+  ;;    ;; also get a drop down
+  ;;    ;; company-frontends '(company-pseudo-tooltip-frontend company-preview-frontend)
+  ;;    ))
 
   ;; Fix for helm-descbinds-mode breaking emacs-which-key
   (helm-descbinds-mode 0)
@@ -1474,33 +1481,37 @@ This function is called at the very end of Spacemacs initialization."
                  evil-textobj-line evil-tutor evil-unimpaired
                  evil-visual-mark-mode evil-visualstar expand-region eyebrowse
                  fancy-battery flx-ido flycheck-elsa flycheck-package
-                 flycheck-pos-tip flycheck-rust font-lock+ fringe-helper fuzzy
-                 ggtags gh-md gntp gnuplot golden-ratio google-translate
-                 gruvbox-theme helm-ag helm-c-yasnippet helm-company
-                 helm-descbinds helm-gtags helm-lsp helm-make helm-mode-manager
-                 helm-org helm-org-rifle helm-projectile helm-purpose helm-swoop
-                 helm-themes helm-xref help-fns+ hide-comnt highlight-indentation
-                 highlight-numbers highlight-parentheses hl-todo holy-mode htmlize
-                 hungry-delete hybrid-mode indent-guide info+ inspector ivy
-                 link-hint log4e lorem-ipsum lsp-docker lsp-mode lsp-origami
-                 lsp-treemacs lsp-ui macrostep map markdown-mode markdown-toc
-                 mmm-mode multi-line multi-term multi-vterm mwim nameless neotree
-                 nhich-key open-junk-file org org-category-capture org-cliplink
-                 org-contrib org-download org-mime org-pomodoro org-present
-                 org-projectile org-ql org-rich-yank org-roam org-roam-ui
-                 org-sidebar org-super-agenda org-superstar orgit orgit-forge
-                 origami ov overseer ox-hugo paradox password-generator pcre2el
-                 peg pfuture popwin pos-tip project quickrun racer
-                 rainbow-delimiters request restart-emacs rich-minority ron-mode
-                 rust-mode shell-pop shrink-path smart-mode-line space-doc
-                 spaceline-all-the-icons spacemacs-purpose-popwin
-                 spacemacs-whitespace-cleanup string-edit-at-point
-                 string-inflection swiper symbol-overlay symon term-cursor
-                 terminal-here toc-org toml-mode treemacs treemacs-icons-dired
-                 treemacs-persp treemacs-projectile ts ts-fold undo-tree unfill
-                 use-package uuidgen valign vi-tilde-fringe vim-powerline vmd-mode
-                 volatile-highlights vterm winum writeroom-mode ws-butler xref
-                 xterm-color yasnippet yasnippet-snippets)))
+                 flycheck-pos-tip flycheck-rust font-lock+ fuzzy ggtags gh-md gntp
+                 gnuplot golden-ratio google-translate gruvbox-theme helm-ag
+                 helm-c-yasnippet helm-company helm-descbinds helm-gtags helm-lsp
+                 helm-make helm-mode-manager helm-org helm-org-rifle
+                 helm-projectile helm-purpose helm-swoop helm-themes helm-xref
+                 help-fns+ hide-comnt highlight-indentation highlight-numbers
+                 highlight-parentheses hl-todo holy-mode htmlize hungry-delete
+                 hybrid-mode indent-guide info+ inspector ivy link-hint log4e
+                 lorem-ipsum lsp-docker lsp-mode lsp-origami lsp-treemacs lsp-ui
+                 macrostep map markdown-mode markdown-toc mmm-mode multi-line
+                 multi-term multi-vterm mwim nameless neotree nhich-key
+                 open-junk-file org org-appear org-category-capture org-cliplink
+                 org-contacts org-contrib org-download org-mime org-pomodoro
+                 org-present org-projectile org-ql org-rich-yank org-roam
+                 org-roam-ui org-sidebar org-super-agenda org-superstar org-vcard
+                 orgit orgit-forge origami ov overseer ox-hugo paradox
+                 password-generator pcre2el peg pfuture popwin pos-tip project
+                 quickrun racer rainbow-delimiters request restart-emacs
+                 rich-minority ron-mode rust-mode shell-pop shrink-path
+                 smart-mode-line space-doc spaceline-all-the-icons
+                 spacemacs-purpose-popwin spacemacs-whitespace-cleanup
+                 string-edit-at-point string-inflection swiper symbol-overlay
+                 symon term-cursor terminal-here toc-org toml-mode treemacs
+                 treemacs-icons-dired treemacs-persp treemacs-projectile ts
+                 undo-tree unfill use-package uuidgen valign vi-tilde-fringe
+                 vim-powerline vmd-mode volatile-highlights vterm winum
+                 writeroom-mode ws-butler xref xterm-color yasnippet
+                 yasnippet-snippets))
+   '(safe-local-variable-values
+     '((helm-make-build-dir . "build/") (javascript-backend . tide)
+       (javascript-backend . tern) (javascript-backend . lsp))))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
