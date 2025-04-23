@@ -48,11 +48,17 @@ This function should only modify configuration layer settings."
           org-enable-roam-ui t
           org-mesenable-roam-protocol t
           org-enable-hugo-support t
-          org-enable-org-contacts-support t   ;; Contact support
-          org-enable-appear-support t         ;; It toggles visibility of some markers
           org-enable-github-support t
 
+          ;; Org contact
+          org-enable-org-contacts-support t   ;; Contact support
+          org-contacts-files '("~/workspace/second-brain/org-roam/20250422172405-contacts.org")
+
+
+          ;; Visual
+          org-enable-appear-support t         ;; It toggles visibility of some markers
           org-hide-emphasis-markers t
+          org-enable-modern-support t
 
           ;; Agenda notifications
           org-enable-notifications t
@@ -883,7 +889,7 @@ before packages are loaded."
 
   ;; Org super agenda
   (setq org-agenda-custom-commands
-        '(("t" "Todo view"
+        '(("T" "Todo view"
            ((agenda "" ((org-agenda-span 'day)
                         (org-super-agenda-groups
                          '((:name "Today"
@@ -1492,23 +1498,22 @@ This function is called at the very end of Spacemacs initialization."
                  lorem-ipsum lsp-docker lsp-mode lsp-origami lsp-treemacs lsp-ui
                  macrostep map markdown-mode markdown-toc mmm-mode multi-line
                  multi-term multi-vterm mwim nameless neotree nhich-key
-                 open-junk-file org org-appear org-category-capture org-cliplink
-                 org-contacts org-contrib org-download org-mime org-pomodoro
-                 org-present org-projectile org-ql org-rich-yank org-roam
-                 org-roam-ui org-sidebar org-super-agenda org-superstar org-vcard
-                 orgit orgit-forge origami ov overseer ox-hugo paradox
-                 password-generator pcre2el peg pfuture popwin pos-tip project
-                 quickrun racer rainbow-delimiters request restart-emacs
-                 rich-minority ron-mode rust-mode shell-pop shrink-path
-                 smart-mode-line space-doc spaceline-all-the-icons
-                 spacemacs-purpose-popwin spacemacs-whitespace-cleanup
-                 string-edit-at-point string-inflection swiper symbol-overlay
-                 symon term-cursor terminal-here toc-org toml-mode treemacs
-                 treemacs-icons-dired treemacs-persp treemacs-projectile ts
-                 undo-tree unfill use-package uuidgen valign vi-tilde-fringe
-                 vim-powerline vmd-mode volatile-highlights vterm winum
-                 writeroom-mode ws-butler xref xterm-color yasnippet
-                 yasnippet-snippets))
+                 open-junk-file org org-category-capture org-cliplink org-contrib
+                 org-download org-mime org-modern org-pomodoro org-present
+                 org-projectile org-ql org-rich-yank org-roam org-roam-ui
+                 org-sidebar org-super-agenda org-superstar orgit orgit-forge
+                 origami ov overseer ox-hugo paradox password-generator pcre2el
+                 peg pfuture popwin pos-tip project quickrun racer
+                 rainbow-delimiters request restart-emacs rich-minority ron-mode
+                 rust-mode shell-pop shrink-path smart-mode-line space-doc
+                 spaceline-all-the-icons spacemacs-purpose-popwin
+                 spacemacs-whitespace-cleanup string-edit-at-point
+                 string-inflection swiper symbol-overlay symon term-cursor
+                 terminal-here toc-org toml-mode treemacs treemacs-icons-dired
+                 treemacs-persp treemacs-projectile ts undo-tree unfill
+                 use-package uuidgen valign vi-tilde-fringe vim-powerline vmd-mode
+                 volatile-highlights vterm winum writeroom-mode ws-butler xref
+                 xterm-color yasnippet yasnippet-snippets))
    '(safe-local-variable-values
      '((helm-make-build-dir . "build/") (javascript-backend . tide)
        (javascript-backend . tern) (javascript-backend . lsp))))
