@@ -3,6 +3,8 @@
 ** Blogs                                                               :blog:
 *** Planet emacslife                                                  :emacs:
 **** https://planet.emacslife.com/atom.xml
+*** Noted homelab                                                   :homelab:
+**** https://noted.lol/rss
 ** Software Development                                                 :dev:
 *** Schemescape                                                  :scemescape:
 **** https://log.schemescape.com/feed.xml

@@ -245,7 +245,7 @@ bindsym $mod+ctrl+l exec i3lock -c 000000 -i $wallpaper
 # TODO Try out i3-lock fancy: https://github.com/meskarune/i3lock-fancy?tab=readme-ov-file
 
 # Key and mouse bindings
-exec_always xmodmap -e "pointer = 3 2 1 "
+exec_always xmodmap -e "pointer = 1 2 3 "
 
 # Monitors
 # exec_always --no-startup-id xrandr --output HDMI-1-0 --primary --right-of eDP-1 --output eDP-1 --mode 1920x1080
