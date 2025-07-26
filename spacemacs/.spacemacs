@@ -150,6 +150,13 @@ This function should only modify configuration layer settings."
              rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org")
              )
 
+     ;; IRC
+     (rcirc :variables
+            rcirc-enable-authinfo-support t
+            rcirc-enable-erc-image t
+            rcirc-enable-styles t
+            )
+
      ;; LLMs
      (llm-client :variables
                  llm-client-enable-gptel t
@@ -852,6 +859,20 @@ before packages are loaded."
   ;; set default theme
   (setq-default dotspacemacs-themes '(gruvbox-dark-medium))
 
+  ;;;;;;;; IRC
+  (setq rcirc-server-alist
+        '(("irc.libera.chat"
+           :user-name "celsuss"
+           :port 6697
+           :encryption tls
+           :channels ("#emacs" "#spacemacs" "##llamas" "#archlinux"))
+          ("stockholm.se.quakenet.org"
+           :user-name "Celsuss"
+           :port 6667
+           ;; :port 6697
+           ;; :encryption tls
+           :channels ("#sweclockers" "#stockholm"))))
+  ;;;;;;;;
 
   ;; Line numbers
   (set-face-attribute 'line-number nil :background nil) ;; nil
@@ -1499,12 +1520,12 @@ This function is called at the very end of Spacemacs initialization."
                  macrostep map markdown-mode markdown-toc mmm-mode multi-line
                  multi-term multi-vterm mwim nameless neotree nhich-key
                  open-junk-file org org-category-capture org-cliplink org-contrib
-                 org-download org-mime org-modern org-pomodoro org-present
-                 org-projectile org-ql org-rich-yank org-roam org-roam-ui
-                 org-sidebar org-super-agenda org-superstar orgit orgit-forge
-                 origami ov overseer ox-hugo paradox password-generator pcre2el
-                 peg pfuture popwin pos-tip project quickrun racer
-                 rainbow-delimiters request restart-emacs rich-minority ron-mode
+                 org-download org-mime org-pomodoro org-present org-projectile
+                 org-ql org-rich-yank org-roam org-roam-ui org-sidebar
+                 org-super-agenda org-superstar orgit orgit-forge origami ov
+                 overseer ox-hugo paradox password-generator pcre2el peg pfuture
+                 popwin pos-tip project quickrun racer rainbow-delimiters
+                 rcirc-styles request restart-emacs rich-minority ron-mode
                  rust-mode shell-pop shrink-path smart-mode-line space-doc
                  spaceline-all-the-icons spacemacs-purpose-popwin
                  spacemacs-whitespace-cleanup string-edit-at-point
