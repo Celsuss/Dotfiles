@@ -918,30 +918,44 @@ before packages are loaded."
     (org-super-agenda-mode)
 
     (setq org-agenda-custom-commands
-          '(("d" "Dashboard" ((agenda ""
-                                      ((org-super-agenda-groups
-                                        ;; This uses the main "Action Dashboard" configuration defined earlier
-                                        '((:name "🔥 Overdue" :deadline past :face 'error :order 1)
-                                          (:name "🎯 Today" :scheduled today :time-grid t :deadline today :order 2)
-                                          (:name "❗ Important" :priority "A" :order 3)
-                                          (:name "🏢 Work" :tag "work" :order 11)
-                                          ))))
-                              (todo ""
-                                    ((org-super-agenda-groups
-                                      '(
-                                        (:name "🔧 Emacs" :tag "emacs"  :order 1)
-                                        (:name "🔬 Dotfiles" :tag "dotfiles" :order 2)
-                                        (:name "🔬 Home Lab" :tag "homelab" :order 3)
-                                        (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
-                                        ))))))
+          '(("d" "Dashboard"
+             ((agenda ""
+                      ((org-super-agenda-groups
+                        ;; This uses the main "Action Dashboard" configuration defined earlier
+                        '((:name "🔥 Overdue" :deadline past :face 'error :order 1)
+                          (:name "🎯 Today" :scheduled today :time-grid t :deadline today :order 2)
+                          (:name "❗ Important" :priority "A" :order 3)
+                          (:name "🔧 Emacs" :tag "emacs"  :order 6)
+                          (:name "🔬 Dotfiles" :tag "dotfiles" :order 7)
+                          (:name "🔬 Home Lab" :tag "homelab" :order 8)
+                          (:name "🔬 Blog Posts" :tag "blog" :order 9)
+                          (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
+                          (:name "🏢 Work" :tag "work" :order 11)
+                          ))))
+              (todo ""
+                    ((org-super-agenda-groups
+                      '(
+                        (:name "🔧 Emacs" :tag "emacs"  :order 1)
+                        (:name "🔬 Dotfiles" :tag "dotfiles" :order 2)
+                        (:name "🔬 Home Lab" :tag "homelab" :order 3)
+                        (:name "🔬 Blog Post" :tag "homelab" :order 3)
+                        (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
+                        ))))))
 
-            ("w" "Work Focus" agenda ""
-             ((org-super-agenda-groups
-               ;; A custom configuration that ONLY shows work-related items
-               '((:name "🔥 Overdue Work" :and (:tag "work" :deadline past) :face 'error :order 1)
-                 (:name "🎯 Today's Work" :and (:tag "work" :scheduled today) :order 2)
-                 (:name "🚀 Work Projects" :and (:tag "work" :auto-property "PROJECT") :order 3)
-                 (:name "🏢 All Work Tasks" :tag "work" :order 4)))))))
+            ("w" "Work Focus"
+             ((tags-todo "work"
+                         ((org-agenda-overriding-header "✅ Work Tasks")
+                          (org-super-agenda-groups
+                           '(
+                             (:name "🔥 Overdue" :deadline past :face error :order 1)
+                             (:name "🎯 Today" :time-grid t :scheduled today :deadline today :order 2)
+                             (:name "Due Today" :deadline today :order 3)
+                             (:name "Due Soon" :deadline future :order 4)
+                             (:name "❗ Important" :priority "A" :order 5)
+                             ;; Catch-all for any other work tasks
+                             (:name "🚀 Other Projects & Tasks" :order 99)
+                             ))))))
+            ))
 
 
     ;; To add all org files in a repository to the agenda
@@ -951,17 +965,20 @@ before packages are loaded."
 
     (setq org-capture-templates
           '(
-            ("t" "Task" entry (file "~/workspace/second-brain/org-roam/todo.org")
-             "* TODO %?\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+            ("t" "TODO" entry (file "~/workspace/second-brain/org-roam/todo.org")
+             "** TODO %?\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
 
             ("w" "Work Task" entry (file "~/workspace/second-brain/org-roam/work_tasks.org")
-             "* TODO %? :work:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+             "** TODO %? :work:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
 
             ("h" "Home Lab Task" entry (file "~/workspace/second-brain/org-roam/homelab_tasks.org")
-             "* TODO %? :homelab:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+             "** TODO %? :homelab:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
 
             ("e" "Emacs Tweak" entry (file "~/workspace/second-brain/org-roam/emacs_tweak_tasks.org")
-             "* TODO %? :emacs:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+             "** TODO %? :emacs:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ("e" "Dotfiles Tweak" entry (file "~/workspace/second-brain/org-roam/dotfiles_tweak_tasks.org")
+             "** TODO %? :dotfiles:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
 
             ;; ("p" "Project Task" entry (file "~/workspace/second-brain/org-roam/projects.org")
             ;;  "* TODO %? :project:\\n  :PROPERTIES:\\n  :PROJECT: %(completing-read \\"Project: \\" (org-get-outline-path t))\\n  :CREATED: %U\\n  :END:")
