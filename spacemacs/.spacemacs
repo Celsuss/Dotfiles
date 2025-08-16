@@ -44,9 +44,10 @@ This function should only modify configuration layer settings."
 
      ;; Org mode
      (org :variables
-          org-enable-roam-support t
-          org-enable-roam-ui t
-          org-mesenable-roam-protocol t
+
+          org-enable-roam-support t          ;; Enable org-roam v2
+          org-enable-roam-ui t               ;; Enable org-roam-ui for graph visualization
+          org-mesenable-roam-protocol t      ;; Enable org-protocol for external capture
           org-enable-hugo-support t
           org-enable-github-support t
 
@@ -58,7 +59,7 @@ This function should only modify configuration layer settings."
           ;; Visual
           org-enable-appear-support t         ;; It toggles visibility of some markers
           org-hide-emphasis-markers t
-          org-enable-modern-support t
+          org-enable-modern-support t         ;; Enable modern visual enhancements
 
           ;; Agenda notifications
           org-enable-notifications t
@@ -155,6 +156,7 @@ This function should only modify configuration layer settings."
             rcirc-enable-authinfo-support t
             rcirc-enable-erc-image t
             rcirc-enable-styles t
+            rcirc-enable-late-fix t
             )
 
      ;; LLMs
@@ -195,6 +197,7 @@ This function should only modify configuration layer settings."
      gruvbox-theme
      beacon
 
+     ;; Org-mode related
      org-sidebar
      org-super-agenda
      org-bullets  ;; Show org-mode bullets as UTF-8 characters
@@ -752,6 +755,7 @@ before packages are loaded."
   (require 'dap-python)
   (require 'gdscript-mode)
 
+
   ;; Godot use-package
   (use-package gdscript-mode
     :hook (gdscript-mode . eglot-ensure)
@@ -872,6 +876,10 @@ before packages are loaded."
            ;; :port 6697
            ;; :encryption tls
            :channels ("#sweclockers" "#stockholm"))))
+
+  (add-hook 'rcirc-mode-hook
+            (lambda ()
+              (rcirc-track-minor-mode 1)))
   ;;;;;;;;
 
   ;; Line numbers
@@ -892,7 +900,8 @@ before packages are loaded."
    org-roam-capture-templates '(("d" "default" plain
                                  "%?"
                                  :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens\n#+date: %U")
-                                 :unnarrowed t))
+                                 :unnarrowed t)
+                                )
    )
 
   (global-set-key (kbd "C-c n f") 'org-roam-node-find)
@@ -902,43 +911,96 @@ before packages are loaded."
   (global-set-key (kbd "C-c n a") 'org-id)
   (global-set-key (kbd "C-c n I") 'org-id-get-create)
 
-  ;; To add all org files in a repository to the agenda
-  (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
-  ;; Skip deleted files
-  (setq org-agenda-skip-unavailable-files t)
+  ;; Org-agenda and org-super-agenda
+  (with-eval-after-load 'org
+    ;; TODO Investigate org-roam-db-auto-sync-mode
+    (require 'org-super-agenda)
+    (org-super-agenda-mode)
+
+    (setq org-agenda-custom-commands
+          '(("d" "Dashboard" ((agenda ""
+                                      ((org-super-agenda-groups
+                                        ;; This uses the main "Action Dashboard" configuration defined earlier
+                                        '((:name "🔥 Overdue" :deadline past :face 'error :order 1)
+                                          (:name "🎯 Today" :scheduled today :time-grid t :deadline today :order 2)
+                                          (:name "❗ Important" :priority "A" :order 3)
+                                          (:name "🏢 Work" :tag "work" :order 11)
+                                          ))))
+                              (todo ""
+                                    ((org-super-agenda-groups
+                                      '(
+                                        (:name "🔧 Emacs" :tag "emacs"  :order 1)
+                                        (:name "🔬 Dotfiles" :tag "dotfiles" :order 2)
+                                        (:name "🔬 Home Lab" :tag "homelab" :order 3)
+                                        (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
+                                        ))))))
+
+            ("w" "Work Focus" agenda ""
+             ((org-super-agenda-groups
+               ;; A custom configuration that ONLY shows work-related items
+               '((:name "🔥 Overdue Work" :and (:tag "work" :deadline past) :face 'error :order 1)
+                 (:name "🎯 Today's Work" :and (:tag "work" :scheduled today) :order 2)
+                 (:name "🚀 Work Projects" :and (:tag "work" :auto-property "PROJECT") :order 3)
+                 (:name "🏢 All Work Tasks" :tag "work" :order 4)))))))
+
+
+    ;; To add all org files in a repository to the agenda
+    (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
+    ;; Skip deleted files
+    (setq org-agenda-skip-unavailable-files t)
+
+    (setq org-capture-templates
+          '(
+            ("t" "Task" entry (file "~/workspace/second-brain/org-roam/todo.org")
+             "* TODO %?\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ("w" "Work Task" entry (file "~/workspace/second-brain/org-roam/work_tasks.org")
+             "* TODO %? :work:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ("h" "Home Lab Task" entry (file "~/workspace/second-brain/org-roam/homelab_tasks.org")
+             "* TODO %? :homelab:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ("e" "Emacs Tweak" entry (file "~/workspace/second-brain/org-roam/emacs_tweak_tasks.org")
+             "* TODO %? :emacs:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ;; ("p" "Project Task" entry (file "~/workspace/second-brain/org-roam/projects.org")
+            ;;  "* TODO %? :project:\\n  :PROPERTIES:\\n  :PROJECT: %(completing-read \\"Project: \\" (org-get-outline-path t))\\n  :CREATED: %U\\n  :END:")
+            ))
+    )
+
 
 
   ;; Org super agenda
-  (setq org-agenda-custom-commands
-        '(("T" "Todo view"
-           ((agenda "" ((org-agenda-span 'day)
-                        (org-super-agenda-groups
-                         '((:name "Today"
-                                  :time-grid t
-                                  :todo "TODAY"
-                                  :scheduled today
-                                  :order 0)
-                           (:habit t)
-                           (:name "Due Today"
-                                  :deadline today
-                                  :order 2)
-                           (:name "Due Soon"
-                                  :deadline future
-                                  :order 8)
-                           (:name "Overdue"
-                                  :deadline past
-                                  :order 7)
-                           ))))
-            (todo "" ((org-agenda-overriding-header "")
-                      (org-super-agenda-groups
-                       '((:name "Inbox"
-                                :file-path "inbox"
-                                :order 0)
-                         ;; (:auto-category t
-                         (:auto-tags t
-                                     :order 9)
-                         ))))
-            ))))
+  ;; (setq org-agenda-custom-commands
+  ;;       '(("T" "Todo view"
+  ;;          ((agenda "" ((org-agenda-span 'day)
+  ;;                       (org-super-agenda-groups
+  ;;                        '((:name "Today"
+  ;;                                 :time-grid t
+  ;;                                 :todo "TODAY"
+  ;;                                 :scheduled today
+  ;;                                 :order 0)
+  ;;                          (:habit t)
+  ;;                          (:name "Due Today"
+  ;;                                 :deadline today
+  ;;                                 :order 2)
+  ;;                          (:name "Due Soon"
+  ;;                                 :deadline future
+  ;;                                 :order 8)
+  ;;                          (:name "Overdue"
+  ;;                                 :deadline past
+  ;;                                 :order 7)
+  ;;                          ))))
+  ;;           (todo "" ((org-agenda-overriding-header "")
+  ;;                     (org-super-agenda-groups
+  ;;                      '((:name "Inbox"
+  ;;                               :file-path "inbox"
+  ;;                               :order 0)
+  ;;                        ;; (:auto-category t
+  ;;                        (:auto-tags t
+  ;;                                    :order 9)
+  ;;                        ))))
+  ;; ))))
 
   ;; (let ((org-super-agenda-groups
   ;;        '((:auto-group t))))
@@ -946,7 +1008,6 @@ before packages are loaded."
   ;; (let ((org-super-agenda-groups
   ;;        '((:auto-property "ProjectId"))))
   ;;   (org-agenda-list))
-  (org-super-agenda-mode)
 
 
 
@@ -1514,18 +1575,18 @@ This function is called at the very end of Spacemacs initialization."
                  helm-make helm-mode-manager helm-org helm-org-rifle
                  helm-projectile helm-purpose helm-swoop helm-themes helm-xref
                  help-fns+ hide-comnt highlight-indentation highlight-numbers
-                 highlight-parentheses hl-todo holy-mode htmlize hungry-delete
-                 hybrid-mode indent-guide info+ inspector ivy link-hint log4e
-                 lorem-ipsum lsp-docker lsp-mode lsp-origami lsp-treemacs lsp-ui
-                 macrostep map markdown-mode markdown-toc mmm-mode multi-line
-                 multi-term multi-vterm mwim nameless neotree nhich-key
-                 open-junk-file org org-category-capture org-cliplink org-contrib
-                 org-download org-mime org-pomodoro org-present org-projectile
-                 org-ql org-rich-yank org-roam org-roam-ui org-sidebar
-                 org-super-agenda org-superstar orgit orgit-forge origami ov
-                 overseer ox-hugo paradox password-generator pcre2el peg pfuture
-                 popwin pos-tip project quickrun racer rainbow-delimiters
-                 rcirc-styles request restart-emacs rich-minority ron-mode
+                 highlight-parentheses hl-column hl-todo holy-mode htmlize
+                 hungry-delete hybrid-mode indent-guide info+ inspector ivy
+                 link-hint log4e lorem-ipsum lsp-docker lsp-mode lsp-origami
+                 lsp-treemacs lsp-ui macrostep map markdown-mode markdown-toc
+                 mmm-mode multi-line multi-term multi-vterm mwim nameless neotree
+                 nhich-key open-junk-file org org-category-capture org-cliplink
+                 org-contrib org-download org-mime org-pomodoro org-present
+                 org-projectile org-ql org-rich-yank org-roam org-roam-ui
+                 org-sidebar org-super-agenda org-superstar orgit orgit-forge
+                 origami ov overseer ox-hugo paradox password-generator pcre2el
+                 peg pfuture popwin pos-tip project quickrun racer
+                 rainbow-delimiters request restart-emacs rich-minority ron-mode
                  rust-mode shell-pop shrink-path smart-mode-line space-doc
                  spaceline-all-the-icons spacemacs-purpose-popwin
                  spacemacs-whitespace-cleanup string-edit-at-point
