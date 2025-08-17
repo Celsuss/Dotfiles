@@ -756,14 +756,43 @@ before packages are loaded."
   (require 'gdscript-mode)
 
 
-  ;; Godot use-package
+  ;; ============================================================================
+  ;; Fixes
+  ;; ============================================================================
+  ;; Fix for helm-descbinds-mode breaking emacs-which-key
+  (helm-descbinds-mode 0)
+  ;; Fix for 'Error (use-package): dap-mode/:config: Invalid image type ‘svg’'
+  (add-to-list 'image-types 'svg)
+
+  ;; ============================================================================
+  ;; Visuals
+  ;; ============================================================================
+  ;; set default theme
+  (setq-default dotspacemacs-themes '(gruvbox-dark-medium))
+
+  ;; Line numbers
+  (set-face-attribute 'line-number nil :background nil) ;; nil
+  ;; (set-face-attribute 'line-number-current-line nil :background nil)
+
+  ;; Highlight line when switching buffer
+  (beacon-mode t)
+  (setq-default
+   beacon-blink-when-window-changes 1
+   beacon-blink-when-point-moves-vertically 1
+   beacon-color "#928374"
+   )
+
+  ;; ============================================================================
+  ;; Godot game engine
+  ;; ============================================================================
   (use-package gdscript-mode
     :hook (gdscript-mode . eglot-ensure)
     :custom (gdscript-eglot-version 3))
   (setq gdscript-godot-executable "/usr/local/bin/godot-engine")
 
-  ;;;; LLMs
-  ;; aidermacs
+  ;; ============================================================================
+  ;; LLMs
+  ;; ============================================================================
   (use-package aidermacs
     ;; :bind (("C-c a" . aidermacs-transient-menu))
     :config
@@ -786,56 +815,10 @@ before packages are loaded."
                    :stream t
                    :models '(deepseek-r1:14b)))
 
-  ;; Codeium
-  ;; Install package with: git clone --depth 1 https://github.com/Exafunction/codeium.el ~/.emacs.d/private/codeium.el
-  ;; (add-to-list 'load-path "~/.emacs.d/private/codeium.el")
-  ;; (use-package codeium
-  ;;   ;; :straight '(:type git :host github :repo "Exafunction/codeium.el")
-  ;;   :init
-  ;;   ;; use globally
-  ;;   (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
-  ;;   ;; or on a hook
-  ;;   ;; (add-hook 'python-mode-hook
-  ;;   ;;     (lambda ()
-  ;;   ;;         (setq-local completion-at-point-functions '(codeium-completion-at-point))))
 
-  ;;   :config
-  ;;   (setq use-dialog-box nil) ;; do not use popup boxes
-
-  ;;   ;; if you don't want to use customize to save the api-key
-  ;;   ;; (setq codeium/metadata/api_key "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
-
-  ;;   ;; get codeium status in the modeline
-  ;;   (setq codeium-mode-line-enable
-  ;;         (lambda (api) (not (memq api '(CancelRequest Heartbeat AcceptCompletion)))))
-  ;;   (add-to-list 'mode-line-format '(:eval (car-safe codeium-mode-line)) t)
-  ;;   ;; alternatively for a more extensive mode-line
-  ;;   ;; (add-to-list 'mode-line-format '(-50 "" codeium-mode-line) t)
-
-  ;;   ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
-  ;;   (setq codeium-api-enabled
-  ;;         (lambda (api)
-  ;;           (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
-  ;;   ;; you can also set a config for a single buffer like this:
-  ;;   ;; (add-hook 'python-mode-hook
-  ;;   ;;     (lambda ()
-  ;;   ;;         (setq-local codeium/editor_options/tab_size 4)))
-
-  ;;   ;; You can overwrite all the codeium configs!
-  ;;   ;; for example, we recommend limiting the string sent to codeium for better performance
-  ;;   (defun my-codeium/document/text ()
-  ;;     (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max))))
-
-  ;;   ;; If you change the text, you should also change the cursor_offset
-  ;;   ;; warning: this is measured by UTF-8 encoded bytes
-  ;;   (defun my-codeium/document/cursor_offset ()
-  ;;     (codeium-utf8-byte-length
-  ;;      (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))
-  ;;   (setq codeium/document/text 'my-codeium/document/text)
-  ;;   (setq codeium/document/cursor_offset 'my-codeium/document/cursor_offset)
-  ;;   )
-
-  ;; Company mode
+  ;; ============================================================================
+  ;; Company mode auto completion
+  ;; ============================================================================
   ;; (use-package company
   ;;   :defer 0.1
   ;;   :config
@@ -851,19 +834,15 @@ before packages are loaded."
   ;;    ;; company-frontends '(company-pseudo-tooltip-frontend company-preview-frontend)
   ;;    ))
 
-  ;; Fix for helm-descbinds-mode breaking emacs-which-key
-  (helm-descbinds-mode 0)
 
   ;; (use-package terraform-mode-abbrev-table
   ;;   :hook (terraform-mode . eglot-ensure))
 
-  ;; Fix for 'Error (use-package): dap-mode/:config: Invalid image type ‘svg’'
-  (add-to-list 'image-types 'svg)
 
-  ;; set default theme
-  (setq-default dotspacemacs-themes '(gruvbox-dark-medium))
 
-  ;;;;;;;; IRC
+  ;; ============================================================================
+  ;; RCIRC
+  ;; ============================================================================
   (setq rcirc-server-alist
         '(("irc.libera.chat"
            :user-name "celsuss"
@@ -880,29 +859,72 @@ before packages are loaded."
   (add-hook 'rcirc-mode-hook
             (lambda ()
               (rcirc-track-minor-mode 1)))
-  ;;;;;;;;
 
-  ;; Line numbers
-  (set-face-attribute 'line-number nil :background nil) ;; nil
-  ;; (set-face-attribute 'line-number-current-line nil :background nil)
+  ;; ============================================================================
+  ;; Org-mode Core Configuration
+  ;; ============================================================================
+  (use-package org
+    :defer t
+    :config
+    ;; Use a dedicated directory for all org files
+    (setq org-directory "~/workspace/second-brain/org-roam/")
 
-  (beacon-mode t)
-  (setq-default
-   beacon-blink-when-window-changes 1
-   beacon-blink-when-point-moves-vertically 1
-   beacon-color "#928374"
-   )
+    ;; (setq org-agenda-files (directory-files-recursively org-directory "\\\\.org$"))
+    (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
 
-  ;; Org roam
-  (setq-default
-   org-roam-directory "~/workspace/second-brain/org-roam/"
-   org-roam-completion-everywhere t
-   org-roam-capture-templates '(("d" "default" plain
-                                 "%?"
-                                 :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens\n#+date: %U")
-                                 :unnarrowed t)
-                                )
-   )
+    ;; Skip deleted files
+    (setq org-agenda-skip-unavailable-files t)
+
+    ;; Enable advanced dependency tracking
+    (setq org-enforce-todo-dependencies t)
+    (setq org-enforce-todo-checkbox-dependencies t)
+
+    ;; Org capture templates
+    (setq org-capture-templates
+          '(
+            ("t" "TODO" entry (file "~/workspace/second-brain/org-roam/todo.org")
+             "** TODO %?\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ("w" "Work Task" entry (file "~/workspace/second-brain/org-roam/work_tasks.org")
+             "** TODO %? :work:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ("h" "Home Lab Task" entry (file "~/workspace/second-brain/org-roam/homelab_tasks.org")
+             "** TODO %? :homelab:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ("e" "Emacs Tweak" entry (file "~/workspace/second-brain/org-roam/emacs_tweak_tasks.org")
+             "** TODO %? :emacs:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ("d" "Dotfiles Tweak" entry (file "~/workspace/second-brain/org-roam/dotfiles_tweak_tasks.org")
+             "** TODO %? :dotfiles:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ;; ("p" "Project Task" entry (file "~/workspace/second-brain/org-roam/projects.org")
+            ;;  "* TODO %? :project:\\n  :PROPERTIES:\\n  :PROJECT: %(completing-read \\"Project: \\" (org-get-outline-path t))\\n  :CREATED: %U\\n  :END:")
+            ))
+    )
+
+  ;; ============================================================================
+  ;; Org-roam Configuration
+  ;; ============================================================================
+  (use-package org-roam
+    :after org
+    :custom
+    ;; Set the directory for roam notes, can be the same as org-directory
+    (org-roam-directory (file-truename org-directory))
+    (org-roam-completion-everywhere t)
+
+    ;; Configure the display of the backlinks buffer
+    (org-roam-mode-sections
+     (list #'org-roam-backlinks-section
+           #'org-roam-reflinks-section
+           #'org-roam-unlinked-references-section))
+
+    ;; Configure org-roam-capture-template
+    (org-roam-capture-templates '(("d" "default" plain
+                                   "%?"
+                                   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens\n#+date: %U")
+                                   :unnarrowed t)
+                                  ))
+    )
 
   (global-set-key (kbd "C-c n f") 'org-roam-node-find)
   (global-set-key (kbd "C-c n i") 'org-roam-node-insert)
@@ -911,12 +933,13 @@ before packages are loaded."
   (global-set-key (kbd "C-c n a") 'org-id)
   (global-set-key (kbd "C-c n I") 'org-id-get-create)
 
-  ;; Org-agenda and org-super-agenda
-  (with-eval-after-load 'org
-    ;; TODO Investigate org-roam-db-auto-sync-mode
-    (require 'org-super-agenda)
-    (org-super-agenda-mode)
-
+  ;; ============================================================================
+  ;; Advanced Org Agenda
+  ;; ============================================================================
+  (use-package org-super-agenda
+    :after org
+    :config
+    ;; org-agenda-dashboards
     (setq org-agenda-custom-commands
           '(("d" "Dashboard"
              ((agenda ""
@@ -925,6 +948,7 @@ before packages are loaded."
                         '((:name "🔥 Overdue" :deadline past :face 'error :order 1)
                           (:name "🎯 Today" :scheduled today :time-grid t :deadline today :order 2)
                           (:name "❗ Important" :priority "A" :order 3)
+                          (:habit t)
                           (:name "🔧 Emacs" :tag "emacs"  :order 6)
                           (:name "🔬 Dotfiles" :tag "dotfiles" :order 7)
                           (:name "🔬 Home Lab" :tag "homelab" :order 8)
@@ -956,79 +980,20 @@ before packages are loaded."
                              (:name "🚀 Other Projects & Tasks" :order 99)
                              ))))))
             ))
-
-
-    ;; To add all org files in a repository to the agenda
-    (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
-    ;; Skip deleted files
-    (setq org-agenda-skip-unavailable-files t)
-
-    (setq org-capture-templates
-          '(
-            ("t" "TODO" entry (file "~/workspace/second-brain/org-roam/todo.org")
-             "** TODO %?\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
-
-            ("w" "Work Task" entry (file "~/workspace/second-brain/org-roam/work_tasks.org")
-             "** TODO %? :work:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
-
-            ("h" "Home Lab Task" entry (file "~/workspace/second-brain/org-roam/homelab_tasks.org")
-             "** TODO %? :homelab:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
-
-            ("e" "Emacs Tweak" entry (file "~/workspace/second-brain/org-roam/emacs_tweak_tasks.org")
-             "** TODO %? :emacs:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
-
-            ("e" "Dotfiles Tweak" entry (file "~/workspace/second-brain/org-roam/dotfiles_tweak_tasks.org")
-             "** TODO %? :dotfiles:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
-
-            ;; ("p" "Project Task" entry (file "~/workspace/second-brain/org-roam/projects.org")
-            ;;  "* TODO %? :project:\\n  :PROPERTIES:\\n  :PROJECT: %(completing-read \\"Project: \\" (org-get-outline-path t))\\n  :CREATED: %U\\n  :END:")
-            ))
     )
 
 
 
-  ;; Org super agenda
-  ;; (setq org-agenda-custom-commands
-  ;;       '(("T" "Todo view"
-  ;;          ((agenda "" ((org-agenda-span 'day)
-  ;;                       (org-super-agenda-groups
-  ;;                        '((:name "Today"
-  ;;                                 :time-grid t
-  ;;                                 :todo "TODAY"
-  ;;                                 :scheduled today
-  ;;                                 :order 0)
-  ;;                          (:habit t)
-  ;;                          (:name "Due Today"
-  ;;                                 :deadline today
-  ;;                                 :order 2)
-  ;;                          (:name "Due Soon"
-  ;;                                 :deadline future
-  ;;                                 :order 8)
-  ;;                          (:name "Overdue"
-  ;;                                 :deadline past
-  ;;                                 :order 7)
-  ;;                          ))))
-  ;;           (todo "" ((org-agenda-overriding-header "")
-  ;;                     (org-super-agenda-groups
-  ;;                      '((:name "Inbox"
-  ;;                               :file-path "inbox"
-  ;;                               :order 0)
-  ;;                        ;; (:auto-category t
-  ;;                        (:auto-tags t
-  ;;                                    :order 9)
-  ;;                        ))))
-  ;; ))))
+  ;; Org-agenda and org-super-agenda
+  ;; (with-eval-after-load 'org
+  ;; TODO Investigate org-roam-db-auto-sync-mode
+  ;; (require 'org-super-agenda)
+  ;; (org-super-agenda-mode)
+  ;; )
 
-  ;; (let ((org-super-agenda-groups
-  ;;        '((:auto-group t))))
-  ;;   (org-agenda-list))
-  ;; (let ((org-super-agenda-groups
-  ;;        '((:auto-property "ProjectId"))))
-  ;;   (org-agenda-list))
-
-
-
+  ;; ============================================================================
   ;; Alerts
+  ;; ============================================================================
   (setq alert-default-style 'notifications)
 
   ;; RSS feed
@@ -1050,7 +1015,9 @@ before packages are loaded."
   ;;                   =enable-flyspell-auto-completion= t
   ;;                   )))
 
-  ;; powerline
+  ;; ============================================================================
+  ;; Powerline
+  ;; ============================================================================
   (setq
    spaceline-version-control-p t
    spaceline-org-clock-p t
@@ -1058,7 +1025,9 @@ before packages are loaded."
    spaceline-flycheck-warning-p t
    )
 
-  ;; multi cursor
+  ;; ============================================================================
+  ;; Multi cursor
+  ;; ============================================================================
   ;; (setq-default dotspacemacs-configuration-layers '(
   ;; (multiple-cursors :variables
   ;;      multiple-cursors-backend 'cm
@@ -1069,7 +1038,9 @@ before packages are loaded."
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
-  ;; Dap mode
+  ;; ============================================================================
+  ;; DAP debugging
+  ;; ============================================================================
   (defun python/pre-init-dap-mode ()
     (when (eq python-backend 'lsp)
       (add-to-list 'spacemacs--dap-supported-modes 'python-mode))
@@ -1077,7 +1048,9 @@ before packages are loaded."
 
   (setq dap-python-debugger 'debugpy)
 
+  ;; ============================================================================
   ;; Projectile
+  ;; ============================================================================
   (setq projectile-project-search-path '("~/workspace/"))
   )
 
