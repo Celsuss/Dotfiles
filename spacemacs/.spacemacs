@@ -203,6 +203,8 @@ This function should only modify configuration layer settings."
      org-bullets  ;; Show org-mode bullets as UTF-8 characters
      ox-hugo
      org-kanban
+     org-roam-dblocks
+     org-roam-ql
 
      ;; llms
      aidermacs ;; vibe coding
@@ -871,6 +873,7 @@ before packages are loaded."
 
     ;; (setq org-agenda-files (directory-files-recursively org-directory "\\\\.org$"))
     (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
+    (org-super-agenda-mode)
 
     ;; Skip deleted files
     (setq org-agenda-skip-unavailable-files t)
@@ -934,6 +937,47 @@ before packages are loaded."
   (global-set-key (kbd "C-c n I") 'org-id-get-create)
 
   ;; ============================================================================
+  ;; Org-roam-dailies Configuration
+  ;; ============================================================================
+  (use-package org-roam-dailies
+    :after org-roam
+    :ensure t
+    :config
+
+    (setq org-roam-dailies-directory "~/workspace/second-brain/org-roam/daily")
+
+    (setq org-roam-dailies-capture-templates
+          `(("d" "default" entry
+             "* %<%H:%M> %?"
+             :target (file+head ,(expand-file-name "%<%Y-%m-%d>.org" org-roam-dailies-directory)
+                                "#+title: %<%A %B %d, %Y>
+#+filetags: :daily:
+#+author: Jens
+
+* Daily notes for %<%A %B %d, %Y>
+** Tasks
+
+** Notes
+  ")
+             :empty-lines-before 1
+             :empty-lines-after 1)))
+
+    (org-roam-dailies-enable)
+    )
+
+  ;; ============================================================================
+  ;; Dynamic Blocks and Querying for MOCs
+  ;; ============================================================================
+  (use-package org-roam-dblocks
+    :after org-roam
+    :config
+    ;; Enable automatic updates for dynamic blocks
+    (org-roam-dblocks-autoupdate-mode))
+
+  (use-package org-roam-ql
+    :after org-roam)
+
+  ;; ============================================================================
   ;; Advanced Org Agenda
   ;; ============================================================================
   (use-package org-super-agenda
@@ -943,7 +987,8 @@ before packages are loaded."
     (setq org-agenda-custom-commands
           '(("d" "Dashboard"
              ((agenda ""
-                      ((org-super-agenda-groups
+                      ((org-agenda-overriding-header "✅ Agenda")
+                       (org-super-agenda-groups
                         ;; This uses the main "Action Dashboard" configuration defined earlier
                         '((:name "🔥 Overdue" :deadline past :face 'error :order 1)
                           (:name "🎯 Today" :scheduled today :time-grid t :deadline today :order 2)
@@ -957,12 +1002,13 @@ before packages are loaded."
                           (:name "🏢 Work" :tag "work" :order 11)
                           ))))
               (todo ""
-                    ((org-super-agenda-groups
+                    ((org-agenda-overriding-header "✅ Dashboard")
+                     (org-super-agenda-groups
                       '(
                         (:name "🔧 Emacs" :tag "emacs"  :order 1)
                         (:name "🔬 Dotfiles" :tag "dotfiles" :order 2)
                         (:name "🔬 Home Lab" :tag "homelab" :order 3)
-                        (:name "🔬 Blog Post" :tag "homelab" :order 3)
+                        (:name "🔬 Blog Posts" :tag "blog" :order 4)
                         (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
                         ))))))
 
@@ -988,7 +1034,7 @@ before packages are loaded."
   ;; (with-eval-after-load 'org
   ;; TODO Investigate org-roam-db-auto-sync-mode
   ;; (require 'org-super-agenda)
-  ;; (org-super-agenda-mode)
+
   ;; )
 
   ;; ============================================================================
@@ -1565,14 +1611,14 @@ This function is called at the very end of Spacemacs initialization."
                  helm-make helm-mode-manager helm-org helm-org-rifle
                  helm-projectile helm-purpose helm-swoop helm-themes helm-xref
                  help-fns+ hide-comnt highlight-indentation highlight-numbers
-                 highlight-parentheses hl-column hl-todo holy-mode htmlize
-                 hungry-delete hybrid-mode indent-guide info+ inspector ivy
-                 link-hint log4e lorem-ipsum lsp-docker lsp-mode lsp-origami
-                 lsp-treemacs lsp-ui macrostep map markdown-mode markdown-toc
-                 mmm-mode multi-line multi-term multi-vterm mwim nameless neotree
-                 nhich-key open-junk-file org org-category-capture org-cliplink
-                 org-contrib org-download org-mime org-pomodoro org-present
-                 org-projectile org-ql org-rich-yank org-roam org-roam-ui
+                 highlight-parentheses hl-todo holy-mode htmlize hungry-delete
+                 hybrid-mode indent-guide info+ inspector ivy link-hint log4e
+                 lorem-ipsum lsp-docker lsp-mode lsp-origami lsp-treemacs lsp-ui
+                 macrostep map markdown-mode markdown-toc mmm-mode multi-line
+                 multi-term multi-vterm mwim nameless neotree nhich-key
+                 open-junk-file org org-category-capture org-cliplink org-contrib
+                 org-download org-mime org-pomodoro org-present org-projectile
+                 org-ql org-rich-yank org-roam org-roam-dailies org-roam-ui
                  org-sidebar org-super-agenda org-superstar orgit orgit-forge
                  origami ov overseer ox-hugo paradox password-generator pcre2el
                  peg pfuture popwin pos-tip project quickrun racer
