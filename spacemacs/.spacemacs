@@ -900,6 +900,12 @@ before packages are loaded."
             ("d" "Dotfiles Tweak" entry (file "~/workspace/second-brain/org-roam/dotfiles_tweak_tasks.org")
              "** TODO %? :dotfiles:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
 
+            ("c" "Curriculum Task" entry (file "~/workspace/second-brain/org-roam/curriculum_tasks.org")
+             "** TODO %? :curriculum:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ;; ("i" "Inbox" entry (file "~/workspace/second-brain/org-roam/inbox.org")
+            ;;  "** TODO %? :inbox:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
             ;; ("p" "Project Task" entry (file "~/workspace/second-brain/org-roam/projects.org")
             ;;  "* TODO %? :project:\\n  :PROPERTIES:\\n  :PROJECT: %(completing-read \\"Project: \\" (org-get-outline-path t))\\n  :CREATED: %U\\n  :END:")
             ))
@@ -997,6 +1003,7 @@ before packages are loaded."
                           (:name "🔧 Emacs" :tag "emacs"  :order 6)
                           (:name "🔬 Dotfiles" :tag "dotfiles" :order 7)
                           (:name "🔬 Home Lab" :tag "homelab" :order 8)
+                          (:name "🔬 Curriculum" :tag "curriculum" :order 9)
                           (:name "🔬 Blog Posts" :tag "blog" :order 9)
                           (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
                           (:name "🏢 Work" :tag "work" :order 11)
@@ -1008,7 +1015,9 @@ before packages are loaded."
                         (:name "🔧 Emacs" :tag "emacs"  :order 1)
                         (:name "🔬 Dotfiles" :tag "dotfiles" :order 2)
                         (:name "🔬 Home Lab" :tag "homelab" :order 3)
-                        (:name "🔬 Blog Posts" :tag "blog" :order 4)
+                        (:name "🔬 Curriculum" :tag "curriculum" :order 4)
+                        (:name "🔬 Blog Posts" :tag "blog" :order 5)
+                        (:name "🚀 Project ideas" :tag "project" :order 9)
                         (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
                         ))))))
 
