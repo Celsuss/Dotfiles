@@ -95,6 +95,7 @@ plugins=(
     emacs
     docker
     docker-compose
+    jj
 )
 
 # fzf
@@ -150,3 +151,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 . "$HOME/.local/bin/env"
+
+# K3s
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
