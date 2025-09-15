@@ -6,14 +6,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun my/get-secret (machine-name)
   "Retrieve a secret for MACHINE-NAME from ~/.authinfo.gpg."
-  (let ((creds (car (auth-source-search :host machine-name))))
-    (when creds
-      (let ((secret (plist-get creds :secret)))
-        (if (functionp secret)
-            (funcall secret)
-          secret)))))
-;; Example usage:
-;; (setq my-api-key (my/get-secret "litellm"))
+  (let* ((creds (car (auth-source-search :host machine-name)))
+         (secret-fun (plist-get creds :secret)))
+    (when secret-fun
+      (funcall secret-fun))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;

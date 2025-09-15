@@ -734,14 +734,6 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; ============================================================================
   (setq-default git-magit-status-fullscreen t)
   (setq magit-repository-directories '("~/workspace/"))
-
-
-  ;; ============================================================================
-  ;; Load private secrets from ~/.emacs.d/private/private.el
-  ;; ============================================================================
-  (let ((private-config (expand-file-name "private/private.el" user-emacs-directory)))
-    (when (file-exists-p private-config)
-      (load-file private-config)))
   )
 
 
@@ -759,6 +751,13 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+
+  ;; ============================================================================
+  ;; Load private secrets from ~/.emacs.d/private/private.el
+  ;; ============================================================================
+  (let ((private-config (expand-file-name "private/private.el" user-emacs-directory)))
+    (when (file-exists-p private-config)
+      (load-file private-config)))
 
   ;; Test to fix dap
   ;; (setq package-user-dir (concat default-directory "configuration/elpa"))
@@ -824,10 +823,10 @@ before packages are loaded."
       ;; Set up keybindings under the "SPC $" (AI) prefix.
       ;; You can customize these to your preference.
       (spacemacs/set-leader-keys
-        "$a" '(aidermacs-chat :wk "Start or switch to aider chat")
-        "$f" '(aidermacs-add-file :wk "Add current file to chat")
-        "$r" '(aidermacs-run :wk "Send prompt to aider")
-        "$d" '(aidermacs-drop-file :wk "Remove current file from chat")
+        "$aa" '(aidermacs-chat :wk "Start or switch to aider chat")
+        "$af" '(aidermacs-add-file :wk "Add current file to chat")
+        "$ar" '(aidermacs-run :wk "Send prompt to aider")
+        "$ad" '(aidermacs-drop-file :wk "Remove current file from chat")
         ))
     :config
     (progn
