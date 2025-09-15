@@ -203,7 +203,7 @@ This function should only modify configuration layer settings."
      org-bullets  ;; Show org-mode bullets as UTF-8 characters
      ox-hugo
      org-kanban
-     org-roam-dblocks
+     ;; org-roam-dblocks
      org-roam-ql
 
      ;; llms
@@ -933,23 +933,8 @@ before packages are loaded."
                                    :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens\n#+date: %U")
                                    :unnarrowed t)
                                   ))
-    )
-
-  (global-set-key (kbd "C-c n f") 'org-roam-node-find)
-  (global-set-key (kbd "C-c n i") 'org-roam-node-insert)
-  (global-set-key (kbd "C-c n l") 'org-roam-buffer-toggle)
-  (global-set-key (kbd "C-c n p") 'org-roam-alias-add)
-  (global-set-key (kbd "C-c n a") 'org-id)
-  (global-set-key (kbd "C-c n I") 'org-id-get-create)
-
-  ;; ============================================================================
-  ;; Org-roam-dailies Configuration
-  ;; ============================================================================
-  (use-package org-roam-dailies
-    :after org-roam
-    :ensure t
     :config
-
+    ;; Configure org-roam-dailies
     (setq org-roam-dailies-directory "~/workspace/second-brain/org-roam/daily")
 
     (setq org-roam-dailies-capture-templates
@@ -967,18 +952,23 @@ before packages are loaded."
   ")
              :empty-lines-before 1
              :empty-lines-after 1)))
-
-    (org-roam-dailies-enable)
     )
+
+  (global-set-key (kbd "C-c n f") 'org-roam-node-find)
+  (global-set-key (kbd "C-c n i") 'org-roam-node-insert)
+  (global-set-key (kbd "C-c n l") 'org-roam-buffer-toggle)
+  (global-set-key (kbd "C-c n p") 'org-roam-alias-add)
+  (global-set-key (kbd "C-c n a") 'org-id)
+  (global-set-key (kbd "C-c n I") 'org-id-get-create)
 
   ;; ============================================================================
   ;; Dynamic Blocks and Querying for MOCs
   ;; ============================================================================
-  (use-package org-roam-dblocks
-    :after org-roam
-    :config
-    ;; Enable automatic updates for dynamic blocks
-    (org-roam-dblocks-autoupdate-mode))
+  ;; (use-package org-roam-dblocks
+  ;;   :after org-roam
+  ;;   :config
+  ;;   ;; Enable automatic updates for dynamic blocks
+  ;;   (org-roam-dblocks-autoupdate-mode))
 
   (use-package org-roam-ql
     :after org-roam)
