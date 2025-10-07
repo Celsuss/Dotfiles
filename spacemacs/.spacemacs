@@ -729,6 +729,9 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  ;; ============================================================================
+  ;; Magit
+  ;; ============================================================================
   (setq-default git-magit-status-fullscreen t)
   (setq magit-repository-directories '("~/workspace/"))
   )
@@ -748,6 +751,13 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+
+  ;; ============================================================================
+  ;; Load private secrets from ~/.emacs.d/private/private.el
+  ;; ============================================================================
+  (let ((private-config (expand-file-name "private/private.el" user-emacs-directory)))
+    (when (file-exists-p private-config)
+      (load-file private-config)))
 
   ;; Test to fix dap
   ;; (setq package-user-dir (concat default-directory "configuration/elpa"))
@@ -795,28 +805,98 @@ before packages are loaded."
   ;; ============================================================================
   ;; LLMs
   ;; ============================================================================
-  (use-package aidermacs
-    ;; :bind (("C-c a" . aidermacs-transient-menu))
+  ;; LLM
+  (use-package llm
+    :ensure t
     :config
-                                        ; Set API_KEY in .bashrc, that will automatically picked up by aider or in elisp
-    ;; (setenv "ANTHROPIC_API_KEY" "sk-...")
-    (setenv "OLLAMA_API_BASE" "http://127.0.0.1:11434")
-                                        ; defun my-get-openrouter-api-key yourself elsewhere for security reasons
-    ;; (setenv "OPENROUTER_API_KEY" (my-get-openrouter-api-key))
-    :custom
-                                        ; See the Configuration section below
-    (aidermacs-use-architect-mode t)
-    (aidermacs-default-model "ollama/deepseek-r1:14b"))
+    (require 'llm-openai))
+
+  ;;;;;;;;;;;;;;;
+  ;; Aidermacs ;;
+  ;;;;;;;;;;;;;;;
+  ;; Make sure to configure aider to connect to LLMs
+  (use-package aidermacs
+    :ensure t
+    :defer t
+    :init
+    (progn
+      ;; Set up keybindings under the "SPC $" (AI) prefix.
+      ;; You can customize these to your preference.
+      (spacemacs/set-leader-keys
+        "$aa" '(aidermacs-chat :wk "Start or switch to aider chat")
+        "$af" '(aidermacs-add-file :wk "Add current file to chat")
+        "$ar" '(aidermacs-run :wk "Send prompt to aider")
+        "$ad" '(aidermacs-drop-file :wk "Remove current file from chat")
+        ))
+    :config
+    (progn
+      ;; Explicitly tell aidermacs to use the 'aider' command.
+      ;; This is usually found automatically if it's in your system's PATH.
+      (setq aidermacs-chat-command "aider")
+      )
+    )
   (setq aidermacs-program (expand-file-name "~/.local/bin/aider"))
 
-  (setq
-   gptel-model 'deepseek-r1:14b
-   gptel-format 'org
-   gptel-backend (gptel-make-ollama "Ollama"
-                   :host "localhost:11434"
-                   :stream t
-                   :models '(deepseek-r1:14b)))
+  ;;;;;;;;;;;
+  ;; Gptel ;;
+  ;;;;;;;;;;;
+  (pcase my/execution-context
+    ('home
+     (message "GPTel: Configuring for Home (Ollama)")
+     (setq gptel-backend (gptel-make-ollama "Ollama"
+                           :host "localhost:11434"
+                           :models '(deepseek-r1:14b)
+                           :stream t)
+           gptel-model 'deepseek-r1:14b
+           gptel-format 'org))
 
+    ('work
+     (message "GPTel: Configuring for Work (LiteLLM)")
+     (setq gptel-litellm-backend
+           (gptel-make-openai "LiteLLM-Server"
+             :host "aeal-0001.int.tele2.com:4000"
+             :protocol "http"
+             :endpoint "/v1/chat/completions"
+             :stream t
+             :key my/litellm-api-key
+             :models '(gemini/gemini-2.5-pro))
+           )
+     (setq gptel-backend gptel-litellm-backend)
+     (setq gptel-format 'org)
+     ))
+
+  ;;;;;;;;;;;;
+  ;; Ellama ;;
+  ;;;;;;;;;;;;
+  (use-package plz
+    :ensure t
+    :config
+    (setq plz-request-backend 'url-retrieve))
+
+  (pcase my/execution-context
+    ('home
+     )
+
+    ('work
+     (use-package ellama
+       :ensure t
+       :after (llm plz)
+       :defer t
+       :init
+       (setopt ellama-language "English")
+       (require 'llm)
+       (require 'llm-ollama)
+       (require 'llm-openai)
+       :config
+
+       (setq ellama-provider
+             (make-llm-openai-compatible
+              :chat-model "gemini/gemini-2.5-pro"
+              :url "http://aeal-0001.int.tele2.com:4000"
+              :key my/litellm-api-key
+              ))
+       )
+     ))
 
   ;; ============================================================================
   ;; Company mode auto completion
@@ -845,6 +925,11 @@ before packages are loaded."
   ;; ============================================================================
   ;; RCIRC
   ;; ============================================================================
+  (setq rcirc-default-nick "celsuss")
+  (setq rcirc-default-user-name "celsuss")
+  (setq rcirc-default-full-name "Celsuss")
+  (setq rcirc-authinfo-file "~/.authinfo.gpg")
+
   (setq rcirc-server-alist
         '(("irc.libera.chat"
            :user-name "celsuss"
