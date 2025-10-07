@@ -819,15 +819,21 @@ before packages are loaded."
     :ensure t
     :defer t
     :init
+    ;; Declare the prefix and give it a name for the which-key popup.
+    ;; (spacemacs/declare-prefix "$a" "aidermacs")
     (progn
-      ;; Set up keybindings under the "SPC $" (AI) prefix.
-      ;; You can customize these to your preference.
-      (spacemacs/set-leader-keys
-        "$aa" '(aidermacs-chat :wk "Start or switch to aider chat")
-        "$af" '(aidermacs-add-file :wk "Add current file to chat")
-        "$ar" '(aidermacs-run :wk "Send prompt to aider")
-        "$ad" '(aidermacs-drop-file :wk "Remove current file from chat")
+      (let ((aidermacs-map (make-sparse-keymap)))
+        (define-key aidermacs-map "a" 'aidermacs-add-file)
+        (define-key aidermacs-map "r" 'aidermacs-run)
+        (define-key aidermacs-map "t" 'aidermacs-transient-menu)
+        (evil-leader/set-key "$a" aidermacs-map)
+
+        ;; (which-key-add-keymap-based-replacements aidermacs-map "Aidermasc")
+        ;; (which-key-add-keymap-based-replacements
+        ;;   aidermacs-map '(nil . "Aider"))
+
         ))
+    ;; :bind
     :config
     (progn
       ;; Explicitly tell aidermacs to use the 'aider' command.
@@ -854,12 +860,13 @@ before packages are loaded."
      (message "GPTel: Configuring for Work (LiteLLM)")
      (setq gptel-litellm-backend
            (gptel-make-openai "LiteLLM-Server"
-             :host "aeal-0001.int.tele2.com:4000"
-             :protocol "http"
+             :host "aeal-0001.int.tele2.com"
+             :protocol "https"
              :endpoint "/v1/chat/completions"
              :stream t
              :key my/litellm-api-key
-             :models '(gemini/gemini-2.5-pro))
+             ;; :models '(gemini/gemini-2.5-pro))
+             :models '(gemini/gemini-2.5-flash))
            )
      (setq gptel-backend gptel-litellm-backend)
      (setq gptel-format 'org)
@@ -953,15 +960,26 @@ before packages are loaded."
   (use-package org
     :defer t
     :config
-    ;; Use a dedicated directory for all org files
-    (setq org-directory "~/workspace/second-brain/org-roam/")
-
-    ;; (setq org-agenda-files (directory-files-recursively org-directory "\\\\.org$"))
-    (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
-    (org-super-agenda-mode)
-
+    ;;;; Org Agenda
+    ;; Inhibit time-consuming startup processes for background agenda files.
+    (setq org-agenda-inhibit-startup t)
+    ;; Disable dimming of blocked tasks, which can be slow.
+    (setq org-agenda-dim-blocked-tasks nil)
     ;; Skip deleted files
     (setq org-agenda-skip-unavailable-files t)
+
+    ;; (setq org-agenda-files (directory-files-recursively org-directory "\\\\.org$"))
+    ;; (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
+    (setq org-agenda-files '("~/workspace/second-brain/org-roam/todo.org"
+                             "~/workspace/second-brain/org-roam/work_tasks.org"
+                             "~/workspace/second-brain/org-roam/homelab_tasks.org"
+                             "~/workspace/second-brain/org-roam/emacs_tweak_tasks.org"
+                             "~/workspace/second-brain/org-roam/dotfiles_tweak_tasks.org"
+                             "~/workspace/second-brain/org-roam/curriculum_tasks.org"))
+    (org-super-agenda-mode)
+
+    ;; Use a dedicated directory for all org files
+    (setq org-directory "~/workspace/second-brain/org-roam/")
 
     ;; Enable advanced dependency tracking
     (setq org-enforce-todo-dependencies t)
