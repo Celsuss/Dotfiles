@@ -942,7 +942,7 @@ before packages are loaded."
            :user-name "celsuss"
            :port 6697
            :encryption tls
-           :channels ("#emacs" "#spacemacs" "##llamas" "#archlinux"))
+           :channels ("#emacs" "#spacemacs" "##llamas" "#archlinux" "#archlinux-offtopic" "#linux" "#Linuxkompis" "#archlinux-nordics" "#archlinux-testing"))
           ("stockholm.se.quakenet.org"
            :user-name "Celsuss"
            :port 6667
