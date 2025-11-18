@@ -152,5 +152,16 @@ export NVM_DIR="$HOME/.nvm"
 
 . "$HOME/.local/bin/env"
 
-# K3s
+#######
+# K3s #
+#######
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+
+##########
+# Zoxide #
+##########
+# Exclude common directories from zoxide's database
+# Add any other paths you want to ignore, separated by :
+export _ZO_EXCLUDE_DIRS="$HOME/.cache:$HOME/Downloads:*/__pycache__:*/.git:*/venv:*/.venv"
+
+eval "$(zoxide init zsh)"

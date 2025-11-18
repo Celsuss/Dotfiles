@@ -16,7 +16,7 @@
 ;; Variable definitions ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq my/litellm-api-key (my/get-secret "litellm"))
-(setq my/execution-context 'work)
+(setq my/execution-context 'home)
 
 
 ;;;;;;;;;;;;;;;
