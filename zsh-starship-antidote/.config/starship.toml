@@ -14,6 +14,7 @@ $os\
 $directory\
 $git_branch\
 $git_status\
+${custom.jj}\
 $fill\
 $c\
 $cpp\
@@ -181,3 +182,19 @@ format = '[ $user ]($style)'
 success_symbol = "[λ](bold green)"
 error_symbol = "[✗](bold red)"
 vicmd_symbol = "[❮](bold yellow)"
+
+# --- Custom ---
+[custom.jj]
+description = "Jujutsu VCS status"
+# Run 'jj root' to quickly detect if we are in a repo
+detect_folders = [".jj"]
+# Show the current change ID and its status
+command = """
+jj log --ignore-working-copy --no-graph --color always --limit 1 \
+--template 'change_id.short() ++ " " ++ if(description, description.first_line().substr(0, 20), "no desc")'
+"""
+style = "bold purple"
+symbol = "🥋 "
+format = "via [$symbol$output]($style) "
+# Only run if inside a jj repo
+when = "jj root"

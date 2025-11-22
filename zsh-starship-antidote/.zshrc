@@ -17,6 +17,9 @@ compinit -C -d "$ZSH_CACHE_DIR/zcompdump"
 zstyle :omz:plugins:keychain agents ssh,gpg
 zstyle :omz:plugins:keychain identities id_rsa
 
+# Hook direnv into Zsh
+eval "$(direnv hook zsh)"
+
 # --- Load Plugins (Antidote) ---
 source /usr/share/zsh-antidote/antidote.zsh
 antidote load ${ZDOTDIR:-$HOME}/.zsh_plugins.txt
@@ -32,6 +35,7 @@ alias fzf="fzf --preview 'bat --color=always {}'"
 alias ls="eza --icons"
 alias ll='ls -lah'
 alias grep='grep --color=auto'
+alias jui="lazyjj"
 
 # --- fzf tab auto complete ---
 # disable sort when completing `git checkout`
@@ -67,7 +71,7 @@ export FZF_DEFAULT_OPTS="
 # --- Starship Prompt ---
 eval "$(starship init zsh)"
 
-# --- Inits ---
+# --- Zoxide ---
 eval "$(zoxide init zsh)"
 # Apply the same eza preview to 'z' command
 zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1 --color=always $realpath'
@@ -87,3 +91,8 @@ function zvm_after_init() {
     # BINDING: Map '/' in Normal Mode to FZF History
     zvm_bindkey vicmd '/' fzf-history-widget
 }
+
+# --- fd with fzf ---
+# Use fd (faster, respects gitignore) instead of find
+export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
