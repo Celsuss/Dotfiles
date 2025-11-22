@@ -71,3 +71,19 @@ eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 # Apply the same eza preview to 'z' command
 zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1 --color=always $realpath'
+
+# --- FZF & Vi-Mode Integration ---
+
+# Configure the look of the FZF window (with 'bat' colors)
+export FZF_CTRL_R_OPTS="
+  --preview 'echo {}' --preview-window up:3:hidden:wrap
+  --bind 'ctrl-/:toggle-preview'
+  --color header:italic
+  --header 'Press CTRL-Y to copy command into clipboard'"
+
+function zvm_after_init() {
+    # We must source this file here to create the 'fzf-history-widget'
+    source /usr/share/fzf/key-bindings.zsh
+    # BINDING: Map '/' in Normal Mode to FZF History
+    zvm_bindkey vicmd '/' fzf-history-widget
+}
