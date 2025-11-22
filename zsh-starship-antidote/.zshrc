@@ -96,3 +96,8 @@ function zvm_after_init() {
 # Use fd (faster, respects gitignore) instead of find
 export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# --- Man and bat ---
+# Colorize man pages using bat
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export MANROFFOPT="-c"

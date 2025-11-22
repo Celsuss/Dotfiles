@@ -1,0 +1,14 @@
+
+k9s:
+  liveViewAutoRefresh: false
+  refreshRate: 5
+  maxConnRetry: 3
+  # readOnly: false
+  ui:
+    enableMouse: false
+    headless: false
+    logoless: false
+    crumbsless: false
+    noIcons: false
+    reactive: true
+    skin: gruvbox-dark
