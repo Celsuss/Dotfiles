@@ -1,5 +1,4 @@
 # ~/.config/starship.toml
-# ~/.config/starship.toml
 
 # --- GLOBAL SETTINGS (Must go at the top) ---
 
@@ -11,11 +10,13 @@ add_newline = true
 
 # 3. Define the Format
 format = """
+$os\
 $directory\
 $git_branch\
 $git_status\
 $fill\
 $c\
+$cpp\
 $elixir\
 $elm\
 $golang\
@@ -59,6 +60,9 @@ truncation_symbol = "…/"
 symbol = " "
 style = "bold orange"
 
+[git_commit]
+tag_symbol = '  '
+
 [git_status]
 style = "bold red"
 format = '([$all_status$ahead_behind]($style) )'
@@ -66,10 +70,68 @@ format = '([$all_status$ahead_behind]($style) )'
 [fill]
 symbol = " "
 
+# --- Operating systems ---
+
+[os]
+disabled = false
+# style = "bg:color_orange fg:color_fg0"
+
+[os.symbols]
+Alpaquita = " "
+Alpine = " "
+AlmaLinux = " "
+Amazon = " "
+Android = " "
+AOSC = " "
+Arch = " "
+Artix = " "
+CachyOS = " "
+CentOS = " "
+Debian = " "
+DragonFly = " "
+Emscripten = " "
+EndeavourOS = " "
+Fedora = " "
+FreeBSD = " "
+Garuda = "󰛓 "
+Gentoo = " "
+HardenedBSD = "󰞌 "
+Illumos = "󰈸 "
+Kali = " "
+Linux = " "
+Mabox = " "
+Macos = " "
+Manjaro = " "
+Mariner = " "
+MidnightBSD = " "
+Mint = " "
+NetBSD = " "
+NixOS = " "
+Nobara = " "
+OpenBSD = "󰈺 "
+openSUSE = " "
+OracleLinux = "󰌷 "
+Pop = " "
+Raspbian = " "
+Redhat = " "
+RedHatEnterprise = " "
+RockyLinux = " "
+Redox = "󰀘 "
+Solus = "󰠳 "
+SUSE = " "
+Ubuntu = " "
+Unknown = " "
+Void = " "
+Windows = "󰍲 "
+
 # --- Languages ---
 
 [c]
 symbol = " "
+style = "bold yellow"
+
+[cpp]
+symbol = " "
 style = "bold yellow"
 
 [golang]
@@ -95,6 +157,23 @@ style = "bold red"
 [docker_context]
 symbol = " "
 style = "blue"
+
+[lua]
+symbol = " "
+
+# --- System ---
+[package]
+symbol = "󰏗 "
+
+[hostname]
+ssh_symbol = " "
+
+[memory_usage]
+symbol = "󰍛 "
+
+[username]
+show_always = true
+format = '[ $user ]($style)'
 
 # --- Prompt Character ---
 
