@@ -984,6 +984,17 @@ before packages are loaded."
     ;; Skip deleted files
     (setq org-agenda-skip-unavailable-files t)
 
+    ;; Make buffer horizontal
+    (setq org-agenda-window-setup 'reorganize-frame) ;; 'reorganize-frame 'other-window 'current-window
+    (setq org-agenda-restore-windows-after-quit t)
+    (setq org-agenda-window-frame-fractions '(0.8 . 0.9))
+
+    (defadvice org-agenda (around split-vertically activate)
+      (let (
+            (split-width-threshold 40)    ; or whatever width makes sense for you
+            (split-height-threshold nil)) ; but never horizontally
+        ad-do-it))
+
     ;; (setq org-agenda-files (directory-files-recursively org-directory "\\\\.org$"))
     ;; (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
     (setq org-agenda-files '("~/workspace/second-brain/org-roam/todo.org"
@@ -1151,9 +1162,6 @@ before packages are loaded."
   ;; Org-agenda and org-super-agenda
   ;; (with-eval-after-load 'org
   ;; TODO Investigate org-roam-db-auto-sync-mode
-  ;; (require 'org-super-agenda)
-
-  ;; )
 
   ;; ============================================================================
   ;; Alerts
