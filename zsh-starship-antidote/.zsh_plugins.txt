@@ -5,6 +5,7 @@ ohmyzsh/ohmyzsh path:plugins/common-aliases
 # --- The Performance Trio ---
 zsh-users/zsh-completions
 zsh-users/zsh-autosuggestions
+Aloxaf/fzf-tab
 zsh-users/zsh-history-substring-search
 
 # --- Input Mode ---
