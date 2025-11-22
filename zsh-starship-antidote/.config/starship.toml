@@ -1,0 +1,104 @@
+# ~/.config/starship.toml
+# ~/.config/starship.toml
+
+# --- GLOBAL SETTINGS (Must go at the top) ---
+
+# 1. Select the custom palette defined below
+palette = "gruvbox_custom"
+
+# 2. Global behavior
+add_newline = true
+
+# 3. Define the Format
+format = """
+$directory\
+$git_branch\
+$git_status\
+$fill\
+$c\
+$elixir\
+$elm\
+$golang\
+$haskell\
+$java\
+$julia\
+$nodejs\
+$nim\
+$rust\
+$scala\
+$python\
+$docker_context\
+$line_break\
+$character"""
+
+# --- PALETTES ---
+
+# 4. Define the Gruvbox palette
+[palettes.gruvbox_custom]
+bg_dark    = "#282828"
+fg_light   = "#ebdbb2"
+selection  = "#d65d0e"
+gray       = "#928374"
+red        = "#cc241d"
+green      = "#98971a"
+yellow     = "#d79921"
+blue       = "#458588"
+purple     = "#b16286"
+aqua       = "#689d6a"
+orange     = "#d65d0e"
+
+# --- MODULE CONFIGURATION ---
+
+[directory]
+style = "bold blue"
+read_only = " 🔒"
+truncation_length = 4
+truncation_symbol = "…/"
+
+[git_branch]
+symbol = " "
+style = "bold orange"
+
+[git_status]
+style = "bold red"
+format = '([$all_status$ahead_behind]($style) )'
+
+[fill]
+symbol = " "
+
+# --- Languages ---
+
+[c]
+symbol = " "
+style = "bold yellow"
+
+[golang]
+symbol = " "
+style = "bold aqua"
+
+[java]
+symbol = " "
+style = "bold red"
+
+[nodejs]
+symbol = " "
+style = "bold green"
+
+[python]
+symbol = " "
+style = "bold yellow"
+
+[rust]
+symbol = " "
+style = "bold red"
+
+[docker_context]
+symbol = " "
+style = "blue"
+
+# --- Prompt Character ---
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[✗](bold red)"
+vicmd_symbol = "[❮](bold yellow)"
