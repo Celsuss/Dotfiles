@@ -16,6 +16,7 @@ $git_branch\
 $git_status\
 ${custom.jj}\
 $fill\
+$kubernetes\
 $c\
 $cpp\
 $elixir\
@@ -175,6 +176,11 @@ symbol = "󰍛 "
 [username]
 show_always = true
 format = '[ $user ]($style)'
+
+[kubernetes]
+disabled = false
+format = 'on [$symbol$context( \($namespace\))]($style) '
+style = 'cyan bold'
 
 # --- Prompt Character ---
 

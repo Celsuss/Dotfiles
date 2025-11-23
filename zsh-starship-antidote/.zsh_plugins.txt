@@ -23,6 +23,7 @@ ohmyzsh/ohmyzsh path:plugins/pylint
 ohmyzsh/ohmyzsh path:plugins/pip
 ohmyzsh/ohmyzsh path:plugins/minikube
 ohmyzsh/ohmyzsh path:plugins/kubectl
+ohmyzsh/ohmyzsh path:plugins/kubectx
 ohmyzsh/ohmyzsh path:plugins/helm
 ohmyzsh/ohmyzsh path:plugins/emacs
 ohmyzsh/ohmyzsh path:plugins/docker

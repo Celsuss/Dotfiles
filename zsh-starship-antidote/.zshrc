@@ -76,6 +76,15 @@ eval "$(zoxide init zsh)"
 # Apply the same eza preview to 'z' command
 zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1 --color=always $realpath'
 
+# --- Yazi config ---
+function y() {
+	  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	  yazi "$@" --cwd-file="$tmp"
+	  IFS= read -r -d '' cwd < "$tmp"
+	  [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	  rm -f -- "$tmp"
+}
+
 # --- FZF & Vi-Mode Integration ---
 
 # Configure the look of the FZF window (with 'bat' colors)
