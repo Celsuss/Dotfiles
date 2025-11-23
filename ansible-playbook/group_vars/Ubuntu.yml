@@ -1,6 +1,6 @@
 ---
 # Packages specifically for Ubuntu
-system_packages:
+os_system_packages:
   - git
   - stow
   - zsh
