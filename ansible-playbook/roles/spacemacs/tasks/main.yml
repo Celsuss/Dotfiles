@@ -1,0 +1,15 @@
+---
+- name: Ensure .emacs.d directory exists (for cloning)
+  file:
+    path: "{{ spacemacs_dest }}"
+    state: directory
+    mode: '0755'
+
+- name: Clone Spacemacs repository (develop branch)
+  git:
+    repo: "{{ spacemacs_repo }}"
+    dest: "{{ spacemacs_dest }}"
+    version: "{{ spacemacs_branch }}"
+    update: no
+    accept_hostkey: yes
+    depth: 1 # Shallow clone to save bandwidth/space

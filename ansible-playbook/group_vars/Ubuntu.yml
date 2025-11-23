@@ -1,0 +1,9 @@
+---
+# Packages specifically for Ubuntu
+system_packages:
+  - git
+  - stow
+  - zsh
+  - emacs
+  - ripgrep
+  - build-essential

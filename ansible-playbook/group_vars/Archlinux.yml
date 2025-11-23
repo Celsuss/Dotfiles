@@ -1,0 +1,9 @@
+---
+# Packages specifically for Arch Linux
+system_packages:
+  - git
+  - stow
+  - zsh
+  - emacs
+  - ripgrep
+  - base-devel
