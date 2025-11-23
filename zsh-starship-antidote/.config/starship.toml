@@ -186,15 +186,25 @@ vicmd_symbol = "[❮](bold yellow)"
 # --- Custom ---
 [custom.jj]
 description = "Jujutsu VCS status"
-# Run 'jj root' to quickly detect if we are in a repo
 detect_folders = [".jj"]
-# Show the current change ID and its status
+# style = "bold purple"
+# symbol = "🥋 "
+symbol = "" # Handled inside the command
+style = ""  # Handled inside the command
 command = """
-jj log --ignore-working-copy --no-graph --color always --limit 1 \
---template 'change_id.short() ++ " " ++ if(description, description.first_line().substr(0, 20), "no desc")'
+jj log -r @ --ignore-working-copy --no-graph --color always --limit 1 --template '
+label(if(conflict, "conflict", "change_id"), "jj ") ++
+label("change_id", change_id.shortest(4)) ++
+if(bookmarks, " [" ++ bookmarks.map(|b| b.name()).join(", ") ++ "]") ++
+" " ++
+if(description,
+  description.first_line().substr(0, 25),
+  if(empty, "empty", "no desc")
+) ++
+if(conflict, label("conflict", " jj")) ++
+if(divergent, " ⇆") ++
+if(hidden, " jj")
+'
 """
-style = "bold purple"
-symbol = "🥋 "
-format = "via [$symbol$output]($style) "
-# Only run if inside a jj repo
-when = "jj root"
+
+format = "[$symbol$output]($style) "
