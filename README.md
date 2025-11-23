@@ -54,12 +54,12 @@ I use **Ansible** to detect the OS (Arch vs Ubuntu), install the necessary syste
 ### Deployment
 1.  Clone the repository:
     ```bash
-    git clone [https://github.com/celsuss/dotfiles.git](https://github.com/celsuss/dotfiles.git) ~/workspace/dotfiles
+    git clone https://github.com/celsuss/dotfiles.git
     ```
 
 2.  Run the Ansible setup:
     ```bash
-    cd ~/workspace/dotfiles/ansible-playbook
+    cd dotfiles/ansible-playbook
     # Dry run to check what will happen
     ansible-playbook setup.yml --check --ask-become-pass
 
