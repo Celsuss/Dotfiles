@@ -187,8 +187,6 @@ vicmd_symbol = "[❮](bold yellow)"
 [custom.jj]
 description = "Jujutsu VCS status"
 detect_folders = [".jj"]
-# style = "bold purple"
-# symbol = "🥋 "
 symbol = "" # Handled inside the command
 style = ""  # Handled inside the command
 command = """
