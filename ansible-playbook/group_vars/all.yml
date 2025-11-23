@@ -29,3 +29,5 @@ common_system_packages:
   - direnv
   - rustup
   - posting
+  - vlc
+  - spotify
