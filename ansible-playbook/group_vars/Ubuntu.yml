@@ -1,9 +1,5 @@
 ---
 # Packages specifically for Ubuntu
 os_system_packages:
-  - git
-  - stow
-  - zsh
-  - emacs
   - ripgrep
   - build-essential

@@ -21,3 +21,11 @@ common_system_packages:
   - zsh
   - emacs
   - just
+  - kitty
+  - btop
+  - eza
+  - zoxide
+  - bat
+  - direnv
+  - rustup
+  - posting
