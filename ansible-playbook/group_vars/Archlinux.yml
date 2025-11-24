@@ -1,0 +1,5 @@
+---
+# Packages specifically for Arch Linux
+os_system_packages:
+  - ripgrep
+  - base-devel

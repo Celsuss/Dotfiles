@@ -1,0 +1,214 @@
+# ~/.config/starship.toml
+
+# --- GLOBAL SETTINGS (Must go at the top) ---
+
+# 1. Select the custom palette defined below
+palette = "gruvbox_custom"
+
+# 2. Global behavior
+add_newline = true
+
+# 3. Define the Format
+format = """
+$os\
+$directory\
+$git_branch\
+$git_status\
+${custom.jj}\
+$fill\
+$kubernetes\
+$c\
+$cpp\
+$elixir\
+$elm\
+$golang\
+$haskell\
+$java\
+$julia\
+$nodejs\
+$nim\
+$rust\
+$scala\
+$python\
+$docker_context\
+$line_break\
+$character"""
+
+# --- PALETTES ---
+
+# 4. Define the Gruvbox palette
+[palettes.gruvbox_custom]
+bg_dark    = "#282828"
+fg_light   = "#ebdbb2"
+selection  = "#d65d0e"
+gray       = "#928374"
+red        = "#cc241d"
+green      = "#98971a"
+yellow     = "#d79921"
+blue       = "#458588"
+purple     = "#b16286"
+aqua       = "#689d6a"
+orange     = "#d65d0e"
+
+# --- MODULE CONFIGURATION ---
+
+[directory]
+style = "bold blue"
+read_only = " 🔒"
+truncation_length = 4
+truncation_symbol = "…/"
+
+[git_branch]
+symbol = " "
+style = "bold orange"
+
+[git_commit]
+tag_symbol = '  '
+
+[git_status]
+style = "bold red"
+format = '([$all_status$ahead_behind]($style) )'
+
+[fill]
+symbol = " "
+
+# --- Operating systems ---
+
+[os]
+disabled = false
+# style = "bg:color_orange fg:color_fg0"
+
+[os.symbols]
+Alpaquita = " "
+Alpine = " "
+AlmaLinux = " "
+Amazon = " "
+Android = " "
+AOSC = " "
+Arch = " "
+Artix = " "
+CachyOS = " "
+CentOS = " "
+Debian = " "
+DragonFly = " "
+Emscripten = " "
+EndeavourOS = " "
+Fedora = " "
+FreeBSD = " "
+Garuda = "󰛓 "
+Gentoo = " "
+HardenedBSD = "󰞌 "
+Illumos = "󰈸 "
+Kali = " "
+Linux = " "
+Mabox = " "
+Macos = " "
+Manjaro = " "
+Mariner = " "
+MidnightBSD = " "
+Mint = " "
+NetBSD = " "
+NixOS = " "
+Nobara = " "
+OpenBSD = "󰈺 "
+openSUSE = " "
+OracleLinux = "󰌷 "
+Pop = " "
+Raspbian = " "
+Redhat = " "
+RedHatEnterprise = " "
+RockyLinux = " "
+Redox = "󰀘 "
+Solus = "󰠳 "
+SUSE = " "
+Ubuntu = " "
+Unknown = " "
+Void = " "
+Windows = "󰍲 "
+
+# --- Languages ---
+
+[c]
+symbol = " "
+style = "bold yellow"
+
+[cpp]
+symbol = " "
+style = "bold yellow"
+
+[golang]
+symbol = " "
+style = "bold aqua"
+
+[java]
+symbol = " "
+style = "bold red"
+
+[nodejs]
+symbol = " "
+style = "bold green"
+
+[python]
+symbol = " "
+style = "bold yellow"
+
+[rust]
+symbol = " "
+style = "bold red"
+
+[docker_context]
+symbol = " "
+style = "blue"
+
+[lua]
+symbol = " "
+
+# --- System ---
+[package]
+symbol = "󰏗 "
+
+[hostname]
+ssh_symbol = " "
+
+[memory_usage]
+symbol = "󰍛 "
+
+[username]
+show_always = true
+format = '[ $user ]($style)'
+
+[kubernetes]
+disabled = false
+format = 'on [$symbol$context( \($namespace\))]($style) '
+style = 'cyan bold'
+
+# --- Prompt Character ---
+
+[character]
+success_symbol = "[λ](bold green)"
+error_symbol = "[✗](bold red)"
+vicmd_symbol = "[❮](bold yellow)"
+
+# --- Custom ---
+[custom.jj]
+description = "Jujutsu VCS status"
+detect_folders = [".jj"]
+symbol = "" # Handled inside the command
+style = ""  # Handled inside the command
+command = """
+jj log -r @ --ignore-working-copy --no-graph --color always --limit 1 --template '
+label(if(conflict, "conflict", "change_id"), "jj ") ++
+label("change_id", change_id.shortest(4)) ++
+if(bookmarks, " [" ++ bookmarks.map(|b| b.name()).join(", ") ++ "]") ++
+" " ++
+if(description,
+  description.first_line().substr(0, 25),
+  if(empty, "empty", "no desc")
+) ++
+if(conflict, label("conflict", " jj")) ++
+if(divergent, " ⇆") ++
+if(hidden, " jj")
+'
+"""
+
+format = "[$symbol$output]($style) "

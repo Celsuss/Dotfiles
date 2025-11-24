@@ -1,0 +1,23 @@
+---
+- name: Install Rust Toolchains
+  command: "rustup toolchain install {{ item }}"
+  loop: "{{ rust_channels }}"
+  register: toolchain_install
+  changed_when: "'unchanged' not in toolchain_install.stdout"
+
+- name: Install Rust Components
+  command: "rustup component add {{ item.name }} --toolchain {{ item.toolchain }}"
+  loop: "{{ rust_components }}"
+  register: component_install
+  changed_when: "'up to date' not in component_install.stderr"
+
+- name: Get list of installed Cargo crates
+  command: cargo install --list
+  register: installed_crates
+  changed_when: false
+
+- name: Install Cargo Crates
+  shell: "cargo install {{ item }}"
+  loop: "{{ cargo_crates }}"
+  # Only run if the crate name is not found in the installed list
+  when: "item not in installed_crates.stdout"

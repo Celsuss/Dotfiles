@@ -1,0 +1,21 @@
+---
+rust_channels:
+  - stable
+  - nightly
+
+rust_components:
+  - name: clippy
+    toolchain: stable
+  - name: rustfmt
+    toolchain: nightly
+
+cargo_crates:
+  - cargo-deny
+  - cargo-machete
+  - taplo-cli
+  - reuse
+  - cocogitto
+  - committed
+  - cargo-insta
+  - tangler
+  - lychee

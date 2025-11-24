@@ -1,0 +1,10 @@
+# ~/.jj/config.toml
+
+[ui]
+editor = "emacs"
+
+default-command = "log"
+
+[user]
+name = "Celsuss"
+email = "jenslorden@proton.me"

@@ -1,0 +1,46 @@
+# --- Core Libs ---
+ohmyzsh/ohmyzsh path:lib
+ohmyzsh/ohmyzsh path:plugins/common-aliases
+
+# --- The Performance Trio ---
+zsh-users/zsh-completions
+zsh-users/zsh-autosuggestions
+Aloxaf/fzf-tab
+zsh-users/zsh-history-substring-search
+
+# --- Input Mode ---
+jeffreytse/zsh-vi-mode
+
+# --- Modern Tools ---
+MichaelAquilina/zsh-you-should-use
+hlissner/zsh-autopair
+
+# --- OMZ Plugins ---
+ohmyzsh/ohmyzsh path:plugins/git
+ohmyzsh/ohmyzsh path:plugins/rust
+ohmyzsh/ohmyzsh path:plugins/pyenv
+ohmyzsh/ohmyzsh path:plugins/pylint
+ohmyzsh/ohmyzsh path:plugins/pip
+ohmyzsh/ohmyzsh path:plugins/minikube
+ohmyzsh/ohmyzsh path:plugins/kubectl
+ohmyzsh/ohmyzsh path:plugins/kubectx
+ohmyzsh/ohmyzsh path:plugins/helm
+ohmyzsh/ohmyzsh path:plugins/emacs
+ohmyzsh/ohmyzsh path:plugins/docker
+ohmyzsh/ohmyzsh path:plugins/docker-compose
+ohmyzsh/ohmyzsh path:plugins/jj
+ohmyzsh/ohmyzsh path:plugins/zoxide
+ohmyzsh/ohmyzsh path:plugins/fzf
+ohmyzsh/ohmyzsh path:plugins/keychain
+
+# --- Utility ---
+ohmyzsh/ohmyzsh path:plugins/sudo
+ohmyzsh/ohmyzsh path:plugins/command-not-found
+ohmyzsh/ohmyzsh path:plugins/archlinux
+
+# --- Syntax Highlighting (MUST BE LAST) ---
+# Loads last to ensure it can highlight everything defined above
+zsh-users/zsh-syntax-highlighting
+
+# --- Prompt ---
+# We don't load a prompt plugin here because we are using Starship binary

@@ -1,0 +1,33 @@
+---
+# Variables available to ALL OSs
+username: "{{ ansible_facts['user_id'] }}"
+stow_dirs:
+  - zsh-starship-antidote
+  - git
+  - jj
+  - spacemacs
+  - kitty
+  - k9s
+  - direnv
+  - btop
+
+spacemacs_repo: "https://github.com/syl20bnr/spacemacs"
+spacemacs_dest: "{{ ansible_facts['user_dir'] }}/.emacs.d"
+spacemacs_branch: "develop"
+
+common_system_packages:
+  - git
+  - stow
+  - zsh
+  - emacs
+  - just
+  - kitty
+  - btop
+  - eza
+  - zoxide
+  - bat
+  - direnv
+  - rustup
+  - posting
+  - vlc
+  - spotify

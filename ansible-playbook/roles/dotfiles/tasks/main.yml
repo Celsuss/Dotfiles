@@ -1,0 +1,8 @@
+---
+- name: Stow dotfiles
+  shell: "stow -v -t {{ ansible_facts['user_dir'] }} {{ item }}"
+  args:
+    chdir: "{{ playbook_dir }}/.."
+  loop: "{{ stow_dirs }}"
+  register: stow_result
+  changed_when: "'LINK' in stow_result.stderr"

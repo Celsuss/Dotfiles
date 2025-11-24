@@ -1,0 +1,17 @@
+- hosts: all
+  connection: local
+  gather_facts: yes
+  tasks:
+    - name: Classify hosts depending on distribution
+      group_by:
+        key: "{{ ansible_facts['distribution'] }}"
+      changed_when: False
+
+- hosts: all
+  connection: local
+  gather_facts: no # Facts were gathered in Play 1
+  roles:
+    - common
+    - spacemacs
+    - dotfiles
+    - rust

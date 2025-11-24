@@ -1,0 +1,16 @@
+# ~/.config/direnv/direnvrc
+
+# Custom layout to force the venv to be named ".venv"
+layout_python() {
+    local python=${1:-python3}
+    local venv_path="${PWD}/.venv"
+
+    if [[ ! -d "$venv_path" ]]; then
+        echo "Creating virtual environment in .venv..."
+        $python -m venv "$venv_path"
+    fi
+
+    export VIRTUAL_ENV="$venv_path"
+    PATH_add "$venv_path/bin"
+    export VIRTUAL_ENV_PROMPT="($(basename $PWD)) "
+}

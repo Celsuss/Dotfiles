@@ -1,0 +1,5 @@
+---
+# Packages specifically for Ubuntu
+os_system_packages:
+  - ripgrep
+  - build-essential
