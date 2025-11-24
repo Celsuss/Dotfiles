@@ -100,14 +100,14 @@ This function should only modify configuration layer settings."
      emacs-lisp
      (python :variables
              python-backend 'lsp
-             python-formatter 'yapf ;; black, yapf or lsp
-             python-format-on-save t
-             python-sort-imports-on-save t
+             python-formatter 'lsp ;; 'black, 'yapf or 'lsp
+             python-format-on-save nil ;; t / nil
+             python-sort-imports-on-save nil ;; t / nil
              python-test-runner 'pytest)
      (ipython-notebook :variables
                        ein-backend 'lsp
                        python-formatter 'lsp
-                       python-sort-imports-on-save t
+                       python-sort-imports-on-save nil
                        python-format-on-save t
                        )
      (rust :variables
@@ -220,6 +220,10 @@ This function should only modify configuration layer settings."
      ;; Language support
      just-mode
      ;; ejc-sql
+
+     ;; LSP and LSP-addons
+     apheleia
+     ;; flycheck-ruff
 
      ;; Game engine
      gdscript-mode
@@ -650,7 +654,8 @@ It should only modify the values of Spacemacs settings."
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
    ;; (default '("rg" "ag" "pt" "ack" "grep"))
-   dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
+   ;; dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
+   dotspacemacs-search-tools '("rg" "ag" "ack" "grep") ;; "pt" failed on ubutnu
 
    ;; Format specification for setting the frame title.
    ;; %a - the `abbreviated-file-name', or `buffer-name'
@@ -818,6 +823,68 @@ before packages are loaded."
   (setq rustic-rustfmt-args "+nightly")
   (setq lsp-rust-analyzer-cargo-watch-command "clippy")
 
+  (use-package apheleia
+    :ensure t
+    :config
+    ;; turn on apheleia globally
+    (apheleia-global-mode +1)
+    (setf (alist-get 'python-mode apheleia-mode-alist) '(ruff)))
+
+  (use-package flycheck
+    :ensure t
+    :config
+    ;; Define the Ruff checker manually (No external package needed)
+    (flycheck-define-checker python-ruff
+      "A Python syntax and style checker using the ruff utility."
+      ;; Command to run ruff on the current file
+      :command ("ruff" "check" "--output-format=text" source-original)
+      :error-patterns
+      ((error line-start (file-name) ":" line ":" column ": "
+              (id (one-or-more (any alpha)) (one-or-more digit)) " "
+              (message) line-end))
+      :modes python-mode)
+
+    ;; This prints a message to the *Messages* buffer when Apheleia formats
+    (setq apheleia-log-only-errors nil)
+
+    ;; Add it to the checker list
+    (add-to-list 'flycheck-checkers 'python-ruff)
+
+    ;; Force it to run after LSP (Chaining)
+    (add-hook 'lsp-after-open-hook
+              (lambda ()
+                (when (derived-mode-p 'python-mode)
+                  ;; This tells flycheck: Run LSP first, then run Ruff
+                  (flycheck-add-next-checker 'lsp 'python-ruff)))))
+
+  ;; -------------------------------------------------------
+  ;; FIX: Remove conflicting Spacemacs/LSP formatters
+  ;; -------------------------------------------------------
+  (defun my-remove-conflicting-python-hooks ()
+    "Strip standard Spacemacs hooks so Apheleia has exclusive control."
+    ;; 1. Stop Spacemacs from running isort
+    (remove-hook 'before-save-hook 'spacemacs//python-sort-imports t)
+    ;; 2. Stop Spacemacs from triggering LSP format
+    (remove-hook 'before-save-hook 'spacemacs//python-lsp-format-on-save t)
+    ;; 3. Stop standard LSP-mode from triggering LSP format
+    (remove-hook 'before-save-hook 'lsp-format-buffer-before-save t))
+  (add-hook 'python-mode-hook 'my-remove-conflicting-python-hooks)
+
+  ;; -------------------------------------------------------
+  ;; OPTIONAL: Visual feedback to confirm Apheleia is working
+  ;; -------------------------------------------------------
+
+  ;; (use-package flycheck-ruff
+  ;;   :ensure t
+  ;;   :after flycheck
+  ;;   :config
+  ;; Configure flycheck to use ruff
+  ;; (flycheck-ruff-setup)
+
+  ;; OPTIONAL: If you have a ruff.toml file, you can point to it explicitly
+  ;; (setq flycheck-ruff-config-path "/path/to/ruff.toml")
+  ;; )
+
   ;; ============================================================================
   ;; LLMs
   ;; ============================================================================
@@ -958,7 +1025,7 @@ before packages are loaded."
            :user-name "celsuss"
            :port 6697
            :encryption tls
-           :channels ("#emacs" "#spacemacs" "##llamas" "#archlinux" "#archlinux-offtopic" "#Linuxkompis" "#archlinux-nordics" "#archlinux-testing"))
+           :channels ("#emacs" "#spacemacs" "##llamas" "#archlinux" "#archlinux-offtopic" "#linux" "#Linuxkompis" "#archlinux-nordics" "#archlinux-testing"))
           ("stockholm.se.quakenet.org"
            :user-name "Celsuss"
            :port 6667
@@ -1273,32 +1340,33 @@ This function is called at the very end of Spacemacs initialization."
    '(ispell-dictionary nil)
    '(org-agenda-files nil)
    '(package-selected-packages
-     '(ac-ispell ace-jump-helm-line ace-link aggressive-indent alert auto-compile
-                 auto-complete auto-highlight-symbol auto-yasnippet autothemer
-                 beacon bui cargo centered-cursor-mode cfrs clean-aindent-mode
-                 column-enforce-mode company company-emoji counsel counsel-gtags
-                 dap-mode define-word devdocs diminish dired-quick-sort
-                 doom-modeline dotenv-mode drag-stuff dumb-jump editorconfig eldoc
-                 elisp-def elisp-slime-nav emoji-cheat-sheet-plus emr esh-help
-                 eshell-prompt-extras eshell-z eval-sexp-fu evil-anzu evil-args
-                 evil-cleverparens evil-collection evil-escape
-                 evil-evilified-state evil-exchange evil-goggles evil-iedit-state
-                 evil-indent-plus evil-lion evil-lisp-state evil-matchit evil-mc
-                 evil-nerd-commenter evil-numbers evil-org evil-surround
-                 evil-textobj-line evil-tutor evil-unimpaired
-                 evil-visual-mark-mode evil-visualstar expand-region eyebrowse
-                 fancy-battery flx-ido flycheck-elsa flycheck-package
-                 flycheck-pos-tip flycheck-rust font-lock+ fuzzy ggtags gh-md gntp
-                 gnuplot golden-ratio google-translate gruvbox-theme helm-ag
-                 helm-c-yasnippet helm-company helm-descbinds helm-gtags helm-lsp
-                 helm-make helm-mode-manager helm-org helm-org-rifle
-                 helm-projectile helm-purpose helm-swoop helm-themes helm-xref
-                 help-fns+ hide-comnt highlight-indentation highlight-numbers
+     '(ac-ispell ace-jump-helm-line ace-link aggressive-indent alert apheleia
+                 auto-compile auto-complete auto-highlight-symbol auto-yasnippet
+                 autothemer beacon bui cargo centered-cursor-mode cfrs
+                 clean-aindent-mode column-enforce-mode company company-emoji
+                 counsel counsel-gtags dap-mode define-word devdocs diminish
+                 dired-quick-sort doom-modeline dotenv-mode drag-stuff dumb-jump
+                 editorconfig eldoc elisp-def elisp-slime-nav
+                 emoji-cheat-sheet-plus emr esh-help eshell-prompt-extras eshell-z
+                 eval-sexp-fu evil-anzu evil-args evil-cleverparens
+                 evil-collection evil-escape evil-evilified-state evil-exchange
+                 evil-goggles evil-iedit-state evil-indent-plus evil-lion
+                 evil-lisp-state evil-matchit evil-mc evil-nerd-commenter
+                 evil-numbers evil-org evil-surround evil-textobj-line evil-tutor
+                 evil-unimpaired evil-visual-mark-mode evil-visualstar
+                 expand-region eyebrowse fancy-battery flx-ido flycheck-elsa
+                 flycheck-package flycheck-pos-tip flycheck-ruff flycheck-rust
+                 font-lock+ fuzzy ggtags gh-md gntp gnuplot golden-ratio
+                 google-translate gruvbox-theme helm-ag helm-c-yasnippet
+                 helm-company helm-descbinds helm-gtags helm-lsp helm-make
+                 helm-mode-manager helm-org helm-org-rifle helm-projectile
+                 helm-purpose helm-swoop helm-themes helm-xref help-fns+
+                 hide-comnt highlight-indentation highlight-numbers
                  highlight-parentheses hl-todo holy-mode htmlize hungry-delete
-                 hybrid-mode indent-guide info+ inspector ivy just-mode link-hint
-                 log4e lorem-ipsum lsp-docker lsp-mode lsp-origami lsp-treemacs
-                 lsp-ui macrostep map markdown-mode markdown-toc mmm-mode
-                 multi-line multi-term multi-vterm mwim nameless neotree nhich-key
+                 hybrid-mode indent-guide info+ inspector ivy link-hint log4e
+                 lorem-ipsum lsp-docker lsp-mode lsp-origami lsp-treemacs lsp-ui
+                 macrostep map markdown-mode markdown-toc mmm-mode multi-line
+                 multi-term multi-vterm mwim nameless neotree nhich-key
                  open-junk-file org org-category-capture org-cliplink org-contrib
                  org-download org-mime org-pomodoro org-present org-projectile
                  org-ql org-rich-yank org-roam org-roam-ui org-sidebar
