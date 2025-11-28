@@ -1069,7 +1069,8 @@ before packages are loaded."
                              "~/workspace/second-brain/org-roam/homelab_tasks.org"
                              "~/workspace/second-brain/org-roam/emacs_tweak_tasks.org"
                              "~/workspace/second-brain/org-roam/dotfiles_tweak_tasks.org"
-                             "~/workspace/second-brain/org-roam/curriculum_tasks.org"))
+                             "~/workspace/second-brain/org-roam/curriculum_tasks.org"
+                             "~/workspace/second-brain/org-roam/reading-list.org"))
     (org-super-agenda-mode)
 
     ;; Use a dedicated directory for all org files
@@ -1099,6 +1100,12 @@ before packages are loaded."
 
             ("c" "Curriculum Task" entry (file "~/workspace/second-brain/org-roam/curriculum_tasks.org")
              "** TODO %? :curriculum:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
+
+            ("l" "Link/Read Later" entry
+             (file+headline "~/workspace/second-brain/org-roam/reading-list.org" "Reading List")
+             "* TODO %a :reading:\nCaptured on: %U\n"
+             :empty-lines 1
+             :immediate-finish t)
 
             ;; ("i" "Inbox" entry (file "~/workspace/second-brain/org-roam/inbox.org")
             ;;  "** TODO %? :inbox:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
@@ -1204,6 +1211,7 @@ before packages are loaded."
                         (:name "🔬 Home Lab" :tag "homelab" :order 3)
                         (:name "🔬 Curriculum" :tag "curriculum" :order 4)
                         (:name "🔬 Blog Posts" :tag "blog" :order 5)
+                        (:name "📥 Reading list" :tag "reading" :order 8)
                         (:name "🚀 Project ideas" :tag "project" :order 9)
                         (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
                         ))))))
@@ -1235,10 +1243,87 @@ before packages are loaded."
   ;; ============================================================================
   (setq alert-default-style 'notifications)
 
-  ;; RSS feed
-  ;; (setq-default dotspacemacs-configuration-layers '(
-  ;;                                                   (elfeed :variables rmh-elfeed-org-files (list "~/.emacs.d/private/elfeed.org"))
-  ;;                                                   ))
+
+  ;; ============================================================================
+  ;; Readers
+  ;; ============================================================================
+
+  ;; --- elfeed ---
+  (defun my/update-elfeed-on-save ()
+    "Automatically update elfeed feeds when the org file is saved."
+    (when (string= (file-name-nondirectory buffer-file-name) "elfeed.org")
+      (elfeed-org)
+      (message "Elfeed feeds updated from Org file.")))
+
+  (add-hook 'after-save-hook #'my/update-elfeed-on-save)
+
+  (use-package elfeed
+    :ensure t
+    :defer t
+    :init
+    ;; Function to toggle between your defined views
+    (defun my/elfeed-set-view ()
+      "Select a view from `elfeed-search-filter-alist`."
+      (interactive)
+      (let* ((views (mapcar #'car elfeed-search-filter-alist))
+             (selected (completing-read "Select View: " views))
+             (filter (alist-get selected elfeed-search-filter-alist nil nil #'string=)))
+        (when filter
+          (elfeed-search-set-filter filter))))
+
+    :config
+    ;; Define your views (The "Bookmark" Strategy)
+    (setq elfeed-search-filter-alist
+          '(("Deep Dive (Blogs)" . "@6-months-ago +unread -news")
+            ("News Ticker"       . "@2-weeks-ago +unread +news")
+            ("Emacs Only"        . "@6-months-ago +unread +emacs")
+            ("All Unread"        . "@6-months-ago +unread")))
+
+    ;; Set the default view to "Deep Dive" (Blogs only) to reduce noise on startup
+    (setq elfeed-search-filter "@6-months-ago +unread -news")
+
+
+    ;; Update feeds immediately when Elfeed loads
+    (elfeed-update)
+
+    ;; Set a timer to update every 30 minutes (1800 seconds)
+    ;; We check if the timer already exists to avoid duplicates on config reload
+    (unless (and (boundp 'my/elfeed-update-timer) my/elfeed-update-timer)
+      (setq my/elfeed-update-timer
+            (run-at-time nil 1800 #'elfeed-update)))
+
+    :bind
+    (:map elfeed-search-mode-map
+          ;; Press 'b' to open the menu and pick a view
+          ("b" . my/elfeed-set-view)
+          ("e" . (lambda () (interactive) (org-capture nil "l"))) ;; Add link to reading-list.org
+          ;; Quick hotkeys for your most common modes
+          ("J" . (lambda () (interactive) (elfeed-search-set-filter "@6-months-ago +unread -news")))
+          ("N" . (lambda () (interactive) (elfeed-search-set-filter "@2-weeks-ago +unread +news"))))
+    (:map elfeed-show-mode-map
+          ("e" . (lambda () (interactive) (org-capture nil "l"))))
+
+    )
+
+  (use-package elfeed-goodies
+    :ensure t
+    :after elfeed
+    :config
+    ;; Activates the split-pane view (header line + entry pane)
+    (elfeed-goodies/setup)
+
+    ;; OPTIONS:
+    ;; 'bottom (default) - Good for wide screens, reads like a digest
+    ;; 'right            - Good for ultrawide screens, reads like email (Outlook style)
+    (setq elfeed-goodies/entry-pane-position 'right)
+
+    ;; The split ratio (0.5 means 50% of the screen)
+    (setq elfeed-goodies/entry-pane-size 0.7)
+
+    ;; Visual Tweaks:
+    ;; Simplify the header line to save vertical space
+    (setq elfeed-goodies/show-mode-line nil)
+    (setq elfeed-goodies/switch-to-entry-ne-windows t))
 
 
   ;; LSP key bindings

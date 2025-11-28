@@ -1,39 +1,36 @@
 * Elfeed                                                             :elfeed:
 
-** Blogs                                                               :blog:
-*** Planet emacslife                                                  :emacs:
-**** https://planet.emacslife.com/atom.xml
-*** Noted homelab                                                   :homelab:
-**** https://noted.lol/rss
-** Software Development                                                 :dev:
-*** Schemescape                                                  :scemescape:
-**** https://log.schemescape.com/feed.xml
-*** Ntietz                                                             :gwen:
-**** https://ntietz.com/atom.xml
-*** Xe Iaso                                                         :xe_iaso:
-- https://xeiaso.net/blog.rss
-** Machine Learning                                                      :ml:
-*** Jay Alammar                                                  :jayalammar:
-**** https://jalammar.github.io/feed.xml
-*** Lil’Log                                                          :lillog:
-**** https://lilianweng.github.io/lil-log/feed.xml
-*** Huyen Chip                                                   :huyen_chip:
-- https://huyenchip.com/feed.xml
+** Software Development                                                  :dev:
+**** [[https://log.schemescape.com/feed.xml][Schemescape]]                                                   :schemescape:
+**** [[https://ntietz.com/atom.xml][Ntietz]]                                                               :gwen:
+**** [[https://xeiaso.net/blog.rss][Xe Iaso]]                                                           :xe_iaso:
 
-# ** News                                                                :news:
-# *** Wired                                                             :wired:
-# **** https://www.wired.com/feed/tag/ai/latest/rss
-# **** https://www.wired.com/feed/category/science/latest/rss
-# *** The Verge                                                         :verge:
-# **** http://www.theverge.com/rss/full.xml
+** Machine Learning                                                       :ml:
+**** [[https://jalammar.github.io/feed.xml][Jay Alammar]]                                                    :jayalammar:
+**** [[https://lilianweng.github.io/lil-log/feed.xml][Lil’Log]]                                                            :lillog:
+**** [[https://huyenchip.com/feed.xml][Huyen Chip]]                                                     :huyen_chip:
+**** [[https://sebastianraschka.com/blog/rss.xml][Sebastian Raschka]]
 
-# *** OpenAI                                                           :openai:
-# **** https://openai.com/blog/rss.xml                                  :arxiv:
-# ** arXiv
-# *** http://export.arxiv.org/rss/cs.LG
-# ** Reddit                                                            :reddit:
-# *** Machine Learning                                                     :ml:
-# **** https://www.reddit.com/r/MachineLearning/.rss
-# ** Hacker news                                                   :hackernews:
-# *** frontpage                                                     :frontpage:
-# **** http://export.arxiv.org/rss/cs.LG
+** Emacs                                                              :emacs:
+*** [[https://planet.emacslife.com/atom.xml][Planet Emacslife]]
+*** [[https://systemcrafters.net/rss/news.xml][System Crafters]]
+*** [[https://www.masteringemacs.org/feed][Mastering Emacs]]
+
+** Linux                                                              :linux:
+*** [[https://itsfoss.com/rss/][It's Foss]]                                                            :foss:
+*** [[https://archlinux.org/feeds/news/][Arch Linux]]                                                           :arch:
+
+** Homelab                                                           :homelab:
+*** [[https://noted.lol/rss][Noted Homelab]]
+
+** News                                                                 :news:
+*** [[https://feber.se/rss/][Feber]]                                                               :feber:
+*** [[https://www.sweclockers.com/feeds/nyheter][SweClockers]]
+*** [[https://news.ycombinator.com/rss][Hacker News]]
+
+
+** Games                                                               :games:
+*** [[https://www.fz.se/feeds/nyheter][FZ]]                                                                     :fz:
+
+** Humor                                                               :humor:
+*** [[https://xkcd.com/rss.xml][XKCD]]
