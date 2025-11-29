@@ -47,7 +47,7 @@ This function should only modify configuration layer settings."
 
           org-enable-roam-support t          ;; Enable org-roam v2
           org-enable-roam-ui t               ;; Enable org-roam-ui for graph visualization
-          org-mesenable-roam-protocol t      ;; Enable org-protocol for external capture
+          org-enable-roam-protocol t         ;; Enable org-protocol for external capture
           org-enable-hugo-support t
           org-enable-github-support t
 
@@ -114,7 +114,7 @@ This function should only modify configuration layer settings."
            rust-backend 'lsp
            lsp-rust-analyzer-cargo-auto-reload t
            lsp-rust-analyzer-proc-macro-enable t
-           rustic-format-on-save t)
+           rustic-format-on-save nil) ;; t / nil
      (c-c++ :variables
             c-c++-adopt-subprojects t
             c-c++-enable-organize-includes-on-save t
@@ -210,6 +210,8 @@ This function should only modify configuration layer settings."
      org-kanban
      ;; org-roam-dblocks
      org-roam-ql
+     org-transclusion
+     org-edna
 
      ;; Version control
      conventional-commit
@@ -828,7 +830,22 @@ before packages are loaded."
     :config
     ;; turn on apheleia globally
     (apheleia-global-mode +1)
-    (setf (alist-get 'python-mode apheleia-mode-alist) '(ruff)))
+
+    ;; -- Python --
+    (setf (alist-get 'python-mode apheleia-mode-alist) '(ruff))
+
+    ;; -- RUST --
+    (setf (alist-get 'rustic-mode apheleia-mode-alist) '(rustfmt))
+    (setf (alist-get 'rust-mode apheleia-mode-alist) '(rustfmt))
+
+    (setf (alist-get 'rustfmt apheleia-formatters)
+          '("rustfmt" "+nightly" "--quiet" "--emit" "stdout"))
+
+    ;; -- TOML (Taplo) --
+    (setf (alist-get 'toml-mode apheleia-mode-alist) '(taplo))
+    (setf (alist-get 'taplo apheleia-formatters)
+          '("taplo" "fmt" "-"))
+    )
 
   (use-package flycheck
     :ensure t
@@ -1015,27 +1032,30 @@ before packages are loaded."
   ;; ============================================================================
   ;; RCIRC
   ;; ============================================================================
-  (setq rcirc-default-nick "celsuss")
-  (setq rcirc-default-user-name "celsuss")
-  (setq rcirc-default-full-name "Celsuss")
-  (setq rcirc-authinfo-file "~/.authinfo.gpg")
+  (use-package rcirc
+    :defer t
+    :config
+    ;; Enable the channel tracking in mode-line
+    (rcirc-track-minor-mode 1)
 
-  (setq rcirc-server-alist
-        '(("irc.libera.chat"
-           :user-name "celsuss"
-           :port 6697
-           :encryption tls
-           :channels ("#emacs" "#spacemacs" "##llamas" "#archlinux" "#archlinux-offtopic" "#linux" "#Linuxkompis" "#archlinux-nordics" "#archlinux-testing"))
-          ("stockholm.se.quakenet.org"
-           :user-name "Celsuss"
-           :port 6667
-           ;; :port 6697
-           ;; :encryption tls
-           :channels ("#sweclockers" "#stockholm"))))
+    ;; User details
+    (setq rcirc-default-nick "celsuss"
+          rcirc-default-user-name "celsuss"
+          rcirc-default-full-name "Celsuss"
+          rcirc-authinfo-file "~/.authinfo.gpg")
 
-  (add-hook 'rcirc-mode-hook
-            (lambda ()
-              (rcirc-track-minor-mode 1)))
+    ;; Server configuration with SASL password injection
+    (setq rcirc-server-alist
+          `(("irc.libera.chat"
+             :user-name "celsuss"
+             :port 6697
+             :encryption tls
+             :password ,(my/get-secret "irc.libera.chat")
+             :channels ("#emacs" "#spacemacs" "##llamas" "#archlinux" "#archlinux-offtopic" "#linux" "#Linuxkompis" "#archlinux-nordics" "#archlinux-testing"))
+            ("stockholm.se.quakenet.org"
+             :user-name "Celsuss"
+             :port 6667
+             :channels ("#sweclockers" "#stockholm")))))
 
   ;; ============================================================================
   ;; Org-mode Core Configuration
@@ -1069,7 +1089,8 @@ before packages are loaded."
                              "~/workspace/second-brain/org-roam/homelab_tasks.org"
                              "~/workspace/second-brain/org-roam/emacs_tweak_tasks.org"
                              "~/workspace/second-brain/org-roam/dotfiles_tweak_tasks.org"
-                             "~/workspace/second-brain/org-roam/curriculum_tasks.org"))
+                             "~/workspace/second-brain/org-roam/curriculum_tasks.org"
+                             "~/workspace/second-brain/org-roam/projects/"))
     (org-super-agenda-mode)
 
     ;; Use a dedicated directory for all org files
@@ -1127,8 +1148,37 @@ before packages are loaded."
     ;; Configure org-roam-capture-template
     (org-roam-capture-templates '(("d" "default" plain
                                    "%?"
-                                   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens\n#+date: %U")
+                                   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens\n#+date: %U\n\n* ${title}")
                                    :unnarrowed t)
+
+                                  ("p" "project" plain
+                                   "%?"
+                                   :if-new (file+head "projects/%<%Y%m%d%H%M%S>-${slug}.org"
+                                                      "#+title: ${title}
+#+author: Jens
+#+date: %U
+#+filetags: :project:
+#+startup: content
+
+* TODO ${title}
+One of [[id:1ae70a1c-485e-43fb-acc2-4c364510d632][my projects]].
+
+** Goal
+Describe the outcome of this project.
+
+** Kanban Board
+:PROPERTIES:
+:kanban-layout: (\"TODO\" \"STRT\" \"WAIT\" \"DONE\")
+:END:
+#+BEGIN: kanban :mirrored t
+#+END:
+
+** Tasks
+*** TODO Setup Project Structure
+*** TODO Define milestones
+")
+                                   :unnarrowed t)
+
                                   ))
     :config
     ;; Configure org-roam-dailies
@@ -1191,7 +1241,7 @@ before packages are loaded."
                           (:name "🔬 Dotfiles" :tag "dotfiles" :order 7)
                           (:name "🔬 Home Lab" :tag "homelab" :order 8)
                           (:name "🔬 Curriculum" :tag "curriculum" :order 9)
-                          (:name "🔬 Blog Posts" :tag "blog" :order 9)
+                          (:name " ✍ Blog Posts" :tag "blog" :order 9)
                           (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
                           (:name "🏢 Work" :tag "work" :order 11)
                           ))))
@@ -1200,10 +1250,10 @@ before packages are loaded."
                      (org-super-agenda-groups
                       '(
                         (:name "🔧 Emacs" :tag "emacs"  :order 1)
-                        (:name "🔬 Dotfiles" :tag "dotfiles" :order 2)
+                        (:name " ⚙ ️Dotfiles" :tag "dotfiles" :order 2)
                         (:name "🔬 Home Lab" :tag "homelab" :order 3)
                         (:name "🔬 Curriculum" :tag "curriculum" :order 4)
-                        (:name "🔬 Blog Posts" :tag "blog" :order 5)
+                        (:name " ✍️ Blog Posts" :tag "blog" :order 5)
                         (:name "🚀 Project ideas" :tag "project" :order 9)
                         (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
                         ))))))
@@ -1213,17 +1263,58 @@ before packages are loaded."
                          ((org-agenda-overriding-header "✅ Work Tasks")
                           (org-super-agenda-groups
                            '(
-                             (:name "🔥 Overdue" :deadline past :face error :order 1)
+                             (:name " ⚠️ Overdue" :deadline past :face error :order 1)
                              (:name "🎯 Today" :time-grid t :scheduled today :deadline today :order 2)
                              (:name "Due Today" :deadline today :order 3)
                              (:name "Due Soon" :deadline future :order 4)
-                             (:name "❗ Important" :priority "A" :order 5)
+                             (:name " ⚡ Important" :priority "A" :order 5)
                              ;; Catch-all for any other work tasks
                              (:name "🚀 Other Projects & Tasks" :order 99)
                              ))))))
+
+            ("p" "Project Dashboard"
+             ((tags "project+level=1"
+                    ((org-agenda-overriding-header "🚀 Project Overview")
+                     (org-super-agenda-groups
+                      '(
+                        (:name "🔥 In Progress"
+                               :todo "STRT"
+                               :order 1)
+
+                        (:name "✨ Planning"
+                               :todo "TODO"
+                               :order 2)
+
+                        (:name "⏸ On Hold"
+                               :todo "WAIT"
+                               :order 3)
+
+                        (:name "✅ Finished"
+                               :todo "DONE"
+                               :order 4)
+
+                        (:name "📂 Inbox / Uncategorized"
+                               :order 99)
+                        ))))))
             ))
     )
 
+
+  ;; --- Org-transclusion ---
+  (use-package org-transclusion
+    :ensure t
+    :after org
+    :bind (("C-c n t" . org-transclusion-add)
+           ("C-c n T" . org-transclusion-mode))
+    :config
+    ;; Visual tweaks to make transcluded blocks look distinct in Gruvbox
+    (set-face-attribute 'org-transclusion-fringe nil :foreground "#b8bb26" :background nil)
+    (set-face-attribute 'org-transclusion-source-inline nil :foreground "#fabd2f" :height 0.8))
+
+  ;; --- Org kanban ---
+  (use-package org-kanban
+    :ensure t
+    :after org)
 
 
   ;; Org-agenda and org-super-agenda
@@ -1355,34 +1446,33 @@ This function is called at the very end of Spacemacs initialization."
                  evil-numbers evil-org evil-surround evil-textobj-line evil-tutor
                  evil-unimpaired evil-visual-mark-mode evil-visualstar
                  expand-region eyebrowse fancy-battery flx-ido flycheck-elsa
-                 flycheck-package flycheck-pos-tip flycheck-ruff flycheck-rust
-                 font-lock+ fuzzy ggtags gh-md gntp gnuplot golden-ratio
-                 google-translate gruvbox-theme helm-ag helm-c-yasnippet
-                 helm-company helm-descbinds helm-gtags helm-lsp helm-make
-                 helm-mode-manager helm-org helm-org-rifle helm-projectile
-                 helm-purpose helm-swoop helm-themes helm-xref help-fns+
-                 hide-comnt highlight-indentation highlight-numbers
-                 highlight-parentheses hl-todo holy-mode htmlize hungry-delete
-                 hybrid-mode indent-guide info+ inspector ivy link-hint log4e
-                 lorem-ipsum lsp-docker lsp-mode lsp-origami lsp-treemacs lsp-ui
-                 macrostep map markdown-mode markdown-toc mmm-mode multi-line
-                 multi-term multi-vterm mwim nameless neotree nhich-key
-                 open-junk-file org org-category-capture org-cliplink org-contrib
-                 org-download org-mime org-pomodoro org-present org-projectile
-                 org-ql org-rich-yank org-roam org-roam-ui org-sidebar
-                 org-super-agenda org-superstar orgit orgit-forge origami ov
-                 overseer ox-hugo paradox password-generator pcre2el peg pfuture
-                 popwin pos-tip project quickrun racer rainbow-delimiters request
-                 restart-emacs rich-minority ron-mode rust-mode shell-pop
-                 shrink-path smart-mode-line space-doc spaceline-all-the-icons
-                 spacemacs-purpose-popwin spacemacs-whitespace-cleanup
-                 string-edit-at-point string-inflection swiper symbol-overlay
-                 symon term-cursor terminal-here toc-org toml-mode treemacs
-                 treemacs-icons-dired treemacs-persp treemacs-projectile ts
-                 undo-tree unfill use-package uuidgen valign vi-tilde-fringe
-                 vim-powerline vmd-mode volatile-highlights vterm winum
-                 writeroom-mode ws-butler xref xterm-color yasnippet
-                 yasnippet-snippets))
+                 flycheck-package flycheck-pos-tip flycheck-rust font-lock+ fuzzy
+                 ggtags gh-md gntp gnuplot golden-ratio google-translate
+                 gruvbox-theme helm-ag helm-c-yasnippet helm-company
+                 helm-descbinds helm-gtags helm-lsp helm-make helm-mode-manager
+                 helm-org helm-org-rifle helm-projectile helm-purpose helm-swoop
+                 helm-themes helm-xref help-fns+ hide-comnt highlight-indentation
+                 highlight-numbers highlight-parentheses hl-todo holy-mode htmlize
+                 hungry-delete hybrid-mode indent-guide info+ inspector ivy
+                 link-hint log4e lorem-ipsum lsp-docker lsp-mode lsp-origami
+                 lsp-treemacs lsp-ui macrostep map markdown-mode markdown-toc
+                 mmm-mode multi-line multi-term multi-vterm mwim nameless neotree
+                 nhich-key open-junk-file org org-category-capture org-cliplink
+                 org-contrib org-download org-mime org-pomodoro org-present
+                 org-projectile org-ql org-rich-yank org-roam org-roam-ui
+                 org-sidebar org-super-agenda org-superstar orgit orgit-forge
+                 origami ov overseer ox-hugo paradox password-generator pcre2el
+                 peg pfuture popwin pos-tip project quickrun racer
+                 rainbow-delimiters request restart-emacs rich-minority ron-mode
+                 rust-mode shell-pop shrink-path smart-mode-line space-doc
+                 spaceline-all-the-icons spacemacs-purpose-popwin
+                 spacemacs-whitespace-cleanup string-edit-at-point
+                 string-inflection swiper symbol-overlay symon term-cursor
+                 terminal-here toc-org toml-mode treemacs treemacs-icons-dired
+                 treemacs-persp treemacs-projectile ts undo-tree unfill
+                 use-package uuidgen valign vi-tilde-fringe vim-powerline vmd-mode
+                 volatile-highlights vterm winum writeroom-mode ws-butler xref
+                 xterm-color yasnippet yasnippet-snippets))
    '(safe-local-variable-values
      '((helm-make-build-dir . "build/") (javascript-backend . tide)
        (javascript-backend . tern) (javascript-backend . lsp))))
