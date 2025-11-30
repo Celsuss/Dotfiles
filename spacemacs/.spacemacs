@@ -1082,6 +1082,13 @@ before packages are loaded."
             (split-height-threshold nil)) ; but never horizontally
         ad-do-it))
 
+    ;; Default was: " %i %-12:c%?-12t% s" (The %c is the filename)
+    (setq org-agenda-prefix-format
+          '((agenda . " %i %?-12t% s")
+            (todo   . " %i %?-12t% s")
+            (tags   . " %i %?-12t% s")
+            (search . " %i %?-12t% s")))
+
     ;; (setq org-agenda-files (directory-files-recursively org-directory "\\\\.org$"))
     ;; (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
     (setq org-agenda-files '("~/workspace/second-brain/org-roam/todo.org"
@@ -1090,8 +1097,18 @@ before packages are loaded."
                              "~/workspace/second-brain/org-roam/emacs_tweak_tasks.org"
                              "~/workspace/second-brain/org-roam/dotfiles_tweak_tasks.org"
                              "~/workspace/second-brain/org-roam/curriculum_tasks.org"
-                             "~/workspace/second-brain/org-roam/projects/"))
+                             "~/workspace/second-brain/org-roam/projects/"
+                             "~/workspace/second-brain/org-roam/habits.org"))
     (org-super-agenda-mode)
+
+    ;; --- Org habits ---
+    (add-to-list 'org-modules 'org-habit)
+    (require 'org-habit)
+    (setq org-habit-graph-column 60)
+    (setq org-habit-show-habits-only-for-today nil)
+    ;; Allow completed habits to stay visible in the agenda log for satisfaction
+    (setq org-habit-show-habits-only-for-today nil)
+    (setq org-agenda-skip-scheduled-if-done nil)
 
     ;; Use a dedicated directory for all org files
     (setq org-directory "~/workspace/second-brain/org-roam/")
@@ -1157,7 +1174,8 @@ before packages are loaded."
                                                       "#+title: ${title}
 #+author: Jens
 #+date: %U
-#+filetags: :project:
+#+filetags: :project:${title}:
+#+SEQ_TODO: TODO STRT WAIT | DONE
 #+startup: content
 
 * TODO ${title}
@@ -1186,20 +1204,47 @@ Describe the outcome of this project.
 
     (setq org-roam-dailies-capture-templates
           `(("d" "default" entry
-             "* %<%H:%M> %?"
-             :target (file+head ,(expand-file-name "%<%Y-%m-%d>.org" org-roam-dailies-directory)
-                                "#+title: %<%A %B %d, %Y>
+             "** %<%H:%M> %?"
+             ;; :target (file+head ,(expand-file-name "%<%Y-%m-%d>.org" org-roam-dailies-directory)
+             :target (file+head+olp "%<%Y-%m-%d>.org"
+                                    "#+title: %<%A %B %d, %Y>
 #+filetags: :daily:
 #+author: Jens
 
 * Daily notes for %<%A %B %d, %Y>
-** Tasks
 
-** Notes
-  ")
+* Morning Protocol
+- [ ] 📅 Review Agenda (Work & Projects)
+- [ ] 📧 Check email
+- [ ] 🎯 Top 3 Priorities for Today
+  1.
+  2.
+  3.
+- 💤 Hours slept:
+
+* Habits
+- [ ] 💾 Commit Dotfiles/Emacs Tweaks
+- [ ] 📥 Clear Inbox
+- [ ]  🏋️ Workout
+- [ ]  🇨🇳 Chinese Study
+- [ ]  📚 Reading
+- [ ]  💊 Supplements
+  - [ ]  ⚡ Creatine
+  - [ ]  🥤 Protein
+  - [ ]  🍊 Vitamins
+
+* Log
+"
+                                    ;; -------------------------------------------------
+                                    ;; Target: Place entries under "* Log"
+                                    ;; -------------------------------------------------
+                                    ("Log"))
              :empty-lines-before 1
              :empty-lines-after 1)))
+
     )
+
+  (spacemacs/set-leader-keys "aordc" 'org-roam-dailies-capture-today)
 
   (global-set-key (kbd "C-c n f") 'org-roam-node-find)
   (global-set-key (kbd "C-c n i") 'org-roam-node-insert)
@@ -1228,7 +1273,7 @@ Describe the outcome of this project.
     :config
     ;; org-agenda-dashboards
     (setq org-agenda-custom-commands
-          '(("d" "Dashboard"
+          '(("d" "🎯 Dashboard"
              ((agenda ""
                       ((org-agenda-overriding-header "✅ Agenda")
                        (org-super-agenda-groups
@@ -1238,10 +1283,10 @@ Describe the outcome of this project.
                           (:name "❗ Important" :priority "A" :order 3)
                           (:habit t)
                           (:name "🔧 Emacs" :tag "emacs"  :order 6)
-                          (:name "🔬 Dotfiles" :tag "dotfiles" :order 7)
+                          (:name "🔧 Dotfiles" :tag "dotfiles" :order 7)
                           (:name "🔬 Home Lab" :tag "homelab" :order 8)
                           (:name "🔬 Curriculum" :tag "curriculum" :order 9)
-                          (:name " ✍ Blog Posts" :tag "blog" :order 9)
+                          (:name "✍️ Blog Posts" :tag "blog" :order 9)
                           (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
                           (:name "🏢 Work" :tag "work" :order 11)
                           ))))
@@ -1250,15 +1295,15 @@ Describe the outcome of this project.
                      (org-super-agenda-groups
                       '(
                         (:name "🔧 Emacs" :tag "emacs"  :order 1)
-                        (:name " ⚙ ️Dotfiles" :tag "dotfiles" :order 2)
+                        (:name "🔧️ Dotfiles" :tag "dotfiles" :order 2)
                         (:name "🔬 Home Lab" :tag "homelab" :order 3)
                         (:name "🔬 Curriculum" :tag "curriculum" :order 4)
-                        (:name " ✍️ Blog Posts" :tag "blog" :order 5)
-                        (:name "🚀 Project ideas" :tag "project" :order 9)
-                        (:name "🚀 Projects" :auto-property "PROJECT" :order 10)
+                        (:name "✍️ Blog Posts" :tag "blog" :order 5)
+                        (:name "🚀 Projects" :tag "project" :order 9)
+                        (:name "🚀 Project" :auto-property "PROJECT" :order 10)
                         ))))))
 
-            ("w" "Work Focus"
+            ("w" "🏢 Work Focus"
              ((tags-todo "work"
                          ((org-agenda-overriding-header "✅ Work Tasks")
                           (org-super-agenda-groups
@@ -1272,12 +1317,12 @@ Describe the outcome of this project.
                              (:name "🚀 Other Projects & Tasks" :order 99)
                              ))))))
 
-            ("p" "Project Dashboard"
+            ("p" "🚀 Project Dashboard"
              ((tags "project+level=1"
-                    ((org-agenda-overriding-header "🚀 Project Overview")
+                    ((org-agenda-overriding-header "🚀 Projects Overview")
                      (org-super-agenda-groups
                       '(
-                        (:name "🔥 In Progress"
+                        (:name "🚀 In Progress"
                                :todo "STRT"
                                :order 1)
 
@@ -1296,6 +1341,37 @@ Describe the outcome of this project.
                         (:name "📂 Inbox / Uncategorized"
                                :order 99)
                         ))))))
+
+            ("h" "⚡ High Speed Habits"
+             ((agenda ""
+                      ((org-agenda-span 'day)      ;; Show only today
+                       (org-agenda-start-day nil)  ;; Start from today
+
+                       ;; Force this view to ONLY look at your habits file
+                       (org-agenda-files '("~/workspace/second-brain/org-roam/habits.org"))
+
+                       (org-agenda-start-with-log-mode t)
+                       (org-agenda-log-mode-items '(closed state))
+
+                       ;; Visual Tweaks
+                       (org-habit-graph-column 50) ;; Move graph to the right to align nicely
+                       (org-agenda-overriding-header " ") ;; Remove default date header for cleanliness
+
+                       ;; Grouping
+                       (org-super-agenda-groups
+                        '((:name "🚨 Critical / Overdue"
+                                 :scheduled past
+                                 :order 1)
+                          (:name "📅 Morning Routine"
+                                 :time-grid t   ;; Keep time-specific habits here
+                                 :order 2)
+                          (:name "✨ Daily Goals"
+                                 :scheduled today
+                                 :order 3)
+                          (:name "✅ Completed Today"
+                                 :log t
+                                 :order 4)
+                          ))))))
             ))
     )
 
