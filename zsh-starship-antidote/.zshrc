@@ -110,3 +110,9 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # Colorize man pages using bat
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export MANROFFOPT="-c"
+
+# --- zellij ---
+# Run  `zellij setup --generate-completion zsh > "$HOME/.cache/zsh/oh-my-zsh/completions/_zellij` to setup completion`
+if [[ -z "$INSIDE_EMACS" && -z "$ZELLIJ" ]]; then
+    eval "$(zellij setup --generate-auto-start zsh)"
+fi

@@ -13,3 +13,9 @@ paru -S zsh-antidote bat ripgrep fd git-delta lazyjj direnv k9s
 sudo pacman -S ttf-jetbrains-mono-nerd
 jj util completion zsh > ~/.cache/zsh/oh-my-zsh/completions/_jj
 ```
+
+### zellij plugins
+``` bash
+mkdir -p ~/.config/zellij/plugins/
+curl -L https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm -o ~/.config/zellij/plugins/zjstatus.wasm
+```
