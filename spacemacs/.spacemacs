@@ -1175,33 +1175,61 @@ before packages are loaded."
                                    :unnarrowed t)
 
                                   ("p" "project" plain
-                                   "%?"
-                                   :if-new (file+head "projects/%<%Y%m%d%H%M%S>-${slug}.org"
-                                                      "#+title: ${title}
-#+author: Jens
-#+date: %U
-#+filetags: :project:${title}:
-#+SEQ_TODO: TODO STRT WAIT | DONE
-#+startup: content
-
-* TODO ${title}
+                                   "\n* TODO ${title}
 One of [[id:1ae70a1c-485e-43fb-acc2-4c364510d632][my projects]].
 
 ** Goal
 Describe the outcome of this project.
 
 ** Kanban Board
-:PROPERTIES:
-:kanban-layout: (\"TODO\" \"STRT\" \"WAIT\" \"DONE\")
-:END:
 #+BEGIN: kanban :mirrored t
 #+END:
 
 ** Tasks
 *** TODO Setup Project Structure
 *** TODO Define milestones
+%?"
+
+                                   :if-new (file+head "projects/%<%Y%m%d%H%M%S>-${slug}.org"
+                                                      "#+title: ${title}
+#+author: Jens
+#+date: %U
+#+filetags: :project:${slug}:
+#+SEQ_TODO: TODO STRT WAIT | DONE
+#+startup: content
+\n
 ")
                                    :unnarrowed t)
+
+                                  ;;                                   ("p" "project" plain
+                                  ;;                                    "%?"
+                                  ;;                                    :if-new (file+head "projects/%<%Y%m%d%H%M%S>-${slug}.org"
+                                  ;;                                                       "#+title: ${title}
+                                  ;; #+author: Jens
+                                  ;; #+date: %U
+                                  ;; #+filetags: :project:${slug}:
+                                  ;; #+SEQ_TODO: TODO STRT WAIT | DONE
+                                  ;; #+startup: content
+
+                                  ;; :PROPERTIES:
+                                  ;; :ID: %(org-id-new)
+                                  ;; :END:
+
+                                  ;; * TODO ${title}
+                                  ;; One of [[id:1ae70a1c-485e-43fb-acc2-4c364510d632][my projects]].
+
+                                  ;; ** Goal
+                                  ;; Describe the outcome of this project.
+
+                                  ;; ** Kanban Board
+                                  ;; #+BEGIN: kanban :mirrored t
+                                  ;; #+END:
+
+                                  ;; ** Tasks
+                                  ;; *** TODO Setup Project Structure
+                                  ;; *** TODO Define milestones
+                                  ;; ")
+                                  ;;                                    :unnarrowed t)
 
                                   ))
     :config
