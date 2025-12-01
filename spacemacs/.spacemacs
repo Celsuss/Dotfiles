@@ -1044,13 +1044,15 @@ before packages are loaded."
           rcirc-default-full-name "Celsuss"
           rcirc-authinfo-file "~/.authinfo.gpg")
 
+    (setq auth-sources '("~/.authinfo.gpg"))
+
     ;; Server configuration with SASL password injection
     (setq rcirc-server-alist
           `(("irc.libera.chat"
              :user-name "celsuss"
              :port 6697
              :encryption tls
-             :password ,(my/get-secret "irc.libera.chat")
+             ;; :password ,(my/get-secret "irc.libera.chat")
              :channels ("#emacs" "#spacemacs" "##llamas" "#archlinux" "#archlinux-offtopic" "#linux" "#Linuxkompis" "#archlinux-nordics" "#archlinux-testing"))
             ("stockholm.se.quakenet.org"
              :user-name "Celsuss"
