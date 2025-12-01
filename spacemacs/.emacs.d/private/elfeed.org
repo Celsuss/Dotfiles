@@ -1,33 +1,32 @@
 * Elfeed                                                             :elfeed:
 
-** Software Development                                                  :dev:
-**** [[https://log.schemescape.com/feed.xml][Schemescape]]                                                   :schemescape:
-**** [[https://ntietz.com/atom.xml][Ntietz]]                                                               :gwen:
-**** [[https://xeiaso.net/blog.rss][Xe Iaso]]                                                           :xe_iaso:
+** Software Development                                             :dev:blog:
+*** [[https://log.schemescape.com/feed.xml][Schemescape]]                                                   :schemescape:
+*** [[https://ntietz.com/atom.xml][Ntietz]]                                                               :gwen:
+*** [[https://xeiaso.net/blog.rss][Xe Iaso]]                                                           :xe_iaso:
 
-** Machine Learning                                                       :ml:
-**** [[https://jalammar.github.io/feed.xml][Jay Alammar]]                                                    :jayalammar:
-**** [[https://lilianweng.github.io/lil-log/feed.xml][Lil’Log]]                                                            :lillog:
-**** [[https://huyenchip.com/feed.xml][Huyen Chip]]                                                     :huyen_chip:
-**** [[https://sebastianraschka.com/blog/rss.xml][Sebastian Raschka]]
+** Machine Learning                                                  :ml:blog:
+*** [[https://jalammar.github.io/feed.xml][Jay Alammar]]                                                    :jayalammar:
+*** [[https://lilianweng.github.io/lil-log/feed.xml][Lil’Log]]                                                            :lillog:
+*** [[https://huyenchip.com/feed.xml][Huyen Chip]]                                                     :huyen_chip:
+*** [[https://sebastianraschka.com/blog/rss_feed.xml][Sebastian Raschka]]
 
-** Emacs                                                              :emacs:
+** Emacs                                                          :emacs:foss:
 *** [[https://planet.emacslife.com/atom.xml][Planet Emacslife]]
 *** [[https://systemcrafters.net/rss/news.xml][System Crafters]]
 *** [[https://www.masteringemacs.org/feed][Mastering Emacs]]
 
-** Linux                                                              :linux:
-*** [[https://itsfoss.com/rss/][It's Foss]]                                                            :foss:
+** Linux                                                          :linux:foss:
+*** [[https://itsfoss.com/rss/][It's Foss]]
 *** [[https://archlinux.org/feeds/news/][Arch Linux]]                                                           :arch:
 
-** Homelab                                                           :homelab:
+** Homelab                                                      :homelab:foss:
 *** [[https://noted.lol/rss][Noted Homelab]]
 
 ** News                                                                 :news:
 *** [[https://feber.se/rss/][Feber]]                                                               :feber:
 *** [[https://www.sweclockers.com/feeds/nyheter][SweClockers]]
 *** [[https://news.ycombinator.com/rss][Hacker News]]
-
 
 ** Games                                                               :games:
 *** [[https://www.fz.se/feeds/nyheter][FZ]]                                                                     :fz:
