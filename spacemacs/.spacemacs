@@ -966,7 +966,7 @@ before packages are loaded."
              :stream t
              :key my/litellm-api-key
              ;; :models '(gemini/gemini-2.5-pro))
-             :models '(gemini/gemini-2.5-flash))
+             :models '(gemini-2.5-flash))
            )
      (setq gptel-backend gptel-litellm-backend)
      (setq gptel-format 'org)
@@ -1253,9 +1253,9 @@ Describe the outcome of this project.
 - [ ] 📅 Review Agenda (Work & Projects)
 - [ ] 📧 Check email
 - [ ] 🎯 Top 3 Priorities for Today
-  1.
-  2.
-  3.
+  1. [ ]
+  2. [ ]
+  3. [ ]
 - 💤 Hours slept:
 
 * Habits

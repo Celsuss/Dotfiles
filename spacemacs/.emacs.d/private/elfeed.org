@@ -22,6 +22,7 @@
 
 ** Homelab                                                      :homelab:foss:
 *** [[https://noted.lol/rss][Noted Homelab]]
+*** [[https://selfh.st/rss/][selfh.st]]
 
 ** News                                                                 :news:
 *** [[https://feber.se/rss/][Feber]]                                                               :feber:
@@ -30,6 +31,23 @@
 
 ** Games                                                               :games:
 *** [[https://www.fz.se/feeds/nyheter][FZ]]                                                                     :fz:
+*** [[https://www.polygon.com/rss/index.xml][Polygon]]                                                           :polygon:
+
+** Tech radar                                                     :tech_radar:
+*** DZone                                                               :dzone:
+**** [[https://feeds.dzone.com/ai-ml][DZone ai-ml]]
+**** [[https://feeds.dzone.com/deployment][DZone development]]
+**** [[https://feeds.dzone.com/cloud-architecture][DZone cloud architecture]]
+**** [[https://feeds.dzone.com/devops-and-cicd][DZone devops and cicd]]
+**** [[https://feeds.dzone.com/open-source][DZone open source]]
+**** [[https://feeds.dzone.com/tools][DZone tools]]
+*** InfoQ                                                               :infoq:
+**** [[https://feed.infoq.com/development][InfoQ development]]
+**** [[https://feed.infoq.com/architecture-design][InfoQ architecture design]]
+**** [[https://feed.infoq.com/architecture/articles/][InfoQ arhcitecture articles]]
+**** [[https://feed.infoq.com/ai-ml-data-eng/news][InfoQ ai-ml-data-eng]]
+**** [[https://feed.infoq.com/MachineLearning/][InfoQ machine learning]]
+**** [[https://feed.infoq.com/Devops/][InfoQ devops]]
 
 ** Humor                                                               :humor:
 *** [[https://xkcd.com/rss.xml][XKCD]]
