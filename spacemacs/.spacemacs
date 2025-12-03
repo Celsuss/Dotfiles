@@ -778,10 +778,6 @@ before packages are loaded."
   ;; Test to fix dap
   ;; (setq package-user-dir (concat default-directory "configuration/elpa"))
 
-  ;; Requires
-  (require 'dap-cpptools)
-  (require 'dap-python)
-  (require 'gdscript-mode)
 
 
   ;; ============================================================================
@@ -1202,38 +1198,8 @@ Describe the outcome of this project.
 \n
 ")
                                    :unnarrowed t)
-
-                                  ;;                                   ("p" "project" plain
-                                  ;;                                    "%?"
-                                  ;;                                    :if-new (file+head "projects/%<%Y%m%d%H%M%S>-${slug}.org"
-                                  ;;                                                       "#+title: ${title}
-                                  ;; #+author: Jens
-                                  ;; #+date: %U
-                                  ;; #+filetags: :project:${slug}:
-                                  ;; #+SEQ_TODO: TODO STRT WAIT | DONE
-                                  ;; #+startup: content
-
-                                  ;; :PROPERTIES:
-                                  ;; :ID: %(org-id-new)
-                                  ;; :END:
-
-                                  ;; * TODO ${title}
-                                  ;; One of [[id:1ae70a1c-485e-43fb-acc2-4c364510d632][my projects]].
-
-                                  ;; ** Goal
-                                  ;; Describe the outcome of this project.
-
-                                  ;; ** Kanban Board
-                                  ;; #+BEGIN: kanban :mirrored t
-                                  ;; #+END:
-
-                                  ;; ** Tasks
-                                  ;; *** TODO Setup Project Structure
-                                  ;; *** TODO Define milestones
-                                  ;; ")
-                                  ;;                                    :unnarrowed t)
-
                                   ))
+
     :config
     ;; Configure org-roam-dailies
     (setq org-roam-dailies-directory "~/workspace/second-brain/org-roam/daily")
@@ -1268,6 +1234,19 @@ Describe the outcome of this project.
   - [ ]  ⚡ Creatine
   - [ ]  🥤 Protein
   - [ ]  🍊 Vitamins
+
+* Nutrition
+| Food                       | Kcal | Protein | Meal          |
+|----------------------------+------+---------+---------------|
+|                            |      |         | Breakfast     |
+|                            |      |         | Lunch         |
+|                            |      |         | Pre workout   |
+|                            |      |         | Dinner        |
+|                            |      |         | Post workout  |
+|                            |      |         | Evening snack |
+|----------------------------+------+---------+---------------|
+| Total                      |      |         |               |
+#+TBLFM: @>$2=vsum(@I..@II)::@>$3=vsum(@I..@II)
 
 * Log
 "
@@ -1562,12 +1541,31 @@ Describe the outcome of this project.
   ;; ============================================================================
   ;; DAP debugging
   ;; ============================================================================
+  (require 'dap-cpptools)
+  (require 'gdscript-mode)
+
   (defun python/pre-init-dap-mode ()
     (when (eq python-backend 'lsp)
       (add-to-list 'spacemacs--dap-supported-modes 'python-mode))
     (add-hook 'python-mode-local-vars-hook 'spacemacs//python-setup-dap))
 
-  (setq dap-python-debugger 'debugpy)
+  (use-package dap-python
+    :ensure nil  ;; dap-python is part of dap-mode, don't try to install it separately
+    :after dap-mode
+    :config
+    ;; Use debugpy as your preferred debugger
+    (setq dap-python-debugger 'debugpy)
+
+    ;; Register a custom template that breaks on crashes (Uncaught Exceptions)
+    (dap-register-debug-template "Python :: Run file (Break on Error)"
+                                 (list :type "python"
+                                       :args ""
+                                       :cwd nil
+                                       :program "${file}"
+                                       :request "launch"
+                                       :name "Python :: Run file (Buffer Break on Error)"
+                                       ;; Options: "raised" (all exceptions), "uncaught" (crashes only)
+                                       :exceptionBreakpoints '("uncaught"))))
 
 
   ;; ============================================================================
