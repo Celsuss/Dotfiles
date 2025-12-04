@@ -1227,26 +1227,27 @@ Describe the outcome of this project.
 * Habits
 - [ ] 💾 Commit Dotfiles/Emacs Tweaks
 - [ ] 📥 Clear Inbox
-- [ ]  🏋️ Workout
-- [ ]  🇨🇳 Chinese Study
-- [ ]  📚 Reading
-- [ ]  💊 Supplements
-  - [ ]  ⚡ Creatine
-  - [ ]  🥤 Protein
-  - [ ]  🍊 Vitamins
+- [ ] 🏋️ Workout
+- [ ] 🇨🇳 Chinese Study
+- [ ] 📚 Reading
+- [ ] 💊 Supplements
+  - [ ] ⚡ Creatine
+  - [ ] 🥤 Protein
+  - [ ] 🍊 Vitamins
 
 * Nutrition
-| Food                       | Kcal | Protein | Meal          |
-|----------------------------+------+---------+---------------|
-|                            |      |         | Breakfast     |
-|                            |      |         | Lunch         |
-|                            |      |         | Pre workout   |
-|                            |      |         | Dinner        |
-|                            |      |         | Post workout  |
-|                            |      |         | Evening snack |
-|----------------------------+------+---------+---------------|
-| Total                      |      |         |               |
-#+TBLFM: @>$2=vsum(@I..@II)::@>$3=vsum(@I..@II)
+| Food  | Amount (g) | Kcal/100g | P/100g | Kcal (Tot) | P (Tot) | Meal         |
+|-------+------------+-----------+--------+------------+---------+--------------|
+|       |            |           |        |          0 |     0.0 | Breakfast    |
+|       |            |           |        |          0 |     0.0 | Lunch        |
+|       |            |           |        |          0 |     0.0 | Pre workout  |
+|       |            |           |        |          0 |     0.0 | Post workout |
+|       |            |           |        |          0 |     0.0 | Dinner       |
+|       |            |           |        |          0 |     0.0 |              |
+|-------+------------+-----------+--------+------------+---------+--------------|
+| *Total* |            |           |        |          0 |      0. |              |
+#+TBLFM: $5=($2/100)*$3;%.0f::$6=($2/100)*$4;%.1f::@>$5=vsum(@I..@II)::@>$6=vsum(@I..@II)
+
 
 * Log
 "
