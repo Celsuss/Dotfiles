@@ -1168,8 +1168,8 @@ before packages are loaded."
 
     ;; Configure org-roam-capture-template
     (org-roam-capture-templates '(("d" "default" plain
-                                   "%?"
-                                   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens\n#+date: %U\n\n* ${title}")
+                                   "\n\n* ${title}"
+                                   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens\n#+date: %U\n")
                                    :unnarrowed t)
 
                                   ("p" "project" plain
@@ -1472,8 +1472,8 @@ Describe the outcome of this project.
     :bind
     (:map elfeed-search-mode-map
           ;; Press 'b' to open the menu and pick a view
-          ("b" . my/elfeed-set-view)
-          ("e" . (lambda () (interactive) (org-capture nil "l"))) ;; Add link to reading-list.org
+          ("f" . my/elfeed-set-view)
+          ("S" . (lambda () (interactive) (org-capture nil "l"))) ;; Add link to reading-list.org
           ;; Quick hotkeys for your most common modes
           ("J" . (lambda () (interactive) (elfeed-search-set-filter "@6-months-ago +unread -news")))
           ("N" . (lambda () (interactive) (elfeed-search-set-filter "@2-weeks-ago +unread +news"))))
