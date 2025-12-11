@@ -1219,9 +1219,9 @@ Describe the outcome of this project.
 - [ ] 📅 Review Agenda (Work & Projects)
 - [ ] 📧 Check email
 - [ ] 🎯 Top 3 Priorities for Today
-  1.
-  2.
-  3.
+  1. [ ]
+  2. [ ]
+  3. [ ]
 - 💤 Hours slept:
 
 * Habits
