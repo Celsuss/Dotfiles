@@ -14,7 +14,7 @@ scrollback_lines_to_serialize 10000
 // Clean UI
 default_layout "default"
 simplified_ui true
-mouse_mode false
+mouse_mode true
 
 // --- KEYBINDINGS
 keybinds {
