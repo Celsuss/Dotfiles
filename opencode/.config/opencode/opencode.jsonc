@@ -1,0 +1,27 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "theme": "gruvbox",
+    "permission": {
+        "*": "ask"
+    },
+    "model": "deepseek-coder-v2:16b",
+    "small_model": "deepseek-coder-v2:16b",
+
+    "provider": {
+        "ollama": {
+            "npm": "@ai-sdk/openai-compatible",
+            "name": "Ollama (local)",
+            "options": {
+                "baseURL": "http://localhost:11434/v1"
+            },
+            "models": {
+                "deepseek-coder-v2:16b": {
+                    "name": "deepseek-coder-v2:16b"
+                },
+                "deepseek-r1:14b": {
+                    "name": "deepseek-r1:14b"
+                }
+            }
+        }
+    }
+}
