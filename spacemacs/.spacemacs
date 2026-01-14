@@ -123,6 +123,13 @@ This function should only modify configuration layer settings."
             c-c++-dap-adapters '(dap-lldb dap-cpptools dap-gdb)
             c-c++-enable-clang-format-on-save t
             c-c++-backend 'lsp-clangd)
+     (go :variables
+         go-backend 'lsp
+         go-tab-width 4
+         go-format-before-save nil    ;; Disable layer formatting; Apheleia handles this
+         go-use-golangci-lint t
+         go-test-args "-v -race"
+         godoc-at-point t)
      (cmake :variables
             cmake-backend 'lsp
             cmake-enable-cmake-ide-support t)
@@ -213,8 +220,11 @@ This function should only modify configuration layer settings."
      org-transclusion
      org-edna
 
+     ;; Chat
+     ement
+
      ;; Version control
-     conventional-commit
+     ;; conventional-commit
 
      ;; llms
      aidermacs ;; vibe coding
@@ -821,8 +831,58 @@ before packages are loaded."
   (setq rustic-rustfmt-args "+nightly")
   (setq lsp-rust-analyzer-cargo-watch-command "clippy")
 
+  ;; ============================================================================
+  ;; Go (Golang) Power Config
+  ;; ============================================================================
+
+  ;; Add your Go bin directory to the Emacs execution path
+  ;; This helps LSP find 'gopls' and Flycheck find 'golangci-lint'
+  (add-to-list 'exec-path "~/go/bin")
+  (setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/go/bin")))
+
+  ;; -- Go Mode & LSP Settings --
+  (use-package go-mode
+    :defer t
+    :hook (go-mode . (lambda ()
+                       ;; Add import organization to before-save-hook, specifically for Go buffers
+                       (add-hook 'before-save-hook #'lsp-organize-imports nil t)))
+    :init
+    (setq godoc-at-point t)
+    :config
+    (setq lsp-go-use-gofumpt t)            ;; Request strict formatting from LSP
+    (setq lsp-go-use-placeholders t)       ;; Enable placeholder completion
+    (setq lsp-go-analyses '((fieldalignment . t)  ;; Struct alignment optimizations
+                            (nilness . t)
+                            (shadow . t)
+                            (unusedparams . t)
+                            (unusedwrite . t))))
+
+  ;; -- Debugging (DAP) --
+  (use-package dap-go
+    :ensure nil ;; Included in dap-mode
+    :after (dap-mode go-mode)
+    :config
+    (dap-go-setup)
+    (dap-ui-mode 1)
+    (dap-tooltip-mode 0)
+    (tooltip-mode 1)
+    (setq dap-auto-configure-features '(sessions locals breakpoints controls tooltip))
+
+    (dap-register-debug-template "Go :: Run Test (At Point)"
+                                 (list :type "go"
+                                       :request "launch"
+                                       :name "Go :: Run Test (At Point)"
+                                       :mode "test"
+                                       :program "${file}"
+                                       :args nil
+                                       :env nil)))
+
+  ;; ============================================================================
+  ;; Alphelia formatter
+  ;; ============================================================================
   (use-package apheleia
     :ensure t
+    :after go-mode
     :config
     ;; turn on apheleia globally
     (apheleia-global-mode +1)
@@ -836,6 +896,11 @@ before packages are loaded."
 
     (setf (alist-get 'rustfmt apheleia-formatters)
           '("rustfmt" "+nightly" "--quiet" "--emit" "stdout"))
+
+    ;; -- Go --
+    ;; Use 'gofumpt' (stricter gofmt) for formatting
+    (setf (alist-get 'go-mode apheleia-mode-alist) '(gofumpt))
+    (setf (alist-get 'gofumpt apheleia-formatters) '("gofumpt"))
 
     ;; -- TOML (Taplo) --
     (setf (alist-get 'toml-mode apheleia-mode-alist) '(taplo))
@@ -1026,8 +1091,12 @@ before packages are loaded."
 
 
   ;; ============================================================================
-  ;; RCIRC
+  ;; Chat
   ;; ============================================================================
+
+  (setq auth-sources '("~/.authinfo.gpg"))
+
+  ;; --- RCIRC ---
   (use-package rcirc
     :defer t
     :config
@@ -1040,7 +1109,6 @@ before packages are loaded."
           rcirc-default-full-name "Celsuss"
           rcirc-authinfo-file "~/.authinfo.gpg")
 
-    (setq auth-sources '("~/.authinfo.gpg"))
 
     ;; Server configuration with SASL password injection
     (setq rcirc-server-alist
@@ -1048,12 +1116,41 @@ before packages are loaded."
              :user-name "celsuss"
              :port 6697
              :encryption tls
-             ;; :password ,(my/get-secret "irc.libera.chat")
              :channels ("#emacs" "#spacemacs" "##llamas" "#archlinux" "#archlinux-offtopic" "#linux" "#Linuxkompis" "#archlinux-nordics" "#archlinux-testing"))
             ("stockholm.se.quakenet.org"
              :user-name "Celsuss"
              :port 6667
              :channels ("#sweclockers" "#stockholm")))))
+
+  ;; --- Element ---
+  (use-package ement
+    :ensure t
+    :custom
+    (ement-save-sessions t)
+    :config
+    (defun my/ement-connect ()
+      "Connect to Matrix declaratively using credentials from auth-source."
+      (interactive)
+      (let* ((user-id "@celsuss:matrix.org")
+             (server "matrix.org")
+             ;; Search .authinfo.gpg for a matching machine and login
+             (auth-entry (car (auth-source-search :host server :user user-id :max 1)))
+             (password (if auth-entry
+                           (funcall (plist-get auth-entry :secret))
+                         nil)))
+
+        (if password
+            ;; If password found, connect immediately skipping prompts
+            (ement-connect :user-id user-id :password password)
+          ;; Fallback: If no password found, let Ement ask you
+          (message "Password not found in .authinfo.gpg! Falling back to prompts.")
+          (ement-connect :user-id user-id))))
+
+    ;; (defun my/ement-connect ()
+    ;;   "Connect to Matrix using the declarative User ID."
+    ;;   (interactive)
+    ;;   (ement-connect :user-id "@celsus:matrix.org"))
+    (spacemacs/set-leader-keys "acm" 'my/ement-connect))
 
   ;; ============================================================================
   ;; Org-mode Core Configuration
@@ -1124,7 +1221,7 @@ before packages are loaded."
             ("w" "Work Task" entry (file "~/workspace/second-brain/org-roam/work_tasks.org")
              "** TODO %? :work:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
 
-            ("h" "Home Lab Task" entry (file "~/workspace/second-brain/org-roam/homelab_tasks.org")
+            ("h" "Home Lab Task" entry (file+headline "~/workspace/second-brain/org-roam/homelab_tasks.org" "Tasks")
              "** TODO %? :homelab:\n  :PROPERTIES:\n  :CREATED: %U\n  :END:")
 
             ("e" "Emacs Tweak" entry (file "~/workspace/second-brain/org-roam/emacs_tweak_tasks.org")
@@ -1574,7 +1671,7 @@ Describe the outcome of this project.
   ;; ============================================================================
   ;; This activates conventional-commit-mode in the Magit commit buffer
   ;; to help lint commit messages.
-  (add-hook 'git-commit-setup-hook 'conventional-commit-mode)
+  ;; (add-hook 'git-commit-setup-hook 'conventional-commit-mode)
 
   ;; ============================================================================
   ;; Projectile
@@ -1621,48 +1718,50 @@ This function is called at the very end of Spacemacs initialization."
    '(ispell-dictionary nil)
    '(org-agenda-files nil)
    '(package-selected-packages
-     '(ac-ispell ace-jump-helm-line ace-link aggressive-indent alert apheleia
-                 auto-compile auto-complete auto-highlight-symbol auto-yasnippet
-                 autothemer beacon bui cargo centered-cursor-mode cfrs
-                 clean-aindent-mode column-enforce-mode company company-emoji
-                 counsel counsel-gtags dap-mode define-word devdocs diminish
-                 dired-quick-sort doom-modeline dotenv-mode drag-stuff dumb-jump
-                 editorconfig eldoc elisp-def elisp-slime-nav
-                 emoji-cheat-sheet-plus emr esh-help eshell-prompt-extras eshell-z
-                 eval-sexp-fu evil-anzu evil-args evil-cleverparens
-                 evil-collection evil-escape evil-evilified-state evil-exchange
-                 evil-goggles evil-iedit-state evil-indent-plus evil-lion
-                 evil-lisp-state evil-matchit evil-mc evil-nerd-commenter
-                 evil-numbers evil-org evil-surround evil-textobj-line evil-tutor
-                 evil-unimpaired evil-visual-mark-mode evil-visualstar
-                 expand-region eyebrowse fancy-battery flx-ido flycheck-elsa
+     '(ac-ispell ace-jump-helm-line ace-link aggressive-indent alert auto-compile
+                 auto-complete auto-highlight-symbol auto-yasnippet autothemer
+                 beacon bui cargo centered-cursor-mode cfrs clean-aindent-mode
+                 column-enforce-mode company company-emoji counsel counsel-gtags
+                 dap-mode define-word devdocs diminish dired-quick-sort
+                 doom-modeline dotenv-mode drag-stuff dumb-jump editorconfig eldoc
+                 elisp-def elisp-slime-nav emoji-cheat-sheet-plus emr esh-help
+                 eshell-prompt-extras eshell-z eval-sexp-fu evil-anzu evil-args
+                 evil-cleverparens evil-collection evil-escape
+                 evil-evilified-state evil-exchange evil-goggles evil-iedit-state
+                 evil-indent-plus evil-lion evil-lisp-state evil-matchit evil-mc
+                 evil-nerd-commenter evil-numbers evil-org evil-surround
+                 evil-textobj-line evil-tutor evil-unimpaired
+                 evil-visual-mark-mode evil-visualstar expand-region eyebrowse
+                 fancy-battery flx-ido flycheck-elsa flycheck-golangci-lint
                  flycheck-package flycheck-pos-tip flycheck-rust font-lock+ fuzzy
-                 ggtags gh-md gntp gnuplot golden-ratio google-translate
-                 gruvbox-theme helm-ag helm-c-yasnippet helm-company
-                 helm-descbinds helm-gtags helm-lsp helm-make helm-mode-manager
-                 helm-org helm-org-rifle helm-projectile helm-purpose helm-swoop
-                 helm-themes helm-xref help-fns+ hide-comnt highlight-indentation
-                 highlight-numbers highlight-parentheses hl-todo holy-mode htmlize
-                 hungry-delete hybrid-mode indent-guide info+ inspector ivy
-                 link-hint log4e lorem-ipsum lsp-docker lsp-mode lsp-origami
-                 lsp-treemacs lsp-ui macrostep map markdown-mode markdown-toc
-                 mmm-mode multi-line multi-term multi-vterm mwim nameless neotree
-                 nhich-key open-junk-file org org-category-capture org-cliplink
-                 org-contrib org-download org-mime org-pomodoro org-present
-                 org-projectile org-ql org-rich-yank org-roam org-roam-ui
-                 org-sidebar org-super-agenda org-superstar orgit orgit-forge
-                 origami ov overseer ox-hugo paradox password-generator pcre2el
-                 peg pfuture popwin pos-tip project quickrun racer
-                 rainbow-delimiters request restart-emacs rich-minority ron-mode
-                 rust-mode shell-pop shrink-path smart-mode-line space-doc
-                 spaceline-all-the-icons spacemacs-purpose-popwin
-                 spacemacs-whitespace-cleanup string-edit-at-point
-                 string-inflection swiper symbol-overlay symon term-cursor
-                 terminal-here toc-org toml-mode treemacs treemacs-icons-dired
-                 treemacs-persp treemacs-projectile ts undo-tree unfill
-                 use-package uuidgen valign vi-tilde-fringe vim-powerline vmd-mode
-                 volatile-highlights vterm winum writeroom-mode ws-butler xref
-                 xterm-color yasnippet yasnippet-snippets))
+                 ggtags gh-md gntp gnuplot go-eldoc go-fill-struct go-gen-test
+                 go-guru go-impl go-mode go-rename go-tag godoctor golden-ratio
+                 google-translate gruvbox-theme helm-ag helm-c-yasnippet
+                 helm-company helm-descbinds helm-gtags helm-lsp helm-make
+                 helm-mode-manager helm-org helm-org-rifle helm-projectile
+                 helm-purpose helm-swoop helm-themes helm-xref help-fns+
+                 hide-comnt highlight-indentation highlight-numbers
+                 highlight-parentheses hl-todo holy-mode htmlize hungry-delete
+                 hybrid-mode indent-guide info+ inspector ivy link-hint log4e
+                 lorem-ipsum lsp-docker lsp-mode lsp-origami lsp-treemacs lsp-ui
+                 macrostep map markdown-mode markdown-toc mmm-mode multi-line
+                 multi-term multi-vterm mwim nameless neotree nhich-key
+                 open-junk-file org org-category-capture org-cliplink org-contrib
+                 org-download org-mime org-pomodoro org-present org-projectile
+                 org-ql org-rich-yank org-roam org-roam-ui org-sidebar
+                 org-super-agenda org-superstar orgit orgit-forge origami ov
+                 overseer ox-hugo paradox password-generator pcre2el peg pfuture
+                 popwin pos-tip project quickrun racer rainbow-delimiters request
+                 restart-emacs rich-minority ron-mode rust-mode shell-pop
+                 shrink-path smart-mode-line space-doc spaceline-all-the-icons
+                 spacemacs-purpose-popwin spacemacs-whitespace-cleanup
+                 string-edit-at-point string-inflection swiper symbol-overlay
+                 symon term-cursor terminal-here toc-org toml-mode treemacs
+                 treemacs-icons-dired treemacs-persp treemacs-projectile ts
+                 undo-tree unfill use-package uuidgen valign vi-tilde-fringe
+                 vim-powerline vmd-mode volatile-highlights vterm winum
+                 writeroom-mode ws-butler xref xterm-color yasnippet
+                 yasnippet-snippets))
    '(safe-local-variable-values
      '((helm-make-build-dir . "build/") (javascript-backend . tide)
        (javascript-backend . tern) (javascript-backend . lsp))))
