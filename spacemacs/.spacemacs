@@ -1478,7 +1478,7 @@ Describe the outcome of this project.
           ("J" . (lambda () (interactive) (elfeed-search-set-filter "@6-months-ago +unread -news")))
           ("N" . (lambda () (interactive) (elfeed-search-set-filter "@2-weeks-ago +unread +news"))))
     (:map elfeed-show-mode-map
-          ("e" . (lambda () (interactive) (org-capture nil "l"))))
+          ("S" . (lambda () (interactive) (org-capture nil "l"))))
 
     )
 
