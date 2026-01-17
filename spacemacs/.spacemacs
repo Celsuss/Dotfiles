@@ -1266,7 +1266,7 @@ before packages are loaded."
     ;; Configure org-roam-capture-template
     (org-roam-capture-templates '(("d" "default" plain
                                    "%?"
-                                   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens\n#+date: %U\n\n* ${title}")
+                                   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens Lordén\n#+date: %U\n\n* ${title}")
                                    :unnarrowed t)
 
                                   ("p" "project" plain
@@ -1287,11 +1287,31 @@ Describe the outcome of this project.
 
                                    :if-new (file+head "projects/%<%Y%m%d%H%M%S>-${slug}.org"
                                                       "#+title: ${title}
-#+author: Jens
+#+author: Jens Lordén
 #+date: %U
 #+filetags: :project:${slug}:
 #+SEQ_TODO: TODO STRT WAIT | DONE
 #+startup: content
+\n
+")
+                                   :unnarrowed t)
+
+
+                                  ("b" "blog-post" plain
+                                   "\n
+One of my [[id:b0b348f1-7824-4a8c-af56-46ad9372071f][blog post]]s.
+
+* ${title}
+:properties:
+:export_hugo_section: /posts/
+:export_file_name:
+:end:"
+
+                                   :if-new (file+head "blog-posts/%<%Y%m%d%H%M%S>-${slug}.org"
+                                                      "#+title: ${title}
+#+author: Jens Lordén
+#+date: %U
+#+hugo_base_dir: ../hugo/
 \n
 ")
                                    :unnarrowed t)
