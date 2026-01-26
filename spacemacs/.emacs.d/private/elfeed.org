@@ -22,6 +22,7 @@
 
 ** Homelab                                                      :homelab:foss:
 *** [[https://noted.lol/rss][Noted Homelab]]
+*** [[https://selfh.st/rss/][selfh.st]]
 
 ** News                                                                 :news:
 *** [[https://feber.se/rss/][Feber]]                                                               :feber:
