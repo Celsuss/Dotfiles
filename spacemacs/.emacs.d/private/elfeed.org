@@ -4,6 +4,7 @@
 *** [[https://log.schemescape.com/feed.xml][Schemescape]]                                                   :schemescape:
 *** [[https://ntietz.com/atom.xml][Ntietz]]                                                               :gwen:
 *** [[https://xeiaso.net/blog.rss][Xe Iaso]]                                                           :xe_iaso:
+*** [[https://gwern.substack.com/feed][Qwern]]
 
 ** Machine Learning                                                  :ml:blog:
 *** [[https://jalammar.github.io/feed.xml][Jay Alammar]]                                                    :jayalammar:
@@ -28,6 +29,7 @@
 *** [[https://feber.se/rss/][Feber]]                                                               :feber:
 *** [[https://www.sweclockers.com/feeds/nyheter][SweClockers]]
 *** [[https://news.ycombinator.com/rss][Hacker News]]
+*** [[https://lobste.rs/rss][lobster]]
 
 ** Games                                                               :games:
 *** [[https://www.fz.se/feeds/nyheter][FZ]]                                                                     :fz:
