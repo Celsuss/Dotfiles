@@ -5,12 +5,7 @@
         "*": "ask",
         "grep *": "allow",
         "glob *": "allow",
-        "read": {
-            "*": "allow",
-            "*.env": "deny",
-            "*.env.*": "deny",
-            "*.env.example": "allow"
-        }
+        "read": "allow"
     },
     "model": "gpt-5.1-codex-max",
     "small_model": "gpt-5.1-codex-mini",
@@ -88,7 +83,7 @@
                 "write": false,
                 "edit": false,
                 // "bash": "ask",
-                "read": true
+                "read": "allow"
             },
             "temperature": 0.2
         },
@@ -100,7 +95,7 @@
                 "write": false,
                 "edit": false,
                 // "bash": "ask",
-                "read": true
+                "read": "allow"
             },
             "temperature": 0.2
         }
