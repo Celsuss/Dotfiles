@@ -1267,11 +1267,6 @@ before packages are loaded."
                                    :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens Lordén\n#+date: %U\n\n* ${title}")
                                    :unnarrowed t)
 
-                                  ("t" "tasks" plain
-                                   "%?"
-                                   :if-new (file+head "tasks/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens Lordén\n#+date: %U\n\n* ${title}")
-                                   :unnarrowed t)
-
                                   ("p" "project" plain
                                    "\n* TODO ${title}
 One of [[id:1ae70a1c-485e-43fb-acc2-4c364510d632][my projects]].
@@ -1298,6 +1293,27 @@ Describe the outcome of this project.
 \n
 ")
                                    :unnarrowed t)
+
+
+                                  ("t" "tasks" plain
+                                   "%?"
+                                   :if-new (file+head "tasks/%<%Y%m%d%H%M%S>-${slug}.org"
+                                                      "#+title: ${title}
+#+author: Jens Lordén
+#+date: %U
+#+SEQ_TODO: TODO STRT WAIT | DONE
+#+startup: content
+\n
+* ${title}
+\n
+** Kanban board
+| DONE   | WAIT | STRT | TODO |
+|--------+------+------+------|
+\n
+* Tasks
+")
+                                   :unnarrowed t)
+
 
                                   ("b" "blog-post" plain
                                    "\n
