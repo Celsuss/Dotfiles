@@ -1016,9 +1016,9 @@ before packages are loaded."
      (message "GPTel: Configuring for Home (Ollama)")
      (setq gptel-backend (gptel-make-ollama "Ollama"
                            :host "localhost:11434"
-                           :models '(deepseek-r1:14b)
+                           :models '(deepseek-coder-v2:16b)
                            :stream t)
-           gptel-model 'deepseek-r1:14b
+           gptel-model 'deepseek-coder-v2:16b
            gptel-format 'org))
 
     ('work
@@ -1190,14 +1190,8 @@ before packages are loaded."
 
     ;; (setq org-agenda-files (directory-files-recursively org-directory "\\\\.org$"))
     ;; (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
-    (setq org-agenda-files '("~/workspace/second-brain/org-roam/todo.org"
-                             "~/workspace/second-brain/org-roam/work_tasks.org"
-                             "~/workspace/second-brain/org-roam/homelab_tasks.org"
-                             "~/workspace/second-brain/org-roam/emacs_tweak_tasks.org"
-                             "~/workspace/second-brain/org-roam/dotfiles_tweak_tasks.org"
-                             "~/workspace/second-brain/org-roam/curriculum_tasks.org"
-                             "~/workspace/second-brain/org-roam/projects/"
-                             "~/workspace/second-brain/org-roam/habits.org"))
+    (setq org-agenda-files '("~/workspace/second-brain/org-roam/tasks/"
+                             "~/workspace/second-brain/org-roam/projects/"))
     (org-super-agenda-mode)
 
     ;; --- Org habits ---
@@ -1273,6 +1267,11 @@ before packages are loaded."
                                    :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens Lordén\n#+date: %U\n\n* ${title}")
                                    :unnarrowed t)
 
+                                  ("t" "tasks" plain
+                                   "%?"
+                                   :if-new (file+head "tasks/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens Lordén\n#+date: %U\n\n* ${title}")
+                                   :unnarrowed t)
+
                                   ("p" "project" plain
                                    "\n* TODO ${title}
 One of [[id:1ae70a1c-485e-43fb-acc2-4c364510d632][my projects]].
@@ -1299,7 +1298,6 @@ Describe the outcome of this project.
 \n
 ")
                                    :unnarrowed t)
-
 
                                   ("b" "blog-post" plain
                                    "\n
