@@ -830,6 +830,10 @@ before packages are loaded."
   ;; ============================================================================
   (setq rustic-rustfmt-args "+nightly")
   (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+  (with-eval-after-load 'tree-sitter-indent
+    ;; Fix for void-variable error in rustic-mode
+    ;; We set this to nil to prevent the crash and disable tree-sitter indent for Rust
+    (setq tree-sitter-indent-rustic-scopes nil))
 
   ;; ============================================================================
   ;; Go (Golang) Power Config
@@ -1012,9 +1016,9 @@ before packages are loaded."
      (message "GPTel: Configuring for Home (Ollama)")
      (setq gptel-backend (gptel-make-ollama "Ollama"
                            :host "localhost:11434"
-                           :models '(deepseek-r1:14b)
+                           :models '(deepseek-coder-v2:16b)
                            :stream t)
-           gptel-model 'deepseek-r1:14b
+           gptel-model 'deepseek-coder-v2:16b
            gptel-format 'org))
 
     ('work
@@ -1186,14 +1190,8 @@ before packages are loaded."
 
     ;; (setq org-agenda-files (directory-files-recursively org-directory "\\\\.org$"))
     ;; (setq org-agenda-files (directory-files-recursively "~/workspace/second-brain/" "\.org$"))
-    (setq org-agenda-files '("~/workspace/second-brain/org-roam/todo.org"
-                             "~/workspace/second-brain/org-roam/work_tasks.org"
-                             "~/workspace/second-brain/org-roam/homelab_tasks.org"
-                             "~/workspace/second-brain/org-roam/emacs_tweak_tasks.org"
-                             "~/workspace/second-brain/org-roam/dotfiles_tweak_tasks.org"
-                             "~/workspace/second-brain/org-roam/curriculum_tasks.org"
-                             "~/workspace/second-brain/org-roam/projects/"
-                             "~/workspace/second-brain/org-roam/habits.org"))
+    (setq org-agenda-files '("~/workspace/second-brain/org-roam/tasks/"
+                             "~/workspace/second-brain/org-roam/projects/"))
     (org-super-agenda-mode)
 
     ;; --- Org habits ---
@@ -1265,8 +1263,8 @@ before packages are loaded."
 
     ;; Configure org-roam-capture-template
     (org-roam-capture-templates '(("d" "default" plain
-                                   "\n\n* ${title}"
-                                   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens\n#+date: %U\n")
+                                   "%?"
+                                   :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+author: Jens Lordén\n#+date: %U\n\n* ${title}")
                                    :unnarrowed t)
 
                                   ("p" "project" plain
@@ -1287,11 +1285,51 @@ Describe the outcome of this project.
 
                                    :if-new (file+head "projects/%<%Y%m%d%H%M%S>-${slug}.org"
                                                       "#+title: ${title}
-#+author: Jens
+#+author: Jens Lordén
 #+date: %U
 #+filetags: :project:${slug}:
 #+SEQ_TODO: TODO STRT WAIT | DONE
 #+startup: content
+\n
+")
+                                   :unnarrowed t)
+
+
+                                  ("t" "tasks" plain
+                                   "%?"
+                                   :if-new (file+head "tasks/%<%Y%m%d%H%M%S>-${slug}.org"
+                                                      "#+title: ${title}
+#+author: Jens Lordén
+#+date: %U
+#+SEQ_TODO: TODO STRT WAIT | DONE
+#+startup: content
+\n
+* ${title}
+\n
+** Kanban board
+| DONE   | WAIT | STRT | TODO |
+|--------+------+------+------|
+\n
+* Tasks
+")
+                                   :unnarrowed t)
+
+
+                                  ("b" "blog-post" plain
+                                   "\n
+One of my [[id:b0b348f1-7824-4a8c-af56-46ad9372071f][blog post]]s.
+
+* ${title}
+:properties:
+:export_hugo_section: /posts/
+:export_file_name:
+:end:"
+
+                                   :if-new (file+head "blog-posts/%<%Y%m%d%H%M%S>-${slug}.org"
+                                                      "#+title: ${title}
+#+author: Jens Lordén
+#+date: %U
+#+hugo_base_dir: ../hugo/
 \n
 ")
                                    :unnarrowed t)
@@ -1333,16 +1371,16 @@ Describe the outcome of this project.
   - [ ] 🍊 Vitamins
 
 * Nutrition
-| Food  | Amount (g) | Kcal/100g | P/100g | Kcal (Tot) | P (Tot) | Meal         |
-|-------+------------+-----------+--------+------------+---------+--------------|
-|       |            |           |        |          0 |     0.0 | Breakfast    |
-|       |            |           |        |          0 |     0.0 | Lunch        |
-|       |            |           |        |          0 |     0.0 | Pre workout  |
-|       |            |           |        |          0 |     0.0 | Post workout |
-|       |            |           |        |          0 |     0.0 | Dinner       |
-|       |            |           |        |          0 |     0.0 |              |
-|-------+------------+-----------+--------+------------+---------+--------------|
-| *Total* |            |           |        |          0 |      0. |              |
+| Food  | Amount (g) | Kcal/100g | P/100g | Kcal (Tot) | P (Tot) | Meal          |
+|-------+------------+-----------+--------+------------+---------+---------------|
+|       |            |           |        |          0 |     0.0 | Breakfast     |
+|       |            |           |        |          0 |     0.0 | Lunch         |
+|       |            |           |        |          0 |     0.0 | Pre workout   |
+|       |            |           |        |          0 |     0.0 | Post workout  |
+|       |            |           |        |          0 |     0.0 | Dinner        |
+|       |            |           |        |          0 |     0.0 | Evening snack |
+|-------+------------+-----------+--------+------------+---------+---------------|
+| *Total* |            |           |        |          0 |      0. |             |
 #+TBLFM: $5=($2/100)*$3;%.0f::$6=($2/100)*$4;%.1f::@>$5=vsum(@I..@II)::@>$6=vsum(@I..@II)
 
 
@@ -1682,17 +1720,6 @@ Describe the outcome of this project.
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("72ed8b6bffe0bfa8d097810649fd57d2b598deef47c992920aef8b5d9599eefe" "d80952c58cf1b06d936b1392c38230b74ae1a2a6729594770762dc0779ac66b7" default))
- '(evil-want-Y-yank-to-eol nil)
- '(helm-completion-style 'helm-fuzzy)
- '(package-selected-packages
-   '(ox-hugo cargo counsel-gtags counsel swiper ivy dap-mode lsp-docker lsp-treemacs bui treemacs cfrs pfuture flycheck-rust ggtags helm-gtags racer ron-mode rust-mode toml-mode doom-modeline shrink-path smart-mode-line rich-minority org-sidebar org-ql peg ov org-super-agenda map ts flycheck-pos-tip pos-tip helm-lsp lsp-origami origami lsp-ui lsp-mode eldoc esh-help eshell-prompt-extras eshell-z multi-term multi-vterm project xref shell-pop terminal-here vterm xterm-color org-roam org-roam-ui autothemer evil-org gnuplot helm-org-rifle htmlize org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-category-capture org-rich-yank orgit-forge orgit org ac-ispell auto-complete auto-yasnippet fuzzy helm-c-yasnippet helm-company mwim neotree unfill yasnippet-snippets yasnippet beacon gruvbox-theme company-emoji company emoji-cheat-sheet-plus gh-md markdown-toc markdown-mode mmm-mode valign vmd-mode ws-butler writeroom-mode winum nhich-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen use-package undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline-all-the-icons space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
