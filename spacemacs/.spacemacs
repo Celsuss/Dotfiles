@@ -984,20 +984,6 @@ before packages are loaded."
     :ensure t
     :defer t
     :init
-    ;; Declare the prefix and give it a name for the which-key popup.
-    ;; (spacemacs/declare-prefix "$a" "aidermacs")
-    (progn
-      (let ((aidermacs-map (make-sparse-keymap)))
-        (define-key aidermacs-map "a" 'aidermacs-add-file)
-        (define-key aidermacs-map "r" 'aidermacs-run)
-        (define-key aidermacs-map "t" 'aidermacs-transient-menu)
-        (evil-leader/set-key "$a" aidermacs-map)
-
-        ;; (which-key-add-keymap-based-replacements aidermacs-map "Aidermasc")
-        ;; (which-key-add-keymap-based-replacements
-        ;;   aidermacs-map '(nil . "Aider"))
-
-        ))
     ;; :bind
     :config
     (progn
@@ -1007,6 +993,12 @@ before packages are loaded."
       )
     )
   (setq aidermacs-program (expand-file-name "~/.local/bin/aider"))
+  (spacemacs/declare-prefix "$ a" "Aidermacs")
+  (spacemacs/set-leader-keys
+    "$ a a" 'aidermacs-add-file             ;; Add file to context
+    "$ a r" 'aidermacs-run                  ;; Run aidermacs
+    "$ a t" 'aidermacs-transient-menu       ;; Open transient menu
+    )
 
   ;;;;;;;;;;;
   ;; Gptel ;;
