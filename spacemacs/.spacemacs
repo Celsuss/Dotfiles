@@ -1047,6 +1047,24 @@ before packages are loaded."
 
   (pcase my/execution-context
     ('home
+     (use-package ellama
+       :ensure t
+       :after (llm plz)
+       :defer t
+       :init
+       (setopt ellama-language "English")
+       (require 'llm)
+       (require 'llm-ollama)
+       :config
+       (setq ellama-provider
+             (make-llm-ollama
+              :chat-model "qwen2.5-coder:14b"
+              :embedding-model "qwen2.5-coder:14b"
+              ))
+
+       (setq ellama-auto-scroll t)           ;; Scroll as it generates
+       (setq ellama-show-quotes t)           ;; Show quoted code blocks clearly
+       )
      )
 
     ('work
@@ -1069,6 +1087,19 @@ before packages are loaded."
               ))
        )
      ))
+  (spacemacs/declare-prefix "a i" "AI (Ellama)")
+
+  (spacemacs/set-leader-keys
+    "a i a" 'ellama-ask-about             ;; Ask about selected region
+    "a i A" 'ellama-code-add              ;; Add new region of code
+    "a i c" 'ellama-code-complete         ;; Complete code at point
+    "a i e" 'ellama-code-edit             ;; Edit selected code
+    "a i m" 'ellama-transient-main-menu   ;; THE MENU (Power User Tool)
+    "a i r" 'ellama-code-review           ;; Review selected code
+    "a i i" 'ellama-code-improve          ;; Improve/Refactor selected code
+    "a i x" 'ellama-context-add-buffer    ;; Add full buffer to context
+    "a i s" 'ellama-context-add-selection ;; Add selection to context
+    )
 
   ;; ============================================================================
   ;; Company mode auto completion
