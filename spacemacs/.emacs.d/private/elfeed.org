@@ -30,6 +30,7 @@
 *** [[https://www.sweclockers.com/feeds/nyheter][SweClockers]]
 *** [[https://news.ycombinator.com/rss][Hacker News]]
 *** [[https://lobste.rs/rss][lobster]]
+*** [[https://hackaday.com/blog/feed/][Hackaday]]
 
 ** Games                                                               :games:
 *** [[https://www.fz.se/feeds/nyheter][FZ]]                                                                     :fz:
