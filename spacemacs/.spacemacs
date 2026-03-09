@@ -1143,11 +1143,13 @@ before packages are loaded."
              :user-name "celsuss"
              :port 6697
              :encryption tls
-             :channels ("#emacs" "#spacemacs" "##llamas" "#archlinux" "#archlinux-offtopic" "#linux" "#Linuxkompis" "#archlinux-nordics" "#archlinux-testing"))
+             :channels ("#emacs,#spacemacs,##llamas,#linux,#Linuxkompis"
+                        "#archlinux,#archlinux-offtopic,#archlinux-devops,#archlinux-projects,#archlinux-releng,#archlinux-pacman,#archlinux-nordics,#archlinux-testing"))
             ("stockholm.se.quakenet.org"
-             :user-name "Celsuss"
-             :port 6667
-             :channels ("#sweclockers" "#stockholm")))))
+             ("stockholm.se.quakenet.org"
+              :user-name "Celsuss"
+              :port 6667
+              :channels ("#sweclockers" "#stockholm"))))))
 
   ;; --- Element ---
   (use-package ement
@@ -1394,6 +1396,7 @@ One of my [[id:b0b348f1-7824-4a8c-af56-46ad9372071f][blog post]]s.
   - [ ] 🍊 Vitamins
 
 * Nutrition
+*Weight:*
 | Food  | Amount (g) | Kcal/100g | P/100g | Kcal (Tot) | P (Tot) | Meal          |
 |-------+------------+-----------+--------+------------+---------+---------------|
 |       |            |           |        |          0 |     0.0 | Breakfast     |

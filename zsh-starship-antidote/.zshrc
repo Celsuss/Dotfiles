@@ -116,3 +116,4 @@ export MANROFFOPT="-c"
 if [[ -z "$INSIDE_EMACS" && -z "$ZELLIJ" ]]; then
     eval "$(zellij setup --generate-auto-start zsh)"
 fi
+fastfetch
