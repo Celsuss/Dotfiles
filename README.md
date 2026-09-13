@@ -34,37 +34,48 @@ I use a consistent **Gruvbox Material Dark** theme across most applications.
 
 ## Repository Structure
 
-Not all folders in this repository are currently active. The Ansible playbook (`ansible-playbook/group_vars/all.yml`) determines which configurations are actually stowed to the system.
+Each top-level directory is a [GNU Stow](https://www.gnu.org/software/stow/) package
+with its own `justfile` that knows where the package should be linked (`~`, `~/.config`,
+or `~/.config/<name>`). Not all packages are active: the `packages` variable in the root
+`justfile` lists the ones linked by the `*-all` recipes.
 
-* **`ansible-playbook/`**: Automation scripts to set up the environment.
+* **`justfile`**: Root entry point; exposes every package as a `just` module.
 * **`hypr*/`**: Configuration for Hyprland, Hyprlock, and Hyprpaper.
 * **`zsh-starship-antidote/`**: My current Zsh setup using Antidote plugin manager and Starship prompt.
 * **`spacemacs/`**: Emacs configuration (Org-roam, LSP, etc.).
 * **`kitty/`**: Terminal configuration.
-* **`i3/`, `polybar/`, `alacritty/`**: Legacy X11 configurations (not currently active in the default Ansible install).
+* **`i3/`, `polybar/`, `alacritty/`**: Legacy X11 configurations (not part of `packages`, but can be stowed individually).
 
 ## Installation
 
-I use **Ansible** to detect the OS (Arch vs Ubuntu), install the necessary system packages, and Stow the dotfiles.
+Symlinks are created with **Stow**, driven by **just**.
 
 ### Prerequisites
-* Ansible
 * Git
+* [GNU Stow](https://www.gnu.org/software/stow/)
+* [just](https://github.com/casey/just)
 
 ### Deployment
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/celsuss/dotfiles.git
+    git clone https://github.com/celsuss/dotfiles.git ~/workspace/dotfiles
+    cd ~/workspace/dotfiles
     ```
 
-2.  Run the Ansible setup:
+2.  Stow the dotfiles:
     ```bash
-    cd dotfiles/ansible-playbook
-    # Dry run to check what will happen
-    ansible-playbook setup.yml --check --ask-become-pass
-
-    # Install
-    ansible-playbook setup.yml --ask-become-pass
+    just                # list all recipes and packages
+    just dry-run-all    # preview what would be linked
+    just stow-all       # link every active package
     ```
 
-*Note: The playbook automatically handles distribution differences (e.g., installing `base-devel` on Arch vs `build-essential` on Ubuntu).*
+3.  Individual packages can be managed through their module:
+    ```bash
+    just kitty::stow
+    just hyprland::dry-run
+    just i3::stow       # legacy packages work too
+    just kitty::restow  # re-link after adding/removing files
+    just kitty::unstow  # remove the symlinks
+    ```
+
+*Note: `stow` ignores the `justfile` and `README` in each package via its `.stow-local-ignore`.*

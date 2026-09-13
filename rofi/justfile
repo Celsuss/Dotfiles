@@ -1,0 +1,20 @@
+# Directory the symlinks are created in
+target := home_directory() / ".config" / "rofi"
+
+# Symlink this package into the target
+stow:
+    mkdir -p "{{target}}"
+    stow -v -d "{{source_directory()}}" -t "{{target}}" .
+
+# Remove this package's symlinks
+unstow:
+    stow -v -D -d "{{source_directory()}}" -t "{{target}}" .
+
+# Remove and re-create the symlinks (picks up added/removed files)
+restow:
+    mkdir -p "{{target}}"
+    stow -v -R -d "{{source_directory()}}" -t "{{target}}" .
+
+# Show what stow would do without touching anything
+dry-run:
+    stow -n -v -d "{{source_directory()}}" -t "{{target}}" .
