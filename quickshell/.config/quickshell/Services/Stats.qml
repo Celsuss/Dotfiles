@@ -71,7 +71,7 @@ command -v nvidia-smi >/dev/null && echo \"gpu $(nvidia-smi --query-gpu=utilizat
 
     Timer {
         interval: 2000
-        running: ShellState.panelOpen
+        running: ShellState.panelOpen || ShellState.aiDashOpen
         repeat: true
         triggeredOnStart: true
         onTriggered: root.refresh()

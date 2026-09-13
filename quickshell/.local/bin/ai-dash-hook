@@ -1,0 +1,98 @@
+#!/bin/sh
+# Claude Code hook -> session registry for the Quickshell AI dashboard.
+#
+# Reads the hook JSON on stdin and rewrites
+#   $XDG_RUNTIME_DIR/ai-dash/sessions/claude-code-<session_id>.json
+# Register it in ~/.claude/settings.json for SessionStart, UserPromptSubmit,
+# PreToolUse, PostToolUse, Notification, PermissionRequest, Stop, SessionEnd.
+# Any other tool can write the same schema to that directory and will show
+# up in the dashboard; `pid` is used to prune files of dead processes.
+
+dir="${XDG_RUNTIME_DIR:-/tmp}/ai-dash/sessions"
+input=$(cat)
+[ -n "$input" ] || exit 0
+
+id=$(printf '%s' "$input" | jq -r '.session_id // empty')
+event=$(printf '%s' "$input" | jq -r '.hook_event_name // empty')
+[ -n "$id" ] && [ -n "$event" ] || exit 0
+
+file="$dir/claude-code-$id.json"
+
+if [ "$event" = SessionEnd ]; then
+    rm -f "$file"
+    exit 0
+fi
+
+mkdir -p "$dir"
+
+# Find the claude process this hook belongs to by walking up from our parent.
+pid=$PPID
+while [ "$pid" -gt 1 ] 2>/dev/null; do
+    [ "$(cat /proc/$pid/comm 2>/dev/null)" = claude ] && break
+    pid=$(awk '{print $4}' /proc/$pid/stat 2>/dev/null) || break
+done
+[ "$pid" -gt 1 ] 2>/dev/null || pid=$PPID
+
+# Frontend: an Emacs ancestor means agent-shell (ACP); otherwise a stream-json /
+# --print invocation is some headless SDK caller (claude-mem, scripts, ...).
+frontend=terminal
+case "$(tr '\0' ' ' < /proc/$pid/cmdline 2>/dev/null)" in
+    *stream-json*|*" -p "*|*--print*) frontend=headless ;;
+esac
+anc=$pid
+while [ "$anc" -gt 1 ] 2>/dev/null; do
+    if [ "$(cat /proc/$anc/comm 2>/dev/null)" = emacs ]; then frontend=emacs; break; fi
+    anc=$(awk '{print $4}' /proc/$anc/stat 2>/dev/null) || break
+done
+
+case "$event" in
+    SessionStart)      state=idle ;;
+    UserPromptSubmit)  state=working ;;
+    PreToolUse)        state=working ;;
+    PostToolUse)       state=working ;;
+    PermissionRequest) state=waiting ;;
+    Notification)
+        case "$(printf '%s' "$input" | jq -r '.notification_type // empty')" in
+            permission_prompt|elicitation_dialog) state=waiting ;;
+            idle_prompt)                          state=idle ;;
+            *)                                    state="" ;;
+        esac ;;
+    Stop)              state=idle ;;
+    *)                 state="" ;;
+esac
+
+prev=$(cat "$file" 2>/dev/null)
+[ -n "$prev" ] || prev='{}'
+
+tmp="$file.tmp.$$"
+printf '%s' "$input" | jq -c \
+    --argjson prev "$prev" \
+    --arg event "$event" \
+    --arg state "$state" \
+    --arg frontend "$frontend" \
+    --argjson pid "$pid" \
+    --argjson now "$(date +%s)" '
+    # Short human summary of a tool call for the session row.
+    def detail:
+        if .tool_name == "Bash" then (.tool_input.command // "" | .[0:80])
+        elif (.tool_input.file_path // "") != "" then (.tool_input.file_path | split("/") | last)
+        elif (.tool_input.pattern // "") != "" then .tool_input.pattern
+        elif (.tool_input.description // "") != "" then .tool_input.description
+        else "" end;
+    $prev + {
+        tool: "claude-code",
+        id: .session_id,
+        pid: $pid,
+        cwd: (.cwd // $prev.cwd // ""),
+        frontend: $frontend,
+        transcript: (.transcript_path // $prev.transcript // ""),
+        started: ($prev.started // $now),
+        updated: $now,
+        event: $event
+    }
+    + (if $state != "" then {state: $state} else {} end)
+    + (if (.model // "") != "" then {model: .model} else {} end)
+    + (if $event == "UserPromptSubmit" then {last_prompt: ((.prompt // "") | gsub("\\s+"; " ") | .[0:120])} else {} end)
+    + (if $event == "PreToolUse" or $event == "PostToolUse" then {last_tool: (.tool_name // ""), last_tool_detail: detail} else {} end)
+    + (if $event == "Stop" then {last_tool: "", last_tool_detail: ""} else {} end)
+' > "$tmp" && mv -f "$tmp" "$file"
