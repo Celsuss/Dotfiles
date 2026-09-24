@@ -14,6 +14,12 @@ ColumnLayout {
     readonly property int collapsedLimit: 3
     property var expandedApps: ({})
 
+    function setExpanded(app, on) {
+        const m = Object.assign({}, expandedApps);
+        m[app] = on;
+        expandedApps = m;
+    }
+
     readonly property var groups: {
         const byApp = {};
         const order = [];
@@ -73,21 +79,38 @@ ColumnLayout {
                     text: group.expanded ? "Show less" : "+" + (group.modelData.items.length - root.collapsedLimit) + " more"
                     color: Theme.gray
                     font.pixelSize: Theme.fontSmall
+
+                    activeFocusOnTab: true
+
+                    Keys.onReturnPressed: root.setExpanded(group.modelData.app, !group.expanded)
+                    Keys.onEnterPressed:  root.setExpanded(group.modelData.app, !group.expanded)
+                    Keys.onSpacePressed:  root.setExpanded(group.modelData.app, !group.expanded)
+                    Keys.onPressed: event => {
+                        if (event.key === Qt.Key_L || event.key === Qt.Key_Right) {
+                            root.setExpanded(group.modelData.app, true);
+                            event.accepted = true;
+                        } else if (event.key === Qt.Key_H || event.key === Qt.Key_Left) {
+                            root.setExpanded(group.modelData.app, false);
+                            event.accepted = true;
+                        }
+                    }
+
+                    FocusRing {}
+
                     MouseArea {
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            const m = Object.assign({}, root.expandedApps);
-                            m[group.modelData.app] = !group.expanded;
-                            root.expandedApps = m;
-                        }
+                        onClicked: root.setExpanded(group.modelData.app, !group.expanded)
                     }
                 }
                 IconButton {
                     icon: "󰎟"
                     size: 20
                     iconColor: Theme.gray
-                    onClicked: { for (const e of group.modelData.items) Notifs.dismiss(e); }
+                    // `d` on this header dismisses the whole group.
+                    function navDismiss() { for (const e of group.modelData.items) Notifs.dismiss(e); }
+                    readonly property int navNextKey: -1
+                    onClicked: navDismiss()
                 }
             }
 

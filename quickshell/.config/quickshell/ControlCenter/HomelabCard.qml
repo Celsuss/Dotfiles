@@ -60,11 +60,22 @@ Card {
             model: Homelab.services
 
             Rectangle {
+                id: svc
                 required property var modelData
                 Layout.fillWidth: true
                 implicitHeight: 30
                 radius: Theme.radius - 4
                 color: svcMouse.containsMouse ? Theme.bg3 : Theme.bg2
+
+                activeFocusOnTab: true
+
+                function activate() { Homelab.open(modelData); ShellState.close(); }
+
+                Keys.onReturnPressed: svc.activate()
+                Keys.onEnterPressed:  svc.activate()
+                Keys.onSpacePressed:  svc.activate()
+
+                FocusRing {}
 
                 Label {
                     anchors {
@@ -82,7 +93,7 @@ Card {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: { Homelab.open(modelData); ShellState.close(); }
+                    onClicked: svc.activate()
                 }
             }
         }

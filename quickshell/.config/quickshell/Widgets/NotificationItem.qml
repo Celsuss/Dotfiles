@@ -14,6 +14,24 @@ Rectangle {
 
     signal dismissed()
 
+    // The panel's `d` key calls this on whatever holds focus; `navNextKey`
+    // is the notification it should land on afterwards (this delegate is
+    // destroyed and rebuilt, so focus has to be restored by entry key).
+    function navDismiss() { root.dismissed() }
+
+    readonly property int navNextKey: {
+        const i = Notifs.list.findIndex(e => e.key === root.entry.key);
+        if (i < 0) return -1;
+        const next = Notifs.list[i + 1] || Notifs.list[i - 1];
+        return next ? next.key : -1;
+    }
+
+    function activate() {
+        if (!Notifs.hasDefaultAction(root.entry)) return;
+        Notifs.invoke(root.entry, "default");
+        root.dismissed();
+    }
+
     readonly property bool critical: entry.urgency === NotificationUrgency.Critical
     // Quickshell folds the app icon into `image` as an unchecked
     // image://icon/<name> url; re-resolve those so a missing icon falls back
@@ -33,6 +51,14 @@ Rectangle {
     color: hover.containsMouse ? Theme.bg3 : Theme.bg2
     border.color: critical ? Theme.red : "transparent"
     border.width: 1
+
+    activeFocusOnTab: true
+
+    Keys.onReturnPressed: root.activate()
+    Keys.onEnterPressed:  root.activate()
+    Keys.onSpacePressed:  root.activate()
+
+    FocusRing {}
 
     // Minute clock so relative times re-evaluate.
     SystemClock { id: clock; precision: SystemClock.Minutes }
@@ -115,6 +141,9 @@ Rectangle {
                     icon: "󰅖"
                     size: 20
                     iconColor: Theme.gray
+                    // `d` dismisses the focused notification; a second stop
+                    // per notification would bloat the chain.
+                    activeFocusOnTab: false
                     onClicked: root.dismissed()
                 }
             }

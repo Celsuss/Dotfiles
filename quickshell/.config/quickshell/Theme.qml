@@ -24,6 +24,7 @@ Singleton {
 
     readonly property color accent:   orange
     readonly property color border:   bg3
+    readonly property color focusRing: accent
 
     readonly property string font:     "JetBrainsMono Nerd Font"
     readonly property string iconFont: "Symbols Nerd Font"
@@ -34,6 +35,7 @@ Singleton {
     readonly property int radius:      10
     readonly property int padding:     12
     readonly property int spacing:     8
+    readonly property int focusRingWidth: 2
     readonly property int panelWidth:  450
     readonly property int animMs:      180
 }

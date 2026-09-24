@@ -41,8 +41,10 @@ RowLayout {
     }
 
     Label {
-        text: root.pending !== "" ? "Click again to " + root.pending : ""
-        color: Theme.yellow
+        readonly property bool confirming: root.pending !== ""
+        text: confirming ? "Click again to " + root.pending : "?  keys"
+        color: confirming ? Theme.yellow : Theme.gray
+        font.pixelSize: confirming ? Theme.fontSize : Theme.fontSmall
         Layout.fillWidth: true
     }
 
