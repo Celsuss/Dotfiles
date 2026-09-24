@@ -21,7 +21,19 @@ Rectangle {
     color: active ? Theme.accent : (mouse.containsMouse && enabled ? Theme.bg3 : Theme.bg2)
     opacity: enabled ? 1 : 0.5
 
+    // `enabled` above shadows Item.enabled (see Button.qml). Stay in the
+    // chain while busy so the ring doesn't jump away mid-toggle.
+    activeFocusOnTab: enabled
+
+    function activate() { if (root.enabled && !root.busy) root.clicked() }
+
+    Keys.onReturnPressed: root.activate()
+    Keys.onEnterPressed:  root.activate()
+    Keys.onSpacePressed:  root.activate()
+
     Behavior on color { ColorAnimation { duration: 100 } }
+
+    FocusRing {}
 
     RowLayout {
         anchors {

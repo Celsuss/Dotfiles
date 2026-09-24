@@ -19,7 +19,19 @@ Rectangle {
                   : (mouse.containsMouse ? Theme.bg3 : Theme.bg2)
     opacity: enabled ? 1 : 0.5
 
+    // `enabled` above shadows Item.enabled, so the focus chain can't skip
+    // disabled buttons on its own -- keep them out of it explicitly.
+    activeFocusOnTab: enabled
+
+    function activate() { if (root.enabled) root.clicked() }
+
+    Keys.onReturnPressed: root.activate()
+    Keys.onEnterPressed:  root.activate()
+    Keys.onSpacePressed:  root.activate()
+
     Behavior on color { ColorAnimation { duration: 100 } }
+
+    FocusRing {}
 
     Label {
         id: label

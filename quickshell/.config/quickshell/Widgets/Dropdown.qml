@@ -20,10 +20,33 @@ ColumnLayout {
     spacing: 4
 
     Rectangle {
+        id: head
         Layout.fillWidth: true
         implicitHeight: 32
         radius: Theme.radius
         color: headMouse.containsMouse ? Theme.bg3 : Theme.bg2
+
+        activeFocusOnTab: true
+
+        Keys.onReturnPressed: root.expanded ? root.collapse() : root.open()
+        Keys.onEnterPressed:  root.expanded ? root.collapse() : root.open()
+        Keys.onSpacePressed:  root.expanded ? root.collapse() : root.open()
+        Keys.onEscapePressed: event => {
+            // Only swallow Escape while open; otherwise let the panel close.
+            if (root.expanded) { root.collapse(); event.accepted = true; }
+            else event.accepted = false;
+        }
+        Keys.onPressed: event => {
+            if (event.key === Qt.Key_L || event.key === Qt.Key_Right) {
+                root.open();
+                event.accepted = true;
+            } else if ((event.key === Qt.Key_H || event.key === Qt.Key_Left) && root.expanded) {
+                root.collapse();
+                event.accepted = true;
+            }
+        }
+
+        FocusRing {}
 
         RowLayout {
             anchors {
@@ -49,10 +72,7 @@ ColumnLayout {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onClicked: {
-                root.expanded = !root.expanded;
-                if (root.expanded && root.filterable) filter.forceActiveFocus();
-            }
+            onClicked: root.expanded ? root.collapse() : root.open()
         }
     }
 
@@ -92,8 +112,17 @@ ColumnLayout {
                     font.family: Theme.font
                     font.pixelSize: Theme.fontSize
                     clip: true
-                    Keys.onEscapePressed: root.expanded = false
-                    Keys.onReturnPressed: if (list.count > 0) root.pick(list.itemAtIndex(0).value)
+                    Keys.onEscapePressed: root.collapse()
+                    Keys.onReturnPressed: root.pickCurrent()
+                    Keys.onEnterPressed:  root.pickCurrent()
+                    Keys.onPressed: event => {
+                        const down = event.key === Qt.Key_Down
+                                  || (event.key === Qt.Key_N && (event.modifiers & Qt.ControlModifier));
+                        const up = event.key === Qt.Key_Up
+                                || (event.key === Qt.Key_P && (event.modifiers & Qt.ControlModifier));
+                        if (down)      { list.nav(1);  event.accepted = true; }
+                        else if (up)   { list.nav(-1); event.accepted = true; }
+                    }
 
                     Label {
                         anchors.fill: parent
@@ -111,17 +140,38 @@ ColumnLayout {
                 implicitHeight: Math.min(contentHeight, root.maxListHeight)
                 clip: true
                 boundsBehavior: Flickable.StopAtBounds
+                currentIndex: 0
+
+                function nav(delta) {
+                    if (count === 0) return;
+                    currentIndex = Math.max(0, Math.min(count - 1, currentIndex + delta));
+                    positionViewAtIndex(currentIndex, ListView.Contain);
+                }
+
+                onCountChanged: currentIndex = count > 0 ? Math.min(currentIndex, count - 1) : -1
+
+                Keys.onEscapePressed: root.collapse()
+                Keys.onReturnPressed: root.pickCurrent()
+                Keys.onEnterPressed:  root.pickCurrent()
+                Keys.onPressed: event => {
+                    if (event.key === Qt.Key_J)      { list.nav(1);  event.accepted = true; }
+                    else if (event.key === Qt.Key_K) { list.nav(-1); event.accepted = true; }
+                }
+
                 model: {
                     const q = filter.text.toLowerCase();
                     return root.items.filter(s => q === "" || s.toLowerCase().indexOf(q) !== -1);
                 }
                 delegate: Rectangle {
                     required property string modelData
+                    required property int index
                     readonly property string value: modelData
+                    readonly property bool navCursor: root.expanded && index === list.currentIndex
                     width: list.width
                     height: 28
                     radius: Theme.radius - 4
-                    color: modelData === root.current ? Qt.alpha(Theme.accent, 0.25)
+                    color: navCursor ? Qt.alpha(Theme.accent, 0.45)
+                         : modelData === root.current ? Qt.alpha(Theme.accent, 0.25)
                          : (itemMouse.containsMouse ? Theme.bg3 : "transparent")
 
                     Label {
@@ -145,9 +195,28 @@ ColumnLayout {
         }
     }
 
-    function pick(value) {
+    function open() {
+        root.expanded = true;
+        list.currentIndex = list.count > 0 ? 0 : -1;
+        if (root.filterable) filter.forceActiveFocus(Qt.TabFocusReason);
+        else list.forceActiveFocus(Qt.TabFocusReason);
+    }
+
+    function collapse() {
+        // Hand focus back to the head before hiding the popup, or it escapes
+        // to the panel root and the j/k position is lost.
+        if (filter.activeFocus || list.activeFocus) head.forceActiveFocus(Qt.TabFocusReason);
         root.expanded = false;
         filter.text = "";
+    }
+
+    function pickCurrent() {
+        const item = list.currentIndex >= 0 ? list.itemAtIndex(list.currentIndex) : null;
+        if (item) root.pick(item.value);
+    }
+
+    function pick(value) {
+        root.collapse();
         root.selected(value);
     }
 }

@@ -19,7 +19,17 @@ Rectangle {
     radius: Theme.radius
     color: active ? Theme.accent : (mouse.containsMouse ? hoverColor : "transparent")
 
+    activeFocusOnTab: enabled
+
+    function activate() { if (root.enabled) root.clicked() }
+
+    Keys.onReturnPressed: root.activate()
+    Keys.onEnterPressed:  root.activate()
+    Keys.onSpacePressed:  root.activate()
+
     Behavior on color { ColorAnimation { duration: 100 } }
+
+    FocusRing {}
 
     Text {
         anchors.centerIn: parent
